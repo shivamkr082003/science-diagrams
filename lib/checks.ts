@@ -338,7 +338,9 @@ function checkInViewBox(root: Element, vb: ViewBox): CheckResult {
   const lines: string[] = [];
   for (const o of out) {
     const line = `${o.what} ${o.when} spans x ${r(o.box.minX)}..${r(o.box.maxX)}, y ${r(o.box.minY)}..${r(o.box.maxY)}`;
-    if (!seen.has(line)) seen.add(line), lines.push(line);
+    if (seen.has(line)) continue;
+    seen.add(line);
+    lines.push(line);
   }
   const vbText = `viewBox is x ${vb.x}..${vb.x + vb.w}, y ${vb.y}..${vb.y + vb.h}`;
   return {

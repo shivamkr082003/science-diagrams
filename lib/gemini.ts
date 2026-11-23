@@ -97,7 +97,8 @@ export async function callGemini(prompt: string, systemInstruction: string): Pro
 
     // Exponential backoff: 2s, 4s, 8s, unless Google tells us how long to wait.
     const suggested = retryDelayFromBody(data);
-    const wait = suggested ?? 2000 * 2 ** apiRetries;
+    const baseMs = Number(process.env.GEMINI_BASE_DELAY_MS ?? 2000); // tests set this low
+    const wait = suggested ?? baseMs * 2 ** apiRetries;
     if (wait > MAX_WAIT_MS) {
       throw new GeminiError(
         `Gemini rate limit: asked to wait ${Math.round(wait / 1000)}s, which usually means the free quota is used up. Try again later.`,

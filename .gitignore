@@ -42,3 +42,6 @@ next-env.d.ts
 
 # allow the example env file (no secrets in it)
 !.env.example
+
+# local review decisions (dev only)
+/data/reviews.json

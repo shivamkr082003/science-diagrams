@@ -6,6 +6,7 @@ export const CHECK_LABELS: { id: CheckId; label: string }[] = [
   { id: "titleAndLabels", label: "Title + 3 labels" },
   { id: "animated", label: "Animated" },
   { id: "requiredLabels", label: "Key terms labelled" },
+  { id: "readableLabels", label: "Labels readable" },
 ];
 
 export const svgSrc = (svg: string) => `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;

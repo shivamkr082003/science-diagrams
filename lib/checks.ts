@@ -5,12 +5,13 @@
 //  3. titleAndLabels - it has a <title> and at least 3 non-empty <text> labels
 //  4. animated       - it has SMIL animation or CSS @keyframes animation
 //  5. requiredLabels - (our own) the key GCSE terms for the concept appear as labels
+//  6. readableLabels - (our own) labels are at least 12 units tall and don't overlap each other
 
 import { DOMParser, XMLSerializer, type Document, type Element } from "@xmldom/xmldom";
 import { svgPathBbox } from "svg-path-bbox";
 import type { Concept } from "./concepts";
 
-export type CheckId = "valid" | "inViewBox" | "titleAndLabels" | "animated" | "requiredLabels";
+export type CheckId = "valid" | "inViewBox" | "titleAndLabels" | "animated" | "requiredLabels" | "readableLabels";
 
 export type CheckResult = { id: CheckId; name: string; passed: boolean; detail: string };
 
@@ -20,6 +21,7 @@ export const CHECK_NAMES: Record<CheckId, string> = {
   titleAndLabels: "Title + 3 labels",
   animated: "Animated",
   requiredLabels: "Key terms labelled",
+  readableLabels: "Readable labels",
 };
 
 // ---------- helpers ----------
@@ -400,6 +402,77 @@ function checkRequiredLabels(doc: Document, concept: Concept): CheckResult {
   };
 }
 
+// ---------- readable labels ----------
+
+const MIN_FONT = 12; // in viewBox units; our prompt asks for an 800-wide viewBox and 14-22 text
+const MAX_OVERLAP = 0.3; // share of the smaller label's box that may be covered by another label
+
+type Label = { text: string; box: Box; fontSize: number; mayHide: boolean };
+
+/** Text boxes in viewBox coordinates, at rest. */
+function collectLabels(el: Element, parent: Ctx, vb: ViewBox, mayHide: boolean, cssHides: boolean, out: Label[]): void {
+  const tag = el.localName ?? "";
+  if (NOT_DRAWN.has(tag) || attr(el, "display", parent) === "none") return;
+  const ctx: Ctx = {
+    matrix: multiply(parent.matrix, parseTransform(el.getAttribute("transform"))),
+    fontSize: len(attr(el, "font-size", parent), vb.h, parent.fontSize) ?? parent.fontSize,
+    anchor: attr(el, "text-anchor", parent) ?? parent.anchor,
+    baseline: attr(el, "dominant-baseline", parent) ?? parent.baseline,
+    overrides: {},
+  };
+  // Text that fades in/out may share a spot with other text on purpose (step-by-step reveals).
+  const fades = children(el).some(
+    (c) => ANIMATION_TAGS.includes(c.localName ?? "") && /opacity|visibility|display/.test(c.getAttribute("attributeName") ?? ""),
+  );
+  const hidden = mayHide || fades || (cssHides && el.hasAttribute("class")) || /animation/.test(el.getAttribute("style") ?? "");
+  if (tag === "text") {
+    const scale = Math.sqrt(Math.abs(ctx.matrix[0] * ctx.matrix[3] - ctx.matrix[1] * ctx.matrix[2]));
+    for (const t of textBoxes(el, parent, vb)) {
+      const box = transformBox(ctx.matrix, t.box);
+      out.push({ text: t.label, box, fontSize: (t.box.maxY - t.box.minY) * scale, mayHide: hidden });
+    }
+    return;
+  }
+  for (const child of children(el)) collectLabels(child, ctx, vb, hidden, cssHides, out);
+}
+
+function overlapShare(a: Box, b: Box): number {
+  const w = Math.min(a.maxX, b.maxX) - Math.max(a.minX, b.minX);
+  const h = Math.min(a.maxY, b.maxY) - Math.max(a.minY, b.minY);
+  if (w <= 0 || h <= 0) return 0;
+  const area = (x: Box) => (x.maxX - x.minX) * (x.maxY - x.minY);
+  return (w * h) / Math.min(area(a), area(b));
+}
+
+function checkReadableLabels(doc: Document, root: Element, vb: ViewBox): CheckResult {
+  const css = descendants(doc, "style").map((s) => s.textContent ?? "").join("\n");
+  const cssHides = /@keyframes[^{]*\{[^@]*opacity/.test(css);
+  const labels: Label[] = [];
+  const ctx: Ctx = { matrix: IDENTITY, fontSize: 16, anchor: "start", baseline: "auto", overrides: {} };
+  for (const child of children(root)) collectLabels(child, ctx, vb, false, cssHides, labels);
+
+  const problems: string[] = [];
+  for (const l of labels) {
+    if (l.fontSize < MIN_FONT) problems.push(`"${l.text}" is too small (${l.fontSize.toFixed(1)} < ${MIN_FONT})`);
+  }
+  for (let i = 0; i < labels.length; i++) {
+    for (let j = i + 1; j < labels.length; j++) {
+      const [a, b] = [labels[i], labels[j]];
+      if (a.mayHide || b.mayHide) continue;
+      const share = overlapShare(a.box, b.box);
+      if (share > MAX_OVERLAP) problems.push(`"${a.text}" overlaps "${b.text}" (${Math.round(share * 100)}%)`);
+    }
+  }
+  return {
+    id: "readableLabels",
+    name: CHECK_NAMES.readableLabels,
+    passed: problems.length === 0,
+    detail: problems.length
+      ? `${problems.length} problem(s): ${problems.slice(0, 5).join("; ")}. Move labels apart or make them bigger.`
+      : `${labels.length} labels, none overlap, all at least ${MIN_FONT} units tall.`,
+  };
+}
+
 export function runChecks(svg: string, concept: Concept): CheckResult[] {
   const { doc, error } = parseSvg(svg);
   const root = doc?.documentElement;
@@ -413,7 +486,7 @@ export function runChecks(svg: string, concept: Concept): CheckResult[] {
 
   const results: CheckResult[] = [{ id: "valid", name: CHECK_NAMES.valid, passed: valid, detail: validDetail }];
   if (!valid || !doc || !root || !vb) {
-    const skipped = (["inViewBox", "titleAndLabels", "animated", "requiredLabels"] as CheckId[]).map((id) => ({
+    const skipped = (["inViewBox", "titleAndLabels", "animated", "requiredLabels", "readableLabels"] as CheckId[]).map((id) => ({
       id,
       name: CHECK_NAMES[id],
       passed: false,
@@ -421,7 +494,13 @@ export function runChecks(svg: string, concept: Concept): CheckResult[] {
     }));
     return [...results, ...skipped];
   }
-  results.push(checkInViewBox(root, vb), checkTitleAndLabels(doc), checkAnimated(doc), checkRequiredLabels(doc, concept));
+  results.push(
+    checkInViewBox(root, vb),
+    checkTitleAndLabels(doc),
+    checkAnimated(doc),
+    checkRequiredLabels(doc, concept),
+    checkReadableLabels(doc, root, vb),
+  );
   return results;
 }
 

@@ -94,6 +94,26 @@ test("missing key terms fail our own check", () => {
   assert.match(r.requiredLabels.detail, /diameter/);
 });
 
+test("overlapping labels fail the readable-labels check", () => {
+  const r = byId(GOOD.replace('<text x="210" y="170" font-size="12">Centre</text>', '<text x="242" y="142" font-size="12">Centre</text>'));
+  assert.equal(r.readableLabels.passed, false);
+  assert.match(r.readableLabels.detail, /"Radius" overlaps "Centre"|"Centre" overlaps "Radius"|overlaps/);
+});
+
+test("tiny text fails the readable-labels check", () => {
+  const r = byId(GOOD.replace('font-size="14">Circumference', 'font-size="8">Circumference'));
+  assert.equal(r.readableLabels.passed, false);
+  assert.match(r.readableLabels.detail, /too small/);
+});
+
+test("labels that fade in on the same spot are allowed (step-by-step reveal)", () => {
+  const svg = GOOD.replace(
+    "</svg>",
+    `<text x="242" y="142" font-size="12" opacity="0">Radius = 5<animate attributeName="opacity" values="0;1" dur="2s"/></text></svg>`,
+  );
+  assert.equal(byId(svg).readableLabels.passed, true, byId(svg).readableLabels.detail);
+});
+
 test("pythagoras equation matches different ways of writing it", () => {
   const p = getConcept("pythagoras")!.requiredLabels[1].pattern;
   for (const s of ["a² + b² = c²", "a^2 + b^2 = c^2", "a 2 + b 2 = c 2"]) assert.match(s, p);

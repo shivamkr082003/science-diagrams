@@ -1,6 +1,8 @@
 // The 5 concepts from the assignment. `text` is given to the model word for word.
 // `requiredLabels` powers our own check (#5): each entry is a regex, and at least
 // one <text> in the SVG must match it. These are the words a GCSE student must see.
+// `visualBrief` is our own art direction: what a good GCSE diagram of this looks like
+// and what the animation should teach. It is added to the prompt after the brief's text.
 
 export type Concept = {
   id: string;
@@ -8,6 +10,7 @@ export type Concept = {
   subject: string;
   text: string;
   requiredLabels: { label: string; pattern: RegExp }[];
+  visualBrief: string;
 };
 
 export const CONCEPTS: Concept[] = [
@@ -20,6 +23,8 @@ export const CONCEPTS: Concept[] = [
       { label: "hypotenuse", pattern: /hypotenuse/i },
       { label: "a² + b² = c²", pattern: /a\s*(²|\^\s*2|2)\s*\+\s*b\s*(²|\^\s*2|2)\s*=\s*c\s*(²|\^\s*2|2)/i },
     ],
+    visualBrief:
+      "A right-angled triangle with sides a = 3, b = 4, c = 5 units, with a small square marking the right angle. Draw a square on each side (areas 9, 16 and 25), labelled a², b², c². Label the hypotenuse (the longest side, opposite the right angle). Animation: the squares on a and b pulse or fill one after the other, then the square on c fills, and the equation a² + b² = c² (9 + 16 = 25) appears. Keep the squares inside the frame: make the triangle small enough.",
   },
   {
     id: "circle",
@@ -32,6 +37,8 @@ export const CONCEPTS: Concept[] = [
       { label: "diameter", pattern: /diameter/i },
       { label: "circumference", pattern: /circumference/i },
     ],
+    visualBrief:
+      "One large circle. Mark the centre with a dot. Draw a radius from the centre to the edge and a diameter across the circle through the centre, in different colours. Animation: the radius line sweeps around the centre, and a point travels around the edge to trace the circumference. Show diameter = 2 × radius as a text label.",
   },
   {
     id: "series-circuit",
@@ -43,6 +50,8 @@ export const CONCEPTS: Concept[] = [
       { label: "current", pattern: /current/i },
       { label: "voltage", pattern: /voltage|\bV\b/i },
     ],
+    visualBrief:
+      "A single rectangular loop of wire with a cell (long and short line symbol), two lamps (circle with a cross) and an ammeter (circle with A) in series. Animation: small dots (charge) move along the wire all the way round the loop at the same speed, showing the current is the same everywhere. Show ammeter readings that are equal (e.g. 0.2 A) at two points. Show the cell voltage (e.g. 6 V) and the voltage across each lamp (3 V + 3 V) to show it is shared.",
   },
   {
     id: "photosynthesis",
@@ -57,6 +66,8 @@ export const CONCEPTS: Concept[] = [
       { label: "glucose", pattern: /glucose/i },
       { label: "oxygen", pattern: /oxygen|O\s*(2|₂)/i },
     ],
+    visualBrief:
+      "A simple plant or leaf with a sun in a corner. Labelled arrows: carbon dioxide going into the leaf from the air, water going up from the roots, light energy from the sun to the leaf, and glucose and oxygen as products (oxygen arrow leaving the leaf). Mark chlorophyll in the leaf (green, labelled). Include the word equation: carbon dioxide + water → glucose + oxygen. Animation: the sun's rays pulse and small particles flow along the arrows.",
   },
   {
     id: "states-of-matter",
@@ -68,6 +79,8 @@ export const CONCEPTS: Concept[] = [
       { label: "liquid", pattern: /liquid/i },
       { label: "gas", pattern: /\bgas\b/i },
     ],
+    visualBrief:
+      "Three boxes side by side, labelled solid, liquid and gas, each with circles for particles. Solid: particles packed in a regular grid, each vibrating in place (small back-and-forth). Liquid: particles close together but irregular, sliding past each other slowly. Gas: few particles far apart, moving fast in straight lines across the box. Every particle stays inside its own box during the animation. Add a short caption under each box.",
   },
 ];
 

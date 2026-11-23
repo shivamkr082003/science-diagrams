@@ -49,6 +49,7 @@ Hard rules (your SVG is checked by code and rejected if it breaks any of them):
 2. Everything stays inside the viewBox, including while it animates. Keep a 20px margin from every edge.
    Text: font-size 14 to 22, font-family sans-serif. Estimate text width as 0.55 x font-size per character
    and make sure long labels fit. Prefer text-anchor="middle" for centred labels.
+   Labels must not overlap each other: leave clear space between them.
 3. The first child of <svg> is a <title> naming the concept. Use at least 3 <text> labels.
 4. Animate with SMIL (<animate>, <animateTransform>, <animateMotion>) or CSS @keyframes in a <style> block.
    Animations loop forever (repeatCount="indefinite" or animation-iteration-count: infinite) and teach
@@ -63,6 +64,9 @@ export function buildPrompt(concept: Concept): string {
 
 Text for the diagram:
 ${concept.text}
+
+What a good diagram shows:
+${concept.visualBrief}
 
 The diagram must include these terms as visible <text> labels: ${terms}.`;
 }

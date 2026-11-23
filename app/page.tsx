@@ -9,7 +9,7 @@ import styles from "./page.module.css";
 
 const STEPS = [
   { icon: <SparkIcon size={18} />, title: "Generate", text: "Gemini draws an animated SVG from the lesson text." },
-  { icon: <ShieldIcon size={18} />, title: "Check", text: "Code runs 5 checks: valid, in frame, labels, animation, key terms." },
+  { icon: <ShieldIcon size={18} />, title: "Check", text: "Code runs 6 checks: valid, in frame, labels, animation, key terms, readable." },
   { icon: <RetryIcon size={18} />, title: "Retry once", text: "If a check fails, the model gets one retry with the exact reasons." },
   { icon: <UserCheckIcon size={18} />, title: "Review", text: "A person approves or rejects each diagram, with a note." },
 ];

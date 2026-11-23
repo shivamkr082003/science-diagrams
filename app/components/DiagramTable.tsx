@@ -2,7 +2,8 @@
 
 import { useCallback, useEffect, useState } from "react";
 import type { DiagramResult } from "@/lib/pipeline";
-import type { Review } from "@/lib/reviews";
+import type { Review, ReviewStatus } from "@/lib/reviews";
+import { loadReviews, saveReview, type Where } from "./reviewStore";
 import ReviewBox from "./ReviewBox";
 import DiagramModal from "./DiagramModal";
 import { CHECK_LABELS, svgSrc, formatCost, formatTokens } from "./format";
@@ -18,20 +19,19 @@ export default function DiagramTable({ concepts, saved }: { concepts: ConceptInf
   const [reviewsLoaded, setReviewsLoaded] = useState(false);
   const [reviewsError, setReviewsError] = useState<string | null>(null);
   const [storage, setStorage] = useState("");
+  const [where, setWhere] = useState<Where>("server");
   const [live, setLive] = useState<Record<string, DiagramResult>>({});
   const [openId, setOpenId] = useState<string | null>(null);
   const [toasts, setToasts] = useState<Toast[]>([]);
 
   useEffect(() => {
-    fetch("/api/reviews")
-      .then(async (res) => {
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error ?? `HTTP ${res.status}`);
-        setReviews(data.reviews);
-        setStorage(data.storage);
-      })
-      .catch((err) => setReviewsError(`Saved reviews could not be loaded: ${err.message}`))
-      .finally(() => setReviewsLoaded(true));
+    loadReviews().then((r) => {
+      setReviews(r.reviews);
+      setWhere(r.where);
+      setStorage(r.storage);
+      if (r.warning) setReviewsError(r.warning);
+      setReviewsLoaded(true);
+    });
   }, []);
 
   const toast = useCallback((text: string, tone: Toast["tone"] = "ok") => {
@@ -51,6 +51,18 @@ export default function DiagramTable({ concepts, saved }: { concepts: ConceptInf
   const rejected = Object.values(reviews).filter((r) => r.status === "rejected").length;
 
   const openIndex = concepts.findIndex((c) => c.id === openId);
+
+  async function save(concept: ConceptInfo, status: ReviewStatus, note: string) {
+    const saved = await saveReview(concept.id, status, note, where);
+    setReviews((all) => ({ ...all, [concept.id]: saved.review }));
+    const verb = status === "approved" ? "approved" : "rejected";
+    if (saved.where === "server") toast(`${concept.name}: ${verb} and saved`);
+    else toast(`${concept.name}: ${verb}, saved in this browser`);
+    if (saved.where !== where) {
+      setWhere("browser");
+      setStorage("this browser (localStorage), because the server could not save");
+    }
+  }
 
   return (
     <>
@@ -98,10 +110,7 @@ export default function DiagramTable({ concepts, saved }: { concepts: ConceptInf
                 reviewsLoaded={reviewsLoaded}
                 onLive={(r) => setLive((all) => ({ ...all, [c.id]: r }))}
                 onOpen={() => setOpenId(c.id)}
-                onReviewSaved={(r) => {
-                  setReviews((all) => ({ ...all, [c.id]: r }));
-                  toast(`${c.name}: ${r.status === "approved" ? "approved" : "rejected"} and saved`);
-                }}
+                onSave={(status, note) => save(c, status, note)}
                 toast={toast}
               />
             ))}
@@ -157,7 +166,7 @@ function Row({
   reviewsLoaded,
   onLive,
   onOpen,
-  onReviewSaved,
+  onSave,
   toast,
 }: {
   index: number;
@@ -168,7 +177,7 @@ function Row({
   reviewsLoaded: boolean;
   onLive: (r: DiagramResult) => void;
   onOpen: () => void;
-  onReviewSaved: (r: Review) => void;
+  onSave: (status: ReviewStatus, note: string) => Promise<void>;
   toast: (text: string, tone?: "ok" | "error") => void;
 }) {
   const [generating, setGenerating] = useState(false);
@@ -316,8 +325,7 @@ function Row({
           conceptId={concept.id}
           review={review}
           loaded={reviewsLoaded}
-          onSaved={onReviewSaved}
-          onError={(m) => toast(`Could not save: ${m}`, "error")}
+          onSave={onSave}
         />
       </td>
     </tr>

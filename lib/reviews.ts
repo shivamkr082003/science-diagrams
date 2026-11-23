@@ -26,6 +26,11 @@ export function storageName(): string {
   return redisConfig() ? "Upstash Redis" : "local file data/reviews.json";
 }
 
+/** False on Vercel without Redis: the browser then falls back to localStorage. */
+export function serverCanSave(): boolean {
+  return !!redisConfig() || !process.env.VERCEL;
+}
+
 async function redis(command: string[]): Promise<unknown> {
   const cfg = redisConfig()!;
   const res = await fetch(cfg.url, {

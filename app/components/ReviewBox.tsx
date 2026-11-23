@@ -9,14 +9,12 @@ export default function ReviewBox({
   conceptId,
   review,
   loaded,
-  onSaved,
-  onError,
+  onSave,
 }: {
   conceptId: string;
   review?: Review;
   loaded: boolean;
-  onSaved: (r: Review) => void;
-  onError: (message: string) => void;
+  onSave: (status: ReviewStatus, note: string) => Promise<void>;
 }) {
   // draft = what the reviewer is typing; null means "show the saved note".
   const [draft, setDraft] = useState<string | null>(null);
@@ -27,17 +25,8 @@ export default function ReviewBox({
   async function save(status: ReviewStatus) {
     setSaving(status);
     try {
-      const res = await fetch("/api/reviews", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ conceptId, status, note }),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.error ?? `HTTP ${res.status}`);
-      onSaved(data.review);
+      await onSave(status, note); // never throws: falls back to this browser if the server fails
       setDraft(null);
-    } catch (err) {
-      onError((err as Error).message);
     } finally {
       setSaving(null);
     }

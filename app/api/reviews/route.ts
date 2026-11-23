@@ -1,10 +1,11 @@
 import { getConcept } from "@/lib/concepts";
-import { getReviews, saveReview, storageName } from "@/lib/reviews";
+import { getReviews, saveReview, serverCanSave, storageName } from "@/lib/reviews";
 
 
 export async function GET() {
   try {
-    return Response.json({ reviews: await getReviews(), storage: storageName() });
+    if (!serverCanSave()) return Response.json({ reviews: {}, storage: null, serverCanSave: false });
+    return Response.json({ reviews: await getReviews(), storage: storageName(), serverCanSave: true });
   } catch (err) {
     return Response.json({ error: `Could not load reviews: ${(err as Error).message}` }, { status: 500 });
   }

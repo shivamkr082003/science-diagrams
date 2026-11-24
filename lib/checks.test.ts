@@ -114,6 +114,44 @@ test("labels that fade in on the same spot are allowed (step-by-step reveal)", (
   assert.equal(byId(svg).readableLabels.passed, true, byId(svg).readableLabels.detail);
 });
 
+test("CSS classes are read: text-anchor from a <style> rule", () => {
+  // "Gas particles" at 14px is about 100 units wide. Centred on x=340 it spans 290..390 (inside 400);
+  // start-anchored it would span 340..440 (outside).
+  const withClass = GOOD.replace("<title>", "<style>.cap { text-anchor: middle; font-size: 14px }</style><title>").replace(
+    "</svg>",
+    `<text class="cap" x="340" y="250">Gas particles</text></svg>`,
+  );
+  assert.equal(byId(withClass).inViewBox.passed, true, byId(withClass).inViewBox.detail);
+  const noClass = withClass.replace(".cap { text-anchor: middle; font-size: 14px }", ".cap { font-size: 14px }");
+  assert.equal(byId(noClass).inViewBox.passed, false);
+});
+
+test("CSS @keyframes that move a shape outside the frame fail", () => {
+  const svg = GOOD.replace("<title>", "<style>@keyframes slide { from { transform: translateX(0) } to { transform: translateX(300px) } } .dot { animation: slide 2s infinite }</style><title>").replace(
+    "</svg>",
+    `<circle class="dot" cx="200" cy="150" r="5"/></svg>`,
+  );
+  const r = byId(svg);
+  assert.equal(r.inViewBox.passed, false);
+  assert.match(r.inViewBox.detail, /during @keyframes slide/);
+});
+
+test("CSS rotate around the element's own centre (fill-box) stays inside", () => {
+  const svg = GOOD.replace("<title>", "<style>@keyframes spin { to { transform: rotate(360deg) } } .s { transform-box: fill-box; transform-origin: center; animation: spin 2s infinite }</style><title>").replace(
+    "</svg>",
+    `<rect class="s" x="350" y="20" width="30" height="30"/></svg>`,
+  );
+  assert.equal(byId(svg).inViewBox.passed, true, byId(svg).inViewBox.detail);
+});
+
+test("a fill-opacity pulse does not switch off the overlap check", () => {
+  const svg = GOOD.replace("<title>", "<style>@keyframes p { 50% { fill-opacity: .3 } } .t { animation: p 1s infinite }</style><title>").replace(
+    '<text x="210" y="170" font-size="12">Centre</text>',
+    '<text class="t" x="242" y="142" font-size="12">Centre</text>',
+  );
+  assert.equal(byId(svg).readableLabels.passed, false);
+});
+
 test("pythagoras equation matches different ways of writing it", () => {
   const p = getConcept("pythagoras")!.requiredLabels[1].pattern;
   for (const s of ["a² + b² = c²", "a^2 + b^2 = c^2", "a 2 + b 2 = c 2"]) assert.match(s, p);

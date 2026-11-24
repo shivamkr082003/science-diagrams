@@ -10,6 +10,7 @@
 import { DOMParser, XMLSerializer, type Document, type Element } from "@xmldom/xmldom";
 import { svgPathBbox } from "svg-path-bbox";
 import type { Concept } from "./concepts";
+import { parseStylesheet, parseDecls, cssValue, animationNames, cssTransformToSvg, type Stylesheet } from "./css";
 
 export type CheckId = "valid" | "inViewBox" | "titleAndLabels" | "animated" | "requiredLabels" | "readableLabels";
 
@@ -89,7 +90,7 @@ export function parseTransform(value: string | null): Matrix {
   if (!value) return m;
   const re = /(matrix|translate|scale|rotate|skewX|skewY)\s*\(([^)]*)\)/g;
   for (const [, fn, argStr] of value.matchAll(re)) {
-    const a = argStr.trim().split(/[\s,]+/).filter(Boolean).map(Number);
+    const a = argStr.trim().split(/[\s,]+/).filter(Boolean).map((v) => parseFloat(v)); // "10px", "45deg" ok
     let t: Matrix = IDENTITY;
     const rad = (deg: number) => (deg * Math.PI) / 180;
     if (fn === "matrix" && a.length === 6) t = a as Matrix;
@@ -134,14 +135,74 @@ function len(value: string | null | undefined, axis: number, fontSize = 16): num
   return n;
 }
 
-// Style props can live in attributes or in style="...". Animation overrides come first.
-type Ctx = { matrix: Matrix; fontSize: number; anchor: string; baseline: string; overrides: Record<string, string> };
+// What we know while walking the tree. `overrides` holds values an animation sets on this element.
+type Ctx = {
+  matrix: Matrix;
+  fontSize: number;
+  anchor: string;
+  baseline: string;
+  overrides: Record<string, string>;
+  css: Stylesheet;
+};
 
+/** A property's value, in CSS priority order: animation > style="" > <style> rules > attribute. */
 function attr(el: Element, name: string, ctx: Ctx): string | null {
   if (name in ctx.overrides) return ctx.overrides[name];
-  const style = el.getAttribute("style") ?? "";
-  const m = style.match(new RegExp(`(?:^|;)\\s*${name}\\s*:\\s*([^;]+)`));
-  return m ? m[1].trim() : el.getAttribute(name);
+  const inline = parseDecls(el.getAttribute("style") ?? "")[name];
+  if (inline) return inline;
+  return cssValue(ctx.css, el, name) ?? el.getAttribute(name);
+}
+
+const union = (boxes: (Box | null)[]): Box | null => {
+  const b = boxes.filter((x): x is Box => !!x);
+  if (!b.length) return null;
+  return {
+    minX: Math.min(...b.map((x) => x.minX)),
+    minY: Math.min(...b.map((x) => x.minY)),
+    maxX: Math.max(...b.map((x) => x.maxX)),
+    maxY: Math.max(...b.map((x) => x.maxY)),
+  };
+};
+
+/** Box of an element in its own coordinates (before its own transform). Used for CSS transform-origin. */
+function localBox(el: Element, parent: Ctx, vb: ViewBox): Box | null {
+  const tag = el.localName ?? "";
+  if (NOT_DRAWN.has(tag)) return null;
+  if (tag === "text") return union(textBoxes(el, parent, vb).map((t) => t.box));
+  if (tag === "g" || tag === "a") {
+    return union(children(el).map((c) => {
+      const b = localBox(c, parent, vb);
+      return b && transformBox(parseTransform(c.getAttribute("transform")), b);
+    }));
+  }
+  return shapeBox(el, parent, vb)?.box ?? null;
+}
+
+/** transform-origin as a point. SVG default is 0 0 of the viewBox; transform-box: fill-box uses the element's own box. */
+function cssOrigin(el: Element, parent: Ctx, vb: ViewBox): [number, number] {
+  const fillBox = attr(el, "transform-box", parent) === "fill-box";
+  const ref = fillBox ? localBox(el, parent, vb) : null;
+  const box = ref ?? { minX: vb.x, minY: vb.y, maxX: vb.x + vb.w, maxY: vb.y + vb.h };
+  const words = (attr(el, "transform-origin", parent) ?? "0 0").trim().split(/\s+/);
+  if (words.length === 1) words.push(words[0] === "center" ? "center" : "50%");
+  if (words[0] === "top" || words[0] === "bottom") words.reverse();
+  const KEY: Record<string, string> = { left: "0%", top: "0%", center: "50%", right: "100%", bottom: "100%" };
+  const at = (w: string, min: number, size: number) => {
+    const v = KEY[w] ?? w;
+    const n = parseFloat(v);
+    if (!Number.isFinite(n)) return min;
+    return v.endsWith("%") ? min + (n / 100) * size : min + n;
+  };
+  return [at(words[0], box.minX, box.maxX - box.minX), at(words[1], box.minY, box.maxY - box.minY)];
+}
+
+/** The element's own transform. A CSS transform (class, style, or an animation step) replaces the attribute. */
+function elementMatrix(el: Element, parent: Ctx, vb: ViewBox): Matrix {
+  if (parent.overrides.transform !== undefined) return parseTransform(parent.overrides.transform); // SMIL
+  const css = parent.overrides["css-transform"] ?? parseDecls(el.getAttribute("style") ?? "").transform ?? cssValue(parent.css, el, "transform");
+  if (!css) return parseTransform(el.getAttribute("transform"));
+  const [ox, oy] = cssOrigin(el, { ...parent, overrides: {} }, vb);
+  return multiply(multiply([1, 0, 0, 1, ox, oy], parseTransform(cssTransformToSvg(css))), [1, 0, 0, 1, -ox, -oy]);
 }
 
 // Things that are never drawn directly, or are only drawn when referenced.
@@ -230,7 +291,7 @@ function textBoxes(el: Element, ctx: Ctx, vb: ViewBox): { box: Box; label: strin
       const nx = len(t.getAttribute("x"), vb.w, tfs) ?? current.x;
       let ny = len(t.getAttribute("y"), vb.h, tfs) ?? current.y;
       ny += len(t.getAttribute("dy"), vb.h, tfs) ?? 0;
-      current = { x: nx, y: ny, text: textOf(t), fs: tfs, anchor: t.getAttribute("text-anchor") ?? anchor };
+      current = { x: nx, y: ny, text: textOf(t), fs: tfs, anchor: attr(t, "text-anchor", { ...ctx, overrides: {} }) ?? anchor };
     } else {
       current.text += textOf(t);
     }
@@ -254,14 +315,14 @@ function checkElement(el: Element, parent: Ctx, vb: ViewBox, out: Offender[], wh
   if (NOT_DRAWN.has(tag)) return;
   if (attr(el, "display", parent) === "none") return;
 
-  // A child <animateTransform> replaces the transform attribute (unless additive="sum").
-  const ownTransform = parseTransform(parent.overrides.transform ?? el.getAttribute("transform"));
+  // A child <animateTransform> or CSS transform replaces the transform attribute.
   const ctx: Ctx = {
-    matrix: multiply(parent.matrix, ownTransform),
+    matrix: multiply(parent.matrix, elementMatrix(el, parent, vb)),
     fontSize: len(attr(el, "font-size", parent), vb.h, parent.fontSize) ?? parent.fontSize,
     anchor: attr(el, "text-anchor", parent) ?? parent.anchor,
     baseline: attr(el, "dominant-baseline", parent) ?? parent.baseline,
     overrides: {},
+    css: parent.css,
   };
   const name = (extra = "") => `<${tag}${el.getAttribute("id") ? ` id="${el.getAttribute("id")}"` : ""}>${extra}`;
   const tol = Math.max(2, 0.01 * Math.max(vb.w, vb.h));
@@ -312,7 +373,7 @@ function checkElement(el: Element, parent: Ctx, vb: ViewBox, out: Offender[], wh
         checkElement(el, { ...parent, overrides: { [attrName]: value } }, vb, out, `during ${attrName}="${value.slice(0, 20)}"`);
       }
     }
-    if (kind === "animateMotion") {
+    if (kind === "animateMotion" && anim.getAttribute("path")) {
       const d = anim.getAttribute("path");
       if (!d) continue;
       try {
@@ -326,13 +387,26 @@ function checkElement(el: Element, parent: Ctx, vb: ViewBox, out: Offender[], wh
       }
     }
   }
+
+  // CSS @keyframes: check the element at every step that moves it (transform, x, y, cx, cy, r).
+  const names = animationNames(parent.css, attr(el, "animation-name", parent), attr(el, "animation", parent));
+  for (const kf of names) {
+    for (const step of parent.css.keyframes[kf]) {
+      const overrides: Record<string, string> = {};
+      if (step.transform) overrides["css-transform"] = step.transform;
+      for (const p of ["x", "y", "cx", "cy", "r"]) if (step[p]) overrides[p] = step[p];
+      if (Object.keys(overrides).length) checkElement(el, { ...parent, overrides }, vb, out, `during @keyframes ${kf}`);
+    }
+  }
 }
 
 // ---------- the checks ----------
 
-function checkInViewBox(root: Element, vb: ViewBox): CheckResult {
+const rootCtx = (css: Stylesheet): Ctx => ({ matrix: IDENTITY, fontSize: 16, anchor: "start", baseline: "auto", overrides: {}, css });
+
+function checkInViewBox(root: Element, vb: ViewBox, css: Stylesheet): CheckResult {
   const out: Offender[] = [];
-  const ctx: Ctx = { matrix: IDENTITY, fontSize: 16, anchor: "start", baseline: "auto", overrides: {} };
+  const ctx = rootCtx(css);
   for (const child of children(root)) checkElement(child, ctx, vb, out, "at rest");
 
   const r = (n: number) => Math.round(n);
@@ -410,21 +484,28 @@ const MAX_OVERLAP = 0.3; // share of the smaller label's box that may be covered
 type Label = { text: string; box: Box; fontSize: number; mayHide: boolean };
 
 /** Text boxes in viewBox coordinates, at rest. */
-function collectLabels(el: Element, parent: Ctx, vb: ViewBox, mayHide: boolean, cssHides: boolean, out: Label[]): void {
+function collectLabels(el: Element, parent: Ctx, vb: ViewBox, mayHide: boolean, out: Label[]): void {
   const tag = el.localName ?? "";
   if (NOT_DRAWN.has(tag) || attr(el, "display", parent) === "none") return;
   const ctx: Ctx = {
-    matrix: multiply(parent.matrix, parseTransform(el.getAttribute("transform"))),
+    matrix: multiply(parent.matrix, elementMatrix(el, parent, vb)),
     fontSize: len(attr(el, "font-size", parent), vb.h, parent.fontSize) ?? parent.fontSize,
     anchor: attr(el, "text-anchor", parent) ?? parent.anchor,
     baseline: attr(el, "dominant-baseline", parent) ?? parent.baseline,
     overrides: {},
+    css: parent.css,
   };
   // Text that fades in/out may share a spot with other text on purpose (step-by-step reveals).
-  const fades = children(el).some(
-    (c) => ANIMATION_TAGS.includes(c.localName ?? "") && /opacity|visibility|display/.test(c.getAttribute("attributeName") ?? ""),
+  // Only real hiding counts (opacity / visibility / display), not fill-opacity pulses.
+  const HIDES = /^(opacity|visibility|display)$/;
+  const smilFades = children(el).some(
+    (c) => ANIMATION_TAGS.includes(c.localName ?? "") && HIDES.test(c.getAttribute("attributeName") ?? ""),
   );
-  const hidden = mayHide || fades || (cssHides && el.hasAttribute("class")) || /animation/.test(el.getAttribute("style") ?? "");
+  const cssFades = animationNames(parent.css, attr(el, "animation-name", parent), attr(el, "animation", parent)).some(
+    (kf) => parent.css.keyframes[kf].some((step) => Object.keys(step).some((p) => HIDES.test(p))),
+  );
+  const startsHidden = attr(el, "opacity", parent) === "0" || attr(el, "visibility", parent) === "hidden";
+  const hidden = mayHide || smilFades || cssFades || startsHidden;
   if (tag === "text") {
     const scale = Math.sqrt(Math.abs(ctx.matrix[0] * ctx.matrix[3] - ctx.matrix[1] * ctx.matrix[2]));
     for (const t of textBoxes(el, parent, vb)) {
@@ -433,7 +514,7 @@ function collectLabels(el: Element, parent: Ctx, vb: ViewBox, mayHide: boolean, 
     }
     return;
   }
-  for (const child of children(el)) collectLabels(child, ctx, vb, hidden, cssHides, out);
+  for (const child of children(el)) collectLabels(child, ctx, vb, hidden, out);
 }
 
 function overlapShare(a: Box, b: Box): number {
@@ -444,12 +525,10 @@ function overlapShare(a: Box, b: Box): number {
   return (w * h) / Math.min(area(a), area(b));
 }
 
-function checkReadableLabels(doc: Document, root: Element, vb: ViewBox): CheckResult {
-  const css = descendants(doc, "style").map((s) => s.textContent ?? "").join("\n");
-  const cssHides = /@keyframes[^{]*\{[^@]*opacity/.test(css);
+function checkReadableLabels(root: Element, vb: ViewBox, css: Stylesheet): CheckResult {
   const labels: Label[] = [];
-  const ctx: Ctx = { matrix: IDENTITY, fontSize: 16, anchor: "start", baseline: "auto", overrides: {} };
-  for (const child of children(root)) collectLabels(child, ctx, vb, false, cssHides, labels);
+  const ctx = rootCtx(css);
+  for (const child of children(root)) collectLabels(child, ctx, vb, false, labels);
 
   const problems: string[] = [];
   for (const l of labels) {
@@ -494,12 +573,13 @@ export function runChecks(svg: string, concept: Concept): CheckResult[] {
     }));
     return [...results, ...skipped];
   }
+  const css = parseStylesheet(descendants(doc, "style").map((s) => s.textContent ?? "").join("\n"));
   results.push(
-    checkInViewBox(root, vb),
+    checkInViewBox(root, vb, css),
     checkTitleAndLabels(doc),
     checkAnimated(doc),
     checkRequiredLabels(doc, concept),
-    checkReadableLabels(doc, root, vb),
+    checkReadableLabels(root, vb, css),
   );
   return results;
 }

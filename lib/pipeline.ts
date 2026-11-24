@@ -90,7 +90,8 @@ ${reasons}
 ${previous}`;
 }
 
-export async function generateDiagram(concept: Concept): Promise<DiagramResult> {
+/** `deadline`: a Date.now() timestamp to finish by (used by the Generate route; the script has none). */
+export async function generateDiagram(concept: Concept, deadline = Infinity): Promise<DiagramResult> {
   const startedAt = Date.now();
   const attempts: Attempt[] = [];
   let svg: string | null = null;
@@ -104,16 +105,16 @@ export async function generateDiagram(concept: Concept): Promise<DiagramResult> 
     const t0 = Date.now();
 
     try {
-      const reply = await callGemini(prompt, SYSTEM_PROMPT);
+      const reply = await callGemini(prompt, SYSTEM_PROMPT, deadline);
       const extracted = extractSvg(reply.text);
+      let newSvg: string | null = null;
+      let newChecks = noSvgChecks();
+      let newSanitized: string[] = [];
       if (extracted) {
         const clean = sanitizeSvg(extracted);
-        svg = clean.svg;
-        sanitized = clean.removed;
-        checks = runChecks(svg, concept);
-      } else {
-        svg = null;
-        checks = noSvgChecks();
+        newSvg = clean.svg;
+        newSanitized = clean.removed;
+        newChecks = runChecks(newSvg, concept);
       }
       attempts.push({
         attempt,
@@ -122,9 +123,16 @@ export async function generateDiagram(concept: Concept): Promise<DiagramResult> 
         costUsd: estimateCostUsd(reply.model, reply.inputTokens, reply.outputTokens),
         apiRetries: reply.apiRetries,
         durationMs: Date.now() - t0,
-        checks,
+        checks: newChecks,
         error: null,
       });
+      // Keep the retry unless it is worse than what we had (e.g. the retry came back with no SVG).
+      const passedCount = (cs: CheckResult[]) => cs.filter((c) => c.passed).length;
+      if (attempt === 1 || passedCount(newChecks) >= passedCount(checks)) {
+        svg = newSvg;
+        checks = newChecks;
+        sanitized = newSanitized;
+      }
       error = null;
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);

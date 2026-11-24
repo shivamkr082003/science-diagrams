@@ -43,7 +43,11 @@ function retryDelayFromBody(body: unknown): number | null {
   return Number.isFinite(seconds) ? seconds * 1000 : null;
 }
 
-export async function callGemini(prompt: string, systemInstruction: string): Promise<GeminiResult> {
+/**
+ * `deadline` (a Date.now() timestamp) stops us before the host kills the request: on Vercel the
+ * Generate route has a time limit, and a clear error is better than a cut-off response.
+ */
+export async function callGemini(prompt: string, systemInstruction: string, deadline = Infinity): Promise<GeminiResult> {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) throw new GeminiError("GEMINI_API_KEY is not set on the server.", null, 0);
 
@@ -57,6 +61,9 @@ export async function callGemini(prompt: string, systemInstruction: string): Pro
 
   let apiRetries = 0;
   for (;;) {
+    const timeLeft = deadline - Date.now();
+    if (timeLeft < 5000) throw new GeminiError("Ran out of time before Gemini answered. Try again.", null, apiRetries);
+    const timeout = Math.min(REQUEST_TIMEOUT_MS, timeLeft);
     let res: Response;
     try {
       res = await fetch(url, {
@@ -64,10 +71,14 @@ export async function callGemini(prompt: string, systemInstruction: string): Pro
         // Key goes in a header, not the URL, so it never shows up in logs.
         headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
         body: JSON.stringify(body),
-        signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+        signal: AbortSignal.timeout(timeout),
       });
     } catch (err) {
-      throw new GeminiError(`Network error calling Gemini: ${(err as Error).message}`, null, apiRetries);
+      const timedOut = (err as Error).name === "TimeoutError";
+      const message = timedOut
+        ? `Gemini did not answer within ${Math.round(timeout / 1000)}s. Try again.`
+        : `Network error calling Gemini: ${(err as Error).message}`;
+      throw new GeminiError(message, null, apiRetries);
     }
 
     const data = await res.json().catch(() => null);
@@ -99,7 +110,7 @@ export async function callGemini(prompt: string, systemInstruction: string): Pro
     const suggested = retryDelayFromBody(data);
     const baseMs = Number(process.env.GEMINI_BASE_DELAY_MS ?? 2000); // tests set this low
     const wait = suggested ?? baseMs * 2 ** apiRetries;
-    if (wait > MAX_WAIT_MS) {
+    if (wait > MAX_WAIT_MS || Date.now() + wait > deadline - 10_000) {
       throw new GeminiError(
         `Gemini rate limit: asked to wait ${Math.round(wait / 1000)}s, which usually means the free quota is used up. Try again later.`,
         res.status,

@@ -83,6 +83,22 @@ test("gives up after 3 API retries with a clear error", async () => {
   assert.match(r.error ?? "", /429.*gave up after 3 retries/);
 });
 
+test("a retry that is worse (no SVG at all) does not throw away the first diagram", async () => {
+  replies = [ok(BAD_SVG), ok("Sorry, here is the fixed version.")];
+  const r = await generateDiagram(circle);
+  assert.equal(r.retries, 1);
+  assert.equal(r.svg !== null && r.svg.includes("Parts of a circle"), true);
+  assert.equal(r.checks.find((c) => c.id === "valid")?.passed, true); // checks of the kept attempt
+  assert.equal(r.attempts[1].checks.find((c) => c.id === "valid")?.passed, false); // the log still shows the bad retry
+});
+
+test("a deadline that has passed gives a clear error instead of hanging", async () => {
+  replies = [ok(GOOD_SVG)];
+  const r = await generateDiagram(circle, Date.now() + 1000);
+  assert.equal(requests.length, 0);
+  assert.match(r.error ?? "", /Ran out of time/);
+});
+
 test("non-retryable error (400) fails fast", async () => {
   replies = [err(400)];
   const r = await generateDiagram(circle);

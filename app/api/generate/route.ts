@@ -3,8 +3,10 @@
 import { getConcept } from "@/lib/concepts";
 import { generateDiagram } from "@/lib/pipeline";
 
-// Up to 2 model calls plus 429/503 backoff can take a while.
+// Up to 2 model calls plus 429/503 backoff can take a while. The pipeline stops 10s before
+// this limit so the browser always gets a JSON answer, never a cut-off request.
 export const maxDuration = 120;
+const DEADLINE_MS = (maxDuration - 10) * 1000;
 
 export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
@@ -12,7 +14,7 @@ export async function POST(request: Request) {
   if (!concept) return Response.json({ error: "Unknown conceptId." }, { status: 400 });
 
   try {
-    const result = await generateDiagram(concept);
+    const result = await generateDiagram(concept, Date.now() + DEADLINE_MS);
     if (result.error) {
       // The model API failed and we have no diagram: send the reason and the cost/retry log.
       return Response.json({ error: result.error, result }, { status: 502 });

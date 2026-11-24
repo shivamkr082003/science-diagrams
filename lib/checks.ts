@@ -599,7 +599,9 @@ function collectWiring(el: Element, parent: Ctx, vb: ViewBox, out: { chains: Cha
     const b = local && transformBox(ctx.matrix, local);
     if (b && b.maxX - b.minX <= 140 && b.maxY - b.minY <= 140) out.parts.push(b);
   }
-  const stroked = isPainted(inherited(el, "stroke", ctx)) && !isPainted(inherited(el, "stroke-dasharray", ctx));
+  // Wires are drawn thick (3-4 units in every model output we saw); panel dividers are 1-2.
+  const thick = parseFloat(inherited(el, "stroke-width", ctx) ?? "1") >= 2.5;
+  const stroked = thick && isPainted(inherited(el, "stroke", ctx)) && !isPainted(inherited(el, "stroke-dasharray", ctx));
   const arrow = el.hasAttribute("marker-end") || el.hasAttribute("marker-start") || !!attr(el, "marker-end", ctx);
   if (!stroked || arrow) return;
   const num = (n: string) => len(attr(el, n, ctx), vb.w) ?? 0;

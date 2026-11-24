@@ -25,7 +25,7 @@ export const CONCEPTS: Concept[] = [
       { label: "a² + b² = c²", pattern: /a\s*(²|\^\s*2|2)\s*\+\s*b\s*(²|\^\s*2|2)\s*=\s*c\s*(²|\^\s*2|2)/i },
     ],
     visualBrief:
-      "A right-angled triangle with sides a = 3, b = 4, c = 5 units, with a small square marking the right angle. Draw a square on each side (areas 9, 16 and 25), labelled a², b², c². Label the hypotenuse (the longest side, opposite the right angle). Animation: the squares on a and b pulse or fill one after the other, then the square on c fills, and the equation a² + b² = c² (9 + 16 = 25) appears. Keep the squares inside the frame: make the triangle small enough.",
+      "A right-angled triangle with sides a = 3, b = 4, c = 5 units, with a small square marking the right angle. Draw a square on each side (areas 9, 16 and 25), labelled a², b², c². Label the hypotenuse (the longest side, opposite the right angle). Animation: the squares on a and b pulse or fill one after the other, then the square on c fills, while the equation a² + b² = c² (9 + 16 = 25) is always shown and is highlighted at the end. Keep the squares inside the frame: make the triangle small enough.",
   },
   {
     id: "circle",
@@ -53,7 +53,7 @@ export const CONCEPTS: Concept[] = [
       { label: "voltage", pattern: /voltage|\bV\b/i },
     ],
     visualBrief:
-      "A single rectangular loop of wire with a cell (long and short line symbol), two lamps (circle with a cross) and an ammeter (circle with A) in series. Animation: small dots (charge) move along the wire all the way round the loop at the same speed, showing the current is the same everywhere. Show ammeter readings that are equal (e.g. 0.2 A) at two points. Show the cell voltage (e.g. 6 V) and the voltage across each lamp (3 V + 3 V) to show it is shared. Layout: draw the loop as a rectangle from (90, 130) to (450, 430). Cell in the middle of the top wire, lamp 1 on the left wire, lamp 2 on the right wire, the two ammeters on the bottom wire. Put every label OUTSIDE the loop next to its component (above the top wire, left of the left wire, right of the right wire, below the bottom wire), never on a wire.",
+      "A single rectangular loop of wire with a cell (long and short line symbol), two lamps (circle with a cross) and an ammeter (circle with A) in series. Animation: small dots move along the wire all the way round the loop at the same speed, showing the current is the same everywhere. Use conventional current as GCSE does: dots and any current arrows go from the + terminal (long line) of the cell, round the loop, back to the − terminal (short line). Mark the + and − terminals. Show ammeter readings that are equal (e.g. 0.2 A) at two points. Show the cell voltage (e.g. 6 V) and the voltage across each lamp (3 V + 3 V) to show it is shared. Layout: draw the loop as a rectangle from (90, 130) to (450, 430). Cell in the middle of the top wire, lamp 1 on the left wire, lamp 2 on the right wire, the two ammeters on the bottom wire. Put every label OUTSIDE the loop next to its component (above the top wire, left of the left wire, right of the right wire, below the bottom wire), never on a wire.",
   },
   {
     id: "photosynthesis",

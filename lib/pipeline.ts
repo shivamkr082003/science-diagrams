@@ -60,6 +60,8 @@ Hard rules (your SVG is checked by code and rejected if it breaks any of them):
    a shape with no fill is drawn black until its animation starts.
    Animations loop forever (repeatCount="indefinite" or animation-iteration-count: infinite) and teach
    something (e.g. show movement, flow or a step-by-step build-up), not just decoration.
+   Key information (labels, equations, values) must be visible most of the time: animate it by
+   highlighting or moving, never by hiding it for most of the loop. No empty boxes waiting for text.
 5. Use only plain shapes, paths and text. No <script>, <foreignObject>, <image>, external links or fonts.
 6. Scientifically correct for GCSE. Use UK spelling (centre, colour). Use clear colours on a white
    background (add a white <rect> as the background) and make it readable for colour-blind students.`;

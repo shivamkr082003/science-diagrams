@@ -47,7 +47,7 @@ You reply with ONE animated SVG and nothing else: no explanation, no markdown fe
 Hard rules (your SVG is checked by code and rejected if it breaks any of them):
 1. Valid XML. Root is <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">. No width/height attributes.
 2. Everything stays inside the viewBox, including while it animates. Keep a 20px margin from every edge.
-   Text: font-size 14 to 22, font-family sans-serif. Estimate text width as 0.55 x font-size per character
+   Text: font-size 14 to 22, font-family sans-serif. Estimate text width as about 0.55 x font-size per character
    and make sure long labels fit. Prefer text-anchor="middle" for centred labels.
    Labels must not overlap each other: leave clear space between them.
    Labels must not sit on top of lines or shapes they don't describe: put them beside the shape.

@@ -266,7 +266,29 @@ function shapeBox(el: Element, ctx: Ctx, vb: ViewBox): { box: Box; exact?: boole
   return null;
 }
 
-/** Rough text box: width = chars × 0.55 × font-size, height = font-size. */
+// Helvetica/Arial character widths (per 1000 units of font size), ASCII 32..126. Browsers fall back to
+// Arial or Helvetica for "sans-serif", so this is a close width estimate without rendering anything.
+const CHAR_WIDTHS = [
+  278, 278, 355, 556, 556, 889, 667, 191, 333, 333, 389, 584, 278, 333, 278, 278, 556, 556, 556, 556, 556, 556, 556, 556,
+  556, 556, 278, 278, 584, 584, 584, 556, 1015, 667, 667, 722, 722, 667, 611, 778, 722, 278, 500, 667, 556, 833, 722, 778,
+  667, 778, 722, 667, 611, 722, 667, 944, 667, 667, 611, 278, 278, 278, 469, 556, 333, 556, 556, 500, 556, 556, 278, 556,
+  556, 222, 222, 500, 222, 833, 556, 556, 556, 556, 333, 500, 278, 556, 500, 722, 500, 500, 500, 334, 260, 334, 584,
+];
+
+// Common science symbols outside ASCII.
+const EXTRA_WIDTHS: Record<string, number> = { "²": 333, "³": 333, "₂": 333, "°": 400, "×": 584, "÷": 584, "→": 1000, "−": 584, "·": 278 };
+
+/** Estimated rendered width of `text` in a sans-serif font. Bold text is about 8% wider. */
+export function textWidth(text: string, fontSize: number, bold = false): number {
+  let units = 0;
+  for (const ch of text) {
+    const code = ch.codePointAt(0)!;
+    units += code >= 32 && code <= 126 ? CHAR_WIDTHS[code - 32] : (EXTRA_WIDTHS[ch] ?? 600); // 600: average guess
+  }
+  return (units / 1000) * fontSize * (bold ? 1.08 : 1);
+}
+
+/** Text box: width from character widths, height = font-size. */
 function textBoxes(el: Element, ctx: Ctx, vb: ViewBox): { box: Box; label: string }[] {
   const fs = len(attr(el, "font-size", ctx), vb.h, ctx.fontSize) ?? ctx.fontSize;
   const anchor = attr(el, "text-anchor", ctx) ?? ctx.anchor;
@@ -277,6 +299,8 @@ function textBoxes(el: Element, ctx: Ctx, vb: ViewBox): { box: Box; label: strin
   x += len(attr(el, "dx", ctx), vb.w, fs) ?? 0;
 
   // Lines: tspans that set their own x/y/dy start a new line, everything else stays on the first line.
+  const weight = attr(el, "font-weight", ctx) ?? "";
+  const bold = weight === "bold" || parseInt(weight) >= 600;
   const lines: { x: number; y: number; text: string; fs: number; anchor: string }[] = [];
   let current = { x, y, text: "", fs, anchor };
   for (const node of Array.from(el.childNodes)) {
@@ -299,7 +323,7 @@ function textBoxes(el: Element, ctx: Ctx, vb: ViewBox): { box: Box; label: strin
   if (current.text.trim()) lines.push(current);
 
   return lines.map((l) => {
-    const w = l.text.trim().length * 0.55 * l.fs;
+    const w = textWidth(l.text.trim(), l.fs, bold);
     const left = l.anchor === "middle" ? l.x - w / 2 : l.anchor === "end" ? l.x - w : l.x;
     // Baseline is at y by default; "middle"/"central" centres the text on y; "hanging" puts it below.
     const top =
@@ -479,7 +503,7 @@ function checkRequiredLabels(doc: Document, concept: Concept): CheckResult {
 // ---------- readable labels ----------
 
 const MIN_FONT = 12; // in viewBox units; our prompt asks for an 800-wide viewBox and 14-22 text
-const MAX_OVERLAP = 0.3; // share of the smaller label's box that may be covered by another label
+const MAX_OVERLAP = 0.03; // labels must not overlap; 3% leaves room for estimate error
 
 type Label = { text: string; box: Box; fontSize: number; mayHide: boolean };
 

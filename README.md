@@ -36,7 +36,7 @@ concept text ──► Gemini ──► extract <svg> ──► sanitize ──�
 | 3 | **Title + at least 3 labels** | A non-empty `<title>` and 3+ non-empty `<text>` elements. |
 | 4 | **Has animation** | SMIL (`animate`, `animateTransform`, `animateMotion`, `set`) or a CSS `@keyframes` that is actually used by an `animation` rule. |
 | 5 | **Key terms labelled** (my own) | Each concept lists the terms a GCSE student must see (e.g. hypotenuse and a² + b² = c²; centre, radius, diameter, circumference). Each must appear in a `<text>` label. A diagram can pass checks 1–4 and still be useless for the lesson; this catches that. |
-| 6 | **Readable labels** (my own) | No label smaller than 12 units, and no two labels overlap by more than 30%. Labels that fade in and out are skipped, because step-by-step reveals put text in the same spot on purpose. |
+| 6 | **Readable labels** (my own) | No label smaller than 12 units, and no two labels overlap (more than 3% of the smaller label, to allow for estimate error). Labels that fade in and out are skipped, because step-by-step reveals put text in the same spot on purpose. |
 
 **Safety:** before the checks, `<script>`, `<foreignObject>`, `on*` handlers and external links are removed from the SVG. The page also shows SVGs through `<img>`, which never runs scripts.
 

@@ -51,7 +51,7 @@ export const CONCEPTS: Concept[] = [
       { label: "voltage", pattern: /voltage|\bV\b/i },
     ],
     visualBrief:
-      "A single rectangular loop of wire with a cell (long and short line symbol), two lamps (circle with a cross) and an ammeter (circle with A) in series. Animation: small dots (charge) move along the wire all the way round the loop at the same speed, showing the current is the same everywhere. Show ammeter readings that are equal (e.g. 0.2 A) at two points. Show the cell voltage (e.g. 6 V) and the voltage across each lamp (3 V + 3 V) to show it is shared.",
+      "A single rectangular loop of wire with a cell (long and short line symbol), two lamps (circle with a cross) and an ammeter (circle with A) in series. Animation: small dots (charge) move along the wire all the way round the loop at the same speed, showing the current is the same everywhere. Show ammeter readings that are equal (e.g. 0.2 A) at two points. Show the cell voltage (e.g. 6 V) and the voltage across each lamp (3 V + 3 V) to show it is shared. Layout: draw the loop as a rectangle from (90, 130) to (450, 430). Cell in the middle of the top wire, lamp 1 on the left wire, lamp 2 on the right wire, the two ammeters on the bottom wire. Put every label OUTSIDE the loop next to its component (above the top wire, left of the left wire, right of the right wire, below the bottom wire), never on a wire.",
   },
   {
     id: "photosynthesis",

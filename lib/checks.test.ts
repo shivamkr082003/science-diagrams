@@ -182,6 +182,25 @@ test("a filled shape drawn on top of a label fails", () => {
   assert.match(byId(svg).readableLabels.detail, /partly hidden under a filled/);
 });
 
+test("series circuit: a closed loop passes, a gap in the wire fails", () => {
+  const circuit = getConcept("series-circuit")!;
+  const loop = (topWire: string) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><title>Series circuit</title>
+    <rect width="400" height="300" fill="#fff"/>
+    ${topWire}
+    <path d="M 300 50 V 250 H 50 V 50" fill="none" stroke="#333" stroke-width="3"/>
+    <circle cx="300" cy="150" r="15" fill="#fff" stroke="#333"/>
+    <circle cx="10" cy="10" r="3" fill="red"><animate attributeName="r" values="3;4;3" dur="1s" repeatCount="indefinite"/></circle>
+    <text x="320" y="155" font-size="14">lamp</text><text x="150" y="40" font-size="14">cell 6 V</text>
+    <text x="150" y="275" font-size="14">current 0.2 A</text><text x="60" y="150" font-size="14">voltage</text></svg>`;
+  const closed = loop(`<line x1="50" y1="50" x2="300" y2="50" stroke="#333" stroke-width="3"/>`);
+  const r1 = runChecks(closed, circuit).find((c) => c.id === "requiredLabels")!;
+  assert.equal(r1.passed, true, r1.detail);
+  const gap = loop(`<line x1="50" y1="50" x2="140" y2="50" stroke="#333" stroke-width="3"/><line x1="200" y1="50" x2="300" y2="50" stroke="#333" stroke-width="3"/>`);
+  const r2 = runChecks(gap, circuit).find((c) => c.id === "requiredLabels")!;
+  assert.equal(r2.passed, false);
+  assert.match(r2.detail, /loose wire end.*\(140, 50\).*\(200, 50\)/);
+});
+
 test("pythagoras equation matches different ways of writing it", () => {
   const p = getConcept("pythagoras")!.requiredLabels[1].pattern;
   for (const s of ["a² + b² = c²", "a^2 + b^2 = c^2", "a 2 + b 2 = c 2"]) assert.match(s, p);

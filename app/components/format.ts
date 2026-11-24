@@ -5,7 +5,7 @@ export const CHECK_LABELS: { id: CheckId; label: string }[] = [
   { id: "inViewBox", label: "Inside the frame" },
   { id: "titleAndLabels", label: "Title + 3 labels" },
   { id: "animated", label: "Animated" },
-  { id: "requiredLabels", label: "Key terms labelled" },
+  { id: "requiredLabels", label: "Subject content" },
   { id: "readableLabels", label: "Labels readable" },
 ];
 

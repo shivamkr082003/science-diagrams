@@ -4,7 +4,8 @@
 //  2. inViewBox      - no shape or text is drawn outside the viewBox (also while it animates)
 //  3. titleAndLabels - it has a <title> and at least 3 non-empty <text> labels
 //  4. animated       - it has SMIL animation or CSS @keyframes animation
-//  5. requiredLabels - (our own) the key GCSE terms for the concept appear as labels
+//  5. requiredLabels - (our own) "Subject content": the key GCSE terms appear as labels, plus any
+//                      science rule for the concept (series circuit: the loop is closed, no loose wire ends)
 //  6. readableLabels - (our own) labels are at least 12 units tall and don't overlap each other
 
 import { DOMParser, XMLSerializer, type Document, type Element } from "@xmldom/xmldom";
@@ -21,7 +22,7 @@ export const CHECK_NAMES: Record<CheckId, string> = {
   inViewBox: "Inside viewBox",
   titleAndLabels: "Title + 3 labels",
   animated: "Animated",
-  requiredLabels: "Key terms labelled",
+  requiredLabels: "Subject content",
   readableLabels: "Readable labels",
 };
 
@@ -534,16 +535,136 @@ function checkAnimated(doc: Document, sheet: Stylesheet): CheckResult {
   };
 }
 
-function checkRequiredLabels(doc: Document, concept: Concept): CheckResult {
+// ---------- subject rule: a series circuit is one closed loop ----------
+
+type Pt = [number, number];
+type Chain = { points: Pt[]; length: number };
+
+/** Corner points of a path, including the end point of curves (control points ignored). */
+function pathVertices(d: string): Pt[][] {
+  const runs: Pt[][] = [];
+  let run: Pt[] = [];
+  let cur: Pt = [0, 0];
+  let start: Pt = [0, 0];
+  const ARGS: Record<string, number> = { M: 2, L: 2, H: 1, V: 1, C: 6, S: 4, Q: 4, T: 2, A: 7, Z: 0 };
+  for (const [, cmd, argStr] of d.matchAll(/([MmLlHhVvCcSsQqTtAaZz])([^MmLlHhVvCcSsQqTtAaZz]*)/g)) {
+    const C = cmd.toUpperCase();
+    const rel = cmd !== C;
+    const a = argStr.trim().split(/[\s,]+/).filter(Boolean).map(Number);
+    if (C === "Z") {
+      run.push(start);
+      cur = start;
+      continue;
+    }
+    const n = ARGS[C];
+    for (let i = 0; i + n <= a.length && n > 0; i += n) {
+      const g = a.slice(i, i + n);
+      let next: Pt;
+      if (C === "H") next = [rel ? cur[0] + g[0] : g[0], cur[1]];
+      else if (C === "V") next = [cur[0], rel ? cur[1] + g[0] : g[0]];
+      else {
+        const [x, y] = g.slice(-2);
+        next = rel ? [cur[0] + x, cur[1] + y] : [x, y];
+      }
+      if (C === "M" && i === 0) {
+        if (run.length > 1) runs.push(run);
+        run = [next];
+        start = next;
+      } else run.push(next);
+      cur = next;
+    }
+  }
+  if (run.length > 1) runs.push(run);
+  return runs;
+}
+
+function distToSegment(p: Pt, a: Pt, b: Pt): number {
+  const [dx, dy] = [b[0] - a[0], b[1] - a[1]];
+  const l2 = dx * dx + dy * dy;
+  const t = l2 ? Math.max(0, Math.min(1, ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / l2)) : 0;
+  return Math.hypot(p[0] - (a[0] + t * dx), p[1] - (a[1] + t * dy));
+}
+
+/** Wires (stroked lines/paths, not arrows or dashed guides) and component bodies (small closed shapes). */
+function collectWiring(el: Element, parent: Ctx, vb: ViewBox, out: { chains: Chain[]; parts: Box[] }): void {
+  const tag = el.localName ?? "";
+  if (NOT_DRAWN.has(tag) || tag === "text" || attr(el, "display", parent) === "none") return;
+  const ctx: Ctx = { ...parent, matrix: multiply(parent.matrix, elementMatrix(el, parent, vb)), overrides: {} };
+  if (tag === "g" || tag === "a" || tag === "svg") {
+    for (const c of children(el)) collectWiring(c, ctx, vb, out);
+    return;
+  }
+  if (["circle", "ellipse", "rect", "polygon"].includes(tag)) {
+    const local = shapeBox(el, ctx, vb)?.box;
+    const b = local && transformBox(ctx.matrix, local);
+    if (b && b.maxX - b.minX <= 140 && b.maxY - b.minY <= 140) out.parts.push(b);
+  }
+  const stroked = isPainted(inherited(el, "stroke", ctx)) && !isPainted(inherited(el, "stroke-dasharray", ctx));
+  const arrow = el.hasAttribute("marker-end") || el.hasAttribute("marker-start") || !!attr(el, "marker-end", ctx);
+  if (!stroked || arrow) return;
+  const num = (n: string) => len(attr(el, n, ctx), vb.w) ?? 0;
+  let runs: Pt[][] = [];
+  if (tag === "line") runs = [[[num("x1"), num("y1")], [num("x2"), num("y2")]]];
+  else if (tag === "polyline") {
+    const segs = straightSegments(el, ctx, vb);
+    runs = segs.length ? [[...segs.map((sg) => sg[0]), segs[segs.length - 1][1]]] : [];
+  }
+  else if (tag === "path") runs = pathVertices(attr(el, "d", ctx) ?? "");
+  for (const r of runs) {
+    const points = r.map((p) => apply(ctx.matrix, ...p));
+    const length = points.slice(1).reduce((sum, p, i) => sum + Math.hypot(p[0] - points[i][0], p[1] - points[i][1]), 0);
+    out.chains.push({ points, length });
+  }
+}
+
+/** Loose wire ends: an end of a wire that touches no other wire and no component. */
+function looseWireEnds(root: Element, vb: ViewBox, css: Stylesheet): Pt[] {
+  const found = { chains: [] as Chain[], parts: [] as Box[] };
+  for (const c of children(root)) collectWiring(c, rootCtx(css), vb, found);
+  const TOUCH = 6;
+  const loose: Pt[] = [];
+  for (const chain of found.chains) {
+    if (chain.length < 30) continue; // short strokes are symbol parts (cell plates, lamp crosses), not wires
+    const ends = [chain.points[0], chain.points.at(-1)!];
+    if (Math.hypot(ends[0][0] - ends[1][0], ends[0][1] - ends[1][1]) < TOUCH) continue; // closed loop
+    // A line far from every wire and component (a divider in an info panel, an underline) is not a wire.
+    const near = (p: Pt, d: number) =>
+      found.chains.some((o) => o !== chain && o.points.slice(1).some((q, i) => distToSegment(p, o.points[i], q) <= d)) ||
+      found.parts.some((b) => p[0] >= b.minX - d && p[0] <= b.maxX + d && p[1] >= b.minY - d && p[1] <= b.maxY + d);
+    if (chain.points.every((p) => !near(p, 30))) continue;
+    for (const p of ends) {
+      const onWire = found.chains.some(
+        (other) => other !== chain && other.points.slice(1).some((q, i) => distToSegment(p, other.points[i], q) <= TOUCH),
+      );
+      const onPart = found.parts.some(
+        (b) => p[0] >= b.minX - TOUCH && p[0] <= b.maxX + TOUCH && p[1] >= b.minY - TOUCH && p[1] <= b.maxY + TOUCH,
+      );
+      if (!onWire && !onPart) loose.push(p);
+    }
+  }
+  return loose;
+}
+
+function checkRequiredLabels(doc: Document, concept: Concept, root: Element, vb: ViewBox, css: Stylesheet): CheckResult {
   const allText = descendants(doc, "text").map(textOf).join(" | ");
   const missing = concept.requiredLabels.filter((r) => !r.pattern.test(allText)).map((r) => r.label);
+  const problems = missing.length ? [`Missing label(s): ${missing.join(", ")}.`] : [];
+  if (concept.rules?.includes("closedCircuit")) {
+    const loose = looseWireEnds(root, vb, css);
+    if (loose.length) {
+      const where = loose.slice(0, 6).map((p) => `(${Math.round(p[0])}, ${Math.round(p[1])})`).join(", ");
+      problems.push(
+        `The circuit is not one closed loop: ${loose.length} loose wire end(s) at ${where}. Every wire must connect to another wire or a component.`,
+      );
+    }
+  }
   return {
     id: "requiredLabels",
     name: CHECK_NAMES.requiredLabels,
-    passed: missing.length === 0,
-    detail: missing.length
-      ? `Missing label(s): ${missing.join(", ")}.`
-      : `All ${concept.requiredLabels.length} key terms are labelled.`,
+    passed: problems.length === 0,
+    detail: problems.length
+      ? problems.join(" ")
+      : `All ${concept.requiredLabels.length} key terms are labelled${concept.rules?.includes("closedCircuit") ? " and the circuit is one closed loop" : ""}.`,
   };
 }
 
@@ -809,7 +930,7 @@ export function runChecks(svg: string, concept: Concept): CheckResult[] {
     checkInViewBox(root, vb, css),
     checkTitleAndLabels(doc),
     checkAnimated(doc, css),
-    checkRequiredLabels(doc, concept),
+    checkRequiredLabels(doc, concept, root, vb, css),
     checkReadableLabels(root, vb, css),
   );
   return results;

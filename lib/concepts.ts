@@ -11,6 +11,7 @@ export type Concept = {
   text: string;
   requiredLabels: { label: string; pattern: RegExp }[];
   visualBrief: string;
+  rules?: "closedCircuit"[]; // extra science rules checked in code (check #5)
 };
 
 export const CONCEPTS: Concept[] = [
@@ -42,6 +43,7 @@ export const CONCEPTS: Concept[] = [
   },
   {
     id: "series-circuit",
+    rules: ["closedCircuit"],
     name: "Series circuit",
     subject: "Physics",
     text: "In a series circuit there is only one loop. The current is the same everywhere in the loop. The voltage of the cell is shared between the components.",

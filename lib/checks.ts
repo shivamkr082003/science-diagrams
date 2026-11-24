@@ -465,7 +465,50 @@ function checkTitleAndLabels(doc: Document): CheckResult {
   };
 }
 
-function checkAnimated(doc: Document): CheckResult {
+const FILLED_SHAPES = new Set(["rect", "circle", "ellipse", "polygon", "path"]);
+
+/** Seconds of delay before a CSS animation starts (animation-delay, or the 2nd time in the shorthand). */
+function cssDelaySeconds(delay: string | null, shorthand: string | null): number {
+  const toSec = (t: string) => (t.endsWith("ms") ? parseFloat(t) / 1000 : parseFloat(t));
+  if (delay) return toSec(delay.trim());
+  const times = (shorthand ?? "").match(/-?[\d.]+m?s\b/g) ?? [];
+  return times.length >= 2 ? toSec(times[1]) : 0;
+}
+
+/**
+ * Shapes whose colour only comes from a delayed fill animation. A shape with no fill is drawn
+ * black, so it flashes black until the animation starts (seen in a real Pythagoras run).
+ */
+function blackBeforeAnimation(doc: Document, css: Stylesheet): string[] {
+  const ctx = rootCtx(css);
+  const hasOwnFill = (el: Element) => {
+    for (let n: Element | null = el; n && n.nodeType === 1; n = n.parentNode as Element | null) {
+      if (attr(n, "fill", ctx)) return true;
+    }
+    return false;
+  };
+  const problems: string[] = [];
+  for (const el of descendants(doc, "*")) {
+    if (!FILLED_SHAPES.has(el.localName ?? "")) continue;
+    const delayedSmil = children(el).some(
+      (a) => ["animate", "set"].includes(a.localName ?? "") && a.getAttribute("attributeName") === "fill" && parseFloat(a.getAttribute("begin") ?? "0") > 0,
+    );
+    const animation = attr(el, "animation", ctx);
+    const fillsByCss = animationNames(css, attr(el, "animation-name", ctx), animation).some((kf) =>
+      css.keyframes[kf].some((step) => "fill" in step),
+    );
+    const fillMode = `${attr(el, "animation-fill-mode", ctx) ?? ""} ${animation ?? ""}`;
+    const delayedCss =
+      fillsByCss && cssDelaySeconds(attr(el, "animation-delay", ctx), animation) > 0 && !/\b(backwards|both)\b/.test(fillMode);
+    if ((delayedSmil || delayedCss) && !hasOwnFill(el)) {
+      const who = el.getAttribute("id") ? `#${el.getAttribute("id")}` : el.getAttribute("class") ? `.${el.getAttribute("class")}` : "";
+      problems.push(`<${el.localName}${who ? " " + who : ""}>`);
+    }
+  }
+  return problems;
+}
+
+function checkAnimated(doc: Document, sheet: Stylesheet): CheckResult {
   const smil = ANIMATION_TAGS.reduce((sum, tag) => sum + descendants(doc, tag).length, 0);
   const css = [
     ...descendants(doc, "style").map((s) => s.textContent ?? ""),
@@ -474,13 +517,17 @@ function checkAnimated(doc: Document): CheckResult {
   const keyframes = [...css.matchAll(/@keyframes\s+([\w-]+)/g)].map((m) => m[1]);
   // CSS animation only counts if some rule actually uses one of the @keyframes names.
   const usedKeyframes = keyframes.filter((k) => new RegExp(`animation(-name)?\\s*:[^;}]*\\b${k}\\b`).test(css));
-  const passed = smil > 0 || usedKeyframes.length > 0;
+  const hasAnimation = smil > 0 || usedKeyframes.length > 0;
+  const black = blackBeforeAnimation(doc, sheet);
+  const passed = hasAnimation && black.length === 0;
   return {
     id: "animated",
     name: CHECK_NAMES.animated,
     passed,
-    detail: passed
-      ? `${smil} SMIL animation element(s), ${usedKeyframes.length} CSS @keyframes in use.`
+    detail: hasAnimation
+      ? black.length
+        ? `${black.join(", ")} has no fill of its own, so it shows solid black until its delayed fill animation starts. Give it a base fill or use animation-fill-mode: both.`
+        : `${smil} SMIL animation element(s), ${usedKeyframes.length} CSS @keyframes in use.`
       : keyframes.length
         ? `@keyframes ${keyframes.join(", ")} defined but no element uses them via "animation".`
         : "No <animate>/<animateTransform>/<animateMotion>/<set> and no CSS @keyframes animation.",
@@ -506,9 +553,13 @@ const MIN_FONT = 12; // in viewBox units; our prompt asks for an 800-wide viewBo
 const MAX_OVERLAP = 0.03; // labels must not overlap; 3% leaves room for estimate error
 
 type Label = { text: string; box: Box; fontSize: number; mayHide: boolean };
+type Found = { labels: Label[]; symbols: Box[] };
+
+// Small round symbols (lamps, ammeters, particles) that a label should sit beside or fully inside, never across.
+const SYMBOL_R = { min: 8, max: 40 };
 
 /** Text boxes in viewBox coordinates, at rest. */
-function collectLabels(el: Element, parent: Ctx, vb: ViewBox, mayHide: boolean, out: Label[]): void {
+function collectLabels(el: Element, parent: Ctx, vb: ViewBox, mayHide: boolean, out: Found): void {
   const tag = el.localName ?? "";
   if (NOT_DRAWN.has(tag) || attr(el, "display", parent) === "none") return;
   const ctx: Ctx = {
@@ -534,9 +585,15 @@ function collectLabels(el: Element, parent: Ctx, vb: ViewBox, mayHide: boolean, 
     const scale = Math.sqrt(Math.abs(ctx.matrix[0] * ctx.matrix[3] - ctx.matrix[1] * ctx.matrix[2]));
     for (const t of textBoxes(el, parent, vb)) {
       const box = transformBox(ctx.matrix, t.box);
-      out.push({ text: t.label, box, fontSize: (t.box.maxY - t.box.minY) * scale, mayHide: hidden });
+      out.labels.push({ text: t.label, box, fontSize: (t.box.maxY - t.box.minY) * scale, mayHide: hidden });
     }
     return;
+  }
+  if ((tag === "circle" || tag === "ellipse") && !hidden) {
+    const local = shapeBox(el, parent, vb)?.box;
+    const box = local && transformBox(ctx.matrix, local);
+    const r = box ? Math.min(box.maxX - box.minX, box.maxY - box.minY) / 2 : 0;
+    if (box && r >= SYMBOL_R.min && r <= SYMBOL_R.max) out.symbols.push(box);
   }
   for (const child of children(el)) collectLabels(child, ctx, vb, hidden, out);
 }
@@ -549,10 +606,14 @@ function overlapShare(a: Box, b: Box): number {
   return (w * h) / Math.min(area(a), area(b));
 }
 
+const contains = (outer: Box, inner: Box, pad = 1) =>
+  inner.minX >= outer.minX - pad && inner.minY >= outer.minY - pad && inner.maxX <= outer.maxX + pad && inner.maxY <= outer.maxY + pad;
+
 function checkReadableLabels(root: Element, vb: ViewBox, css: Stylesheet): CheckResult {
-  const labels: Label[] = [];
+  const found: Found = { labels: [], symbols: [] };
   const ctx = rootCtx(css);
-  for (const child of children(root)) collectLabels(child, ctx, vb, false, labels);
+  for (const child of children(root)) collectLabels(child, ctx, vb, false, found);
+  const { labels, symbols } = found;
 
   const problems: string[] = [];
   for (const l of labels) {
@@ -566,13 +627,25 @@ function checkReadableLabels(root: Element, vb: ViewBox, css: Stylesheet): Check
       if (share > MAX_OVERLAP) problems.push(`"${a.text}" overlaps "${b.text}" (${Math.round(share * 100)}%)`);
     }
   }
+  // A label cutting across a small symbol: partly inside, partly outside (fully inside, like "A" in an ammeter, is fine).
+  for (const l of labels) {
+    if (l.mayHide) continue;
+    for (const s of symbols) {
+      if (contains(s, l.box) || contains(l.box, s)) continue;
+      if (overlapShare(l.box, s) > 0.15) {
+        const cx = Math.round((s.minX + s.maxX) / 2);
+        const cy = Math.round((s.minY + s.maxY) / 2);
+        problems.push(`"${l.text}" is drawn across the symbol at (${cx}, ${cy})`);
+      }
+    }
+  }
   return {
     id: "readableLabels",
     name: CHECK_NAMES.readableLabels,
     passed: problems.length === 0,
     detail: problems.length
       ? `${problems.length} problem(s): ${problems.slice(0, 5).join("; ")}. Move labels apart or make them bigger.`
-      : `${labels.length} labels, none overlap, all at least ${MIN_FONT} units tall.`,
+      : `${labels.length} labels, none overlap each other or cut across symbols, all at least ${MIN_FONT} units tall.`,
   };
 }
 
@@ -601,7 +674,7 @@ export function runChecks(svg: string, concept: Concept): CheckResult[] {
   results.push(
     checkInViewBox(root, vb, css),
     checkTitleAndLabels(doc),
-    checkAnimated(doc),
+    checkAnimated(doc, css),
     checkRequiredLabels(doc, concept),
     checkReadableLabels(root, vb, css),
   );

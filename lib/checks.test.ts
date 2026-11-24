@@ -152,6 +152,24 @@ test("a fill-opacity pulse does not switch off the overlap check", () => {
   assert.equal(byId(svg).readableLabels.passed, false);
 });
 
+test("a shape coloured only by a delayed fill animation fails (it shows black first)", () => {
+  const css = "<style>@keyframes glow { 0% { fill: #9cf } 50% { fill: #36c } } .sq { animation: glow 4s infinite; animation-delay: 1.5s }</style>";
+  const black = GOOD.replace("<title>", css + "<title>").replace("</svg>", `<rect class="sq" x="20" y="20" width="40" height="40"/></svg>`);
+  assert.equal(byId(black).animated.passed, false);
+  assert.match(byId(black).animated.detail, /black/);
+  const fixed = black.replace('class="sq"', 'class="sq" fill="#9cf"');
+  assert.equal(byId(fixed).animated.passed, true, byId(fixed).animated.detail);
+});
+
+test("a label drawn across a small symbol fails; a label fully inside one passes", () => {
+  const lamp = `<circle cx="300" cy="150" r="20" fill="none" stroke="black"/>`;
+  const across = GOOD.replace("</svg>", `${lamp}<text x="290" y="155" font-size="14">Lamp 1</text></svg>`);
+  assert.equal(byId(across).readableLabels.passed, false);
+  assert.match(byId(across).readableLabels.detail, /across the symbol/);
+  const inside = GOOD.replace("</svg>", `${lamp}<text x="300" y="155" font-size="14" text-anchor="middle">A</text></svg>`);
+  assert.equal(byId(inside).readableLabels.passed, true, byId(inside).readableLabels.detail);
+});
+
 test("pythagoras equation matches different ways of writing it", () => {
   const p = getConcept("pythagoras")!.requiredLabels[1].pattern;
   for (const s of ["a² + b² = c²", "a^2 + b^2 = c^2", "a 2 + b 2 = c 2"]) assert.match(s, p);

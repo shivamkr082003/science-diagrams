@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-24T05:28:04.924Z",
+  "updatedAt": "2026-11-24T05:30:27.986Z",
   "results": [
     {
       "conceptId": "pythagoras",
@@ -260,9 +260,9 @@
       "conceptId": "series-circuit",
       "concept": "Series circuit",
       "subject": "Physics",
-      "model": "gemini-3.5-flash-lite",
-      "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 800 500\">\n  <title>Series circuit</title>\n\n  <!-- Background -->\n  <rect x=\"0\" y=\"0\" width=\"800\" height=\"500\" fill=\"#ffffff\"/>\n\n  <!-- Title -->\n  <text x=\"350\" y=\"40\" font-size=\"22\" font-family=\"sans-serif\" font-weight=\"bold\" text-anchor=\"middle\" fill=\"#222222\">Series Circuit Diagram</text>\n\n  <!-- ==================== CIRCUIT DIAGRAM (x: 90 to 450, y: 130 to 430) ==================== -->\n  \n  <!-- Wires (single continuous rectangular loop from 90,130 to 450,430) -->\n  <path d=\"M 90 130             H 245 M 295 130             H 450             V 235 M 450 325             V 430             H 230 M 270 430 H 310 M 350 430             H 90             V 325 M 90 235             V 130 Z\" fill=\"none\" stroke=\"#2c3e50\" stroke-width=\"4\" stroke-linecap=\"round\"/>\n\n  <!-- COMPONENTS -->\n\n  <!-- Cell (Top wire, centre x=270, y=130) -->\n  <g transform=\"translate(270, 130)\">\n    <line x1=\"-25\" y1=\"0\" x2=\"-10\" y2=\"0\" stroke=\"#2c3e50\" stroke-width=\"4\" fill=\"none\"/>\n    <line x1=\"-10\" y1=\"-15\" x2=\"-10\" y2=\"15\" stroke=\"#e74c3c\" stroke-width=\"5\" stroke-linecap=\"round\" fill=\"none\"/>\n    <line x1=\"-2\" y1=\"-8\" x2=\"-2\" y2=\"8\" stroke=\"#2c3e50\" stroke-width=\"4\" stroke-linecap=\"round\" fill=\"none\"/>\n    <line x1=\"2\" y1=\"-15\" x2=\"2\" y2=\"15\" stroke=\"#e74c3c\" stroke-width=\"5\" stroke-linecap=\"round\" fill=\"none\"/>\n    <line x1=\"10\" y1=\"0\" x2=\"25\" y2=\"0\" stroke=\"#2c3e50\" stroke-width=\"4\" fill=\"none\"/>\n    <text x=\"-15\" y=\"-22\" font-size=\"14\" font-family=\"sans-serif\" font-weight=\"bold\" fill=\"#e74c3c\">+</text>\n    <text x=\"10\" y=\"-22\" font-size=\"14\" font-family=\"sans-serif\" font-weight=\"bold\" fill=\"#2c3e50\">-</text>\n  </g>\n\n  <!-- Lamp 1 (Left wire, centre x=90, y=280) -->\n  <g transform=\"translate(90, 280)\">\n    <circle cx=\"0\" cy=\"0\" r=\"22\" fill=\"#fff9c4\" stroke=\"#f39c12\" stroke-width=\"3\"/>\n    <line x1=\"-14\" y1=\"-14\" x2=\"14\" y2=\"14\" stroke=\"#f39c12\" stroke-width=\"2.5\"/>\n    <line x1=\"-14\" y1=\"14\" x2=\"14\" y2=\"-14\" stroke=\"#f39c12\" stroke-width=\"2.5\"/>\n  </g>\n\n  <!-- Lamp 2 (Right wire, centre x=450, y=280) -->\n  <g transform=\"translate(450, 280)\">\n    <circle cx=\"0\" cy=\"0\" r=\"22\" fill=\"#fff9c4\" stroke=\"#f39c12\" stroke-width=\"3\"/>\n    <line x1=\"-14\" y1=\"-14\" x2=\"14\" y2=\"14\" stroke=\"#f39c12\" stroke-width=\"2.5\"/>\n    <line x1=\"-14\" y1=\"14\" x2=\"14\" y2=\"-14\" stroke=\"#f39c12\" stroke-width=\"2.5\"/>\n  </g>\n\n  <!-- Ammeter 1 (Bottom wire, centre x=250, y=430) -->\n  <g transform=\"translate(250, 430)\">\n    <circle cx=\"0\" cy=\"0\" r=\"20\" fill=\"#ebf5fb\" stroke=\"#3498db\" stroke-width=\"3\"/>\n    <text x=\"0\" y=\"6\" font-size=\"16\" font-family=\"sans-serif\" font-weight=\"bold\" text-anchor=\"middle\" fill=\"#3498db\">A</text>\n  </g>\n\n  <!-- Ammeter 2 (Bottom wire, centre x=330, y=430) -->\n  <g transform=\"translate(330, 430)\">\n    <circle cx=\"0\" cy=\"0\" r=\"20\" fill=\"#ebf5fb\" stroke=\"#3498db\" stroke-width=\"3\"/>\n    <text x=\"0\" y=\"6\" font-size=\"16\" font-family=\"sans-serif\" font-weight=\"bold\" text-anchor=\"middle\" fill=\"#3498db\">A</text>\n  </g>\n\n\n  <!-- ==================== LABELS OUTSIDE THE LOOP ==================== -->\n\n  <!-- Top label: Cell -->\n  <text x=\"270\" y=\"90\" font-size=\"15\" font-family=\"sans-serif\" font-weight=\"bold\" text-anchor=\"middle\" fill=\"#c0392b\">Cell (6 V)</text>\n\n  <!-- Left label: Lamp 1 & Voltage (Moved safely to x=70 to stay inside viewBox & avoid overlapping) -->\n  <text x=\"70\" y=\"260\" font-size=\"15\" font-family=\"sans-serif\" font-weight=\"bold\" text-anchor=\"end\" fill=\"#d35400\">Lamp 1</text>\n  <text x=\"70\" y=\"280\" font-size=\"13\" font-family=\"sans-serif\" text-anchor=\"end\" fill=\"#7f8c8d\">Voltage = 3 V</text>\n\n  <!-- Right label: Lamp 2 & Voltage -->\n  <text x=\"470\" y=\"260\" font-size=\"15\" font-family=\"sans-serif\" font-weight=\"bold\" text-anchor=\"start\" fill=\"#d35400\">Lamp 2</text>\n  <text x=\"470\" y=\"280\" font-size=\"13\" font-family=\"sans-serif\" text-anchor=\"start\" fill=\"#7f8c8d\">Voltage = 3 V</text>\n\n  <!-- Bottom labels: Ammeters & Readings -->\n  <text x=\"250\" y=\"472\" font-size=\"13\" font-family=\"sans-serif\" font-weight=\"bold\" text-anchor=\"middle\" fill=\"#2980b9\">0.2 A</text>\n  <text x=\"330\" y=\"472\" font-size=\"13\" font-family=\"sans-serif\" font-weight=\"bold\" text-anchor=\"middle\" fill=\"#2980b9\">0.2 A</text>\n  <text x=\"290\" y=\"492\" font-size=\"14\" font-family=\"sans-serif\" font-weight=\"bold\" text-anchor=\"middle\" fill=\"#2980b9\">current is equal</text>\n\n\n  <!-- ==================== ANIMATED CHARGES (CURRENT) ==================== -->\n  <path id=\"circuitPath\" d=\"M 90 130 H 450 V 430 H 90 Z\" fill=\"none\" stroke=\"none\"/>\n\n  <g fill=\"#2980b9\">\n    <circle r=\"5\"><animateMotion dur=\"4s\" repeatCount=\"indefinite\"><mpath href=\"#circuitPath\"/></animateMotion></circle>\n    <circle r=\"5\"><animateMotion dur=\"4s\" begin=\"-1s\" repeatCount=\"indefinite\"><mpath href=\"#circuitPath\"/></animateMotion></circle>\n    <circle r=\"5\"><animateMotion dur=\"4s\" begin=\"-2s\" repeatCount=\"indefinite\"><mpath href=\"#circuitPath\"/></animateMotion></circle>\n    <circle r=\"5\"><animateMotion dur=\"4s\" begin=\"-3s\" repeatCount=\"indefinite\"><mpath href=\"#circuitPath\"/></animateMotion></circle>\n  </g>\n\n\n  <!-- ==================== RIGHT PANEL: INFO & RULES (x: 530 to 780) ==================== -->\n  <rect x=\"530\" y=\"70\" width=\"250\" height=\"390\" rx=\"10\" fill=\"#f8f9fa\" stroke=\"#bdc3c7\" stroke-width=\"2\"/>\n  \n  <text x=\"655\" y=\"105\" font-size=\"16\" font-family=\"sans-serif\" font-weight=\"bold\" text-anchor=\"middle\" fill=\"#2c3e50\">Series Circuit Rules</text>\n  \n  <line x1=\"550\" y1=\"120\" x2=\"760\" y2=\"120\" stroke=\"#bdc3c7\" stroke-width=\"1\"/>\n\n  <!-- Info Point 1 -->\n  <circle cx=\"555\" cy=\"155\" r=\"5\" fill=\"#2980b9\"/>\n  <text x=\"575\" y=\"150\" font-size=\"14\" font-family=\"sans-serif\" font-weight=\"bold\" fill=\"#2c3e50\">Single Loop:</text>\n  <text x=\"575\" y=\"170\" font-size=\"13\" font-family=\"sans-serif\" fill=\"#555555\">There is only one path</text>\n  <text x=\"575\" y=\"188\" font-size=\"13\" font-family=\"sans-serif\" fill=\"#555555\">for the charge to flow.</text>\n\n  <!-- Info Point 2 -->\n  <circle cx=\"555\" cy=\"235\" r=\"5\" fill=\"#2980b9\"/>\n  <text x=\"575\" y=\"230\" font-size=\"14\" font-family=\"sans-serif\" font-weight=\"bold\" fill=\"#2c3e50\">Current is the same:</text>\n  <text x=\"575\" y=\"250\" font-size=\"13\" font-family=\"sans-serif\" fill=\"#555555\">Ammeters read 0.2 A</text>\n  <text x=\"575\" y=\"268\" font-size=\"13\" font-family=\"sans-serif\" fill=\"#555555\">everywhere in the loop.</text>\n\n  <!-- Info Point 3 -->\n  <circle cx=\"555\" cy=\"315\" r=\"5\" fill=\"#e74c3c\"/>\n  <text x=\"575\" y=\"310\" font-size=\"14\" font-family=\"sans-serif\" font-weight=\"bold\" fill=\"#2c3e50\">Voltage is shared:</text>\n  <text x=\"575\" y=\"330\" font-size=\"13\" font-family=\"sans-serif\" fill=\"#555555\">Cell voltage (6 V) splits</text>\n  <text x=\"575\" y=\"348\" font-size=\"13\" font-family=\"sans-serif\" fill=\"#555555\">between components</text>\n  <text x=\"575\" y=\"366\" font-size=\"13\" font-family=\"sans-serif\" fill=\"#555555\">(3 V + 3 V = 6 V).</text>\n\n  <!-- Interactive legend prompt -->\n  <rect x=\"550\" y=\"395\" width=\"210\" height=\"45\" rx=\"5\" fill=\"#ebf5fb\" stroke=\"#3498db\" stroke-width=\"1\"/>\n  <text x=\"655\" y=\"423\" font-size=\"12\" font-family=\"sans-serif\" font-weight=\"bold\" text-anchor=\"middle\" fill=\"#2980b9\">Watch dots flow to see current!</text>\n\n</svg>",
-      "passed": false,
+      "model": "gemini-3.5-flash",
+      "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 800 500\">\n  <title>Series Circuit - GCSE Physics Diagram</title>\n\n  <!-- Background -->\n  <rect width=\"800\" height=\"500\" fill=\"#ffffff\"/>\n\n  <!-- Header Title -->\n  <g text-anchor=\"middle\">\n    <text x=\"270\" y=\"32\" font-family=\"sans-serif\" font-size=\"22\" font-weight=\"bold\" fill=\"#0f172a\">Series Circuit</text>\n    <text x=\"270\" y=\"54\" font-family=\"sans-serif\" font-size=\"14\" fill=\"#475569\">Single loop • Current is same • Voltage is shared</text>\n  </g>\n\n  <!-- SIDE INFO PANEL -->\n  <g>\n    <!-- Panel Background -->\n    <rect x=\"540\" y=\"70\" width=\"240\" height=\"410\" rx=\"10\" fill=\"#f8fafc\" stroke=\"#cbd5e1\" stroke-width=\"2\"/>\n    \n    <!-- Panel Header -->\n    <rect x=\"540\" y=\"70\" width=\"240\" height=\"38\" rx=\"10\" fill=\"#1e293b\"/>\n    <rect x=\"540\" y=\"98\" width=\"240\" height=\"10\" fill=\"#1e293b\"/>\n    <text x=\"660\" y=\"95\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"16\" font-weight=\"bold\" fill=\"#ffffff\">Circuit Rules (GCSE)</text>\n\n    <!-- Section 1: Current -->\n    <text x=\"555\" y=\"130\" font-family=\"sans-serif\" font-size=\"15\" font-weight=\"bold\" fill=\"#0369a1\">CURRENT</text>\n    <text x=\"555\" y=\"152\" font-family=\"sans-serif\" font-size=\"14\" fill=\"#334155\">• Only one single loop</text>\n    <text x=\"555\" y=\"172\" font-family=\"sans-serif\" font-size=\"14\" fill=\"#334155\">• Same at all points:</text>\n    <rect x=\"555\" y=\"182\" width=\"210\" height=\"26\" rx=\"4\" fill=\"#f0f9ff\" stroke=\"#bae6fd\" stroke-width=\"1\"/>\n    <text x=\"660\" y=\"200\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"14\" font-weight=\"bold\" fill=\"#0288d1\">A1 = A2 = 0.2 A</text>\n\n    <!-- Section 2: Voltage -->\n    <text x=\"555\" y=\"235\" font-family=\"sans-serif\" font-size=\"15\" font-weight=\"bold\" fill=\"#c2410c\">VOLTAGE</text>\n    <text x=\"555\" y=\"257\" font-family=\"sans-serif\" font-size=\"14\" fill=\"#334155\">• Cell voltage is shared</text>\n    <text x=\"555\" y=\"277\" font-family=\"sans-serif\" font-size=\"14\" fill=\"#334155\">• Sum of lamps = cell:</text>\n    <rect x=\"555\" y=\"287\" width=\"210\" height=\"26\" rx=\"4\" fill=\"#fff7ed\" stroke=\"#fed7aa\" stroke-width=\"1\"/>\n    <text x=\"660\" y=\"305\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"14\" font-weight=\"bold\" fill=\"#ea580c\">3 V + 3 V = 6 V</text>\n\n    <!-- Section 3: Disconnection Rule -->\n    <text x=\"555\" y=\"340\" font-family=\"sans-serif\" font-size=\"15\" font-weight=\"bold\" fill=\"#b91c1c\">DISCONNECTION</text>\n    <text x=\"555\" y=\"362\" font-family=\"sans-serif\" font-size=\"14\" fill=\"#334155\">• If one component breaks,</text>\n    <text x=\"555\" y=\"382\" font-family=\"sans-serif\" font-size=\"14\" fill=\"#334155\">  the circuit is broken.</text>\n    <text x=\"555\" y=\"405\" font-family=\"sans-serif\" font-size=\"14\" font-weight=\"bold\" fill=\"#dc2626\">• Current stops everywhere.</text>\n  </g>\n\n  <!-- MAIN CIRCUIT DIAGRAM AREA (x: 20 to 520) -->\n\n  <!-- Main Wire Loop -->\n  <g stroke=\"#334155\" stroke-width=\"3\" stroke-linecap=\"round\" fill=\"none\">\n    <!-- Top wire: left section & right section -->\n    <path d=\"M 110 130 H 250\"/>\n    <path d=\"M 290 130 H 430\"/>\n    \n    <!-- Right wire: top section & bottom section -->\n    <path d=\"M 430 130 V 252\"/>\n    <path d=\"M 430 288 V 410\"/>\n    \n    <!-- Bottom wire: segments between ammeters -->\n    <path d=\"M 430 410 H 366\"/>\n    <path d=\"M 334 410 H 206\"/>\n    <path d=\"M 174 410 H 110\"/>\n    \n    <!-- Left wire: bottom section & top section -->\n    <path d=\"M 110 410 V 288\"/>\n    <path d=\"M 110 252 V 130\"/>\n  </g>\n\n  <!-- Direction Arrows on Wire -->\n  <g fill=\"#16a34a\" stroke=\"none\">\n    <!-- Top wire (right) -->\n    <path d=\"M 345 125 L 355 130 L 345 135 Z\"/>\n    <!-- Right wire (down) -->\n    <path d=\"M 425 335 L 430 345 L 435 335 Z\"/>\n    <!-- Bottom wire (left) -->\n    <path d=\"M 275 405 L 265 410 L 275 415 Z\"/>\n    <!-- Left wire (up) -->\n    <path d=\"M 105 205 L 110 195 L 115 205 Z\"/>\n  </g>\n\n  <!-- Lamp Glow Effects (Animated) -->\n  <circle cx=\"110\" cy=\"270\" r=\"22\" fill=\"#fde047\" opacity=\"0.4\">\n    <animate attributeName=\"opacity\" values=\"0.3;0.7;0.3\" dur=\"2s\" repeatCount=\"indefinite\"/>\n    <animate attributeName=\"r\" values=\"20;25;20\" dur=\"2s\" repeatCount=\"indefinite\"/>\n  </circle>\n  <circle cx=\"430\" cy=\"270\" r=\"22\" fill=\"#fde047\" opacity=\"0.4\">\n    <animate attributeName=\"opacity\" values=\"0.3;0.7;0.3\" dur=\"2s\" repeatCount=\"indefinite\"/>\n    <animate attributeName=\"r\" values=\"20;25;20\" dur=\"2s\" repeatCount=\"indefinite\"/>\n  </circle>\n\n  <!-- COMPONENT SYMBOLS & LABELS OUTSIDE WIRE -->\n\n  <!-- 1. CELL (Top Centre) -->\n  <g>\n    <!-- Cell Wires inside gap -->\n    <line x1=\"250\" y1=\"130\" x2=\"262\" y2=\"130\" stroke=\"#334155\" stroke-width=\"3\"/>\n    <line x1=\"278\" y1=\"130\" x2=\"290\" y2=\"130\" stroke=\"#334155\" stroke-width=\"3\"/>\n    <!-- Long line (Positive +) -->\n    <line x1=\"262\" y1=\"110\" x2=\"262\" y2=\"150\" stroke=\"#dc2626\" stroke-width=\"3\"/>\n    <!-- Short line (Negative -) -->\n    <line x1=\"278\" y1=\"118\" x2=\"278\" y2=\"142\" stroke=\"#dc2626\" stroke-width=\"6\"/>\n    \n    <!-- Cell Label Above Wire -->\n    <text x=\"270\" y=\"80\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"16\" font-weight=\"bold\" fill=\"#dc2626\">cell (voltage = 6 V)</text>\n    <text x=\"246\" y=\"105\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"16\" font-weight=\"bold\" fill=\"#dc2626\">+</text>\n    <text x=\"294\" y=\"105\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"16\" font-weight=\"bold\" fill=\"#dc2626\">−</text>\n  </g>\n\n  <!-- 2. LAMP 1 (Left) -->\n  <g>\n    <circle cx=\"110\" cy=\"270\" r=\"18\" fill=\"#ffffff\" stroke=\"#0f172a\" stroke-width=\"2.5\"/>\n    <line x1=\"97\" y1=\"257\" x2=\"123\" y2=\"283\" stroke=\"#0f172a\" stroke-width=\"2\"/>\n    <line x1=\"123\" y1=\"257\" x2=\"97\" y2=\"283\" stroke=\"#0f172a\" stroke-width=\"2\"/>\n    \n    <!-- Label Outside Loop (Left) -->\n    <text x=\"62\" y=\"263\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"14\" font-weight=\"bold\" fill=\"#0f172a\">Lamp 1</text>\n    <text x=\"62\" y=\"283\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"14\" fill=\"#ea580c\">3 V</text>\n  </g>\n\n  <!-- 3. LAMP 2 (Right) -->\n  <g>\n    <circle cx=\"430\" cy=\"270\" r=\"18\" fill=\"#ffffff\" stroke=\"#0f172a\" stroke-width=\"2.5\"/>\n    <line x1=\"417\" y1=\"257\" x2=\"443\" y2=\"283\" stroke=\"#0f172a\" stroke-width=\"2\"/>\n    <line x1=\"443\" y1=\"257\" x2=\"417\" y2=\"283\" stroke=\"#0f172a\" stroke-width=\"2\"/>\n    \n    <!-- Label Outside Loop (Right) -->\n    <text x=\"478\" y=\"263\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"14\" font-weight=\"bold\" fill=\"#0f172a\">Lamp 2</text>\n    <text x=\"478\" y=\"283\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"14\" fill=\"#ea580c\">3 V</text>\n  </g>\n\n  <!-- 4. AMMETERS (Bottom Wire) -->\n  <!-- Ammeter 1 -->\n  <g>\n    <circle cx=\"190\" cy=\"410\" r=\"16\" fill=\"#f0f9ff\" stroke=\"#0288d1\" stroke-width=\"2\"/>\n    <text x=\"190\" y=\"415\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"15\" font-weight=\"bold\" fill=\"#0288d1\">A1</text>\n    <!-- Label Below Wire -->\n    <text x=\"190\" y=\"448\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"14\" font-weight=\"bold\" fill=\"#0288d1\">0.2 A</text>\n  </g>\n\n  <!-- Ammeter 2 -->\n  <g>\n    <circle cx=\"350\" cy=\"410\" r=\"16\" fill=\"#f0f9ff\" stroke=\"#0288d1\" stroke-width=\"2\"/>\n    <text x=\"350\" y=\"415\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"15\" font-weight=\"bold\" fill=\"#0288d1\">A2</text>\n    <!-- Label Below Wire -->\n    <text x=\"350\" y=\"448\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"14\" font-weight=\"bold\" fill=\"#0288d1\">0.2 A</text>\n  </g>\n\n  <!-- CENTER LOOP TEXT BOX -->\n  <g>\n    <rect x=\"180\" y=\"248\" width=\"180\" height=\"50\" rx=\"8\" fill=\"#f0fdf4\" stroke=\"#16a34a\" stroke-width=\"1.5\"/>\n    <text x=\"270\" y=\"268\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"14\" font-weight=\"bold\" fill=\"#15803d\">current = 0.2 A</text>\n    <text x=\"270\" y=\"288\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"14\" fill=\"#166534\">same everywhere</text>\n  </g>\n\n  <!-- ANIMATED CHARGES (Electric Current Moving Clockwise) -->\n  <g fill=\"#0288d1\" stroke=\"#ffffff\" stroke-width=\"1\">\n    <circle r=\"5\">\n      <animateMotion path=\"M 110 130 H 430 V 410 H 110 Z\" dur=\"6s\" repeatCount=\"indefinite\" begin=\"0s\"/>\n    </circle>\n    <circle r=\"5\">\n      <animateMotion path=\"M 110 130 H 430 V 410 H 110 Z\" dur=\"6s\" repeatCount=\"indefinite\" begin=\"-0.6s\"/>\n    </circle>\n    <circle r=\"5\">\n      <animateMotion path=\"M 110 130 H 430 V 410 H 110 Z\" dur=\"6s\" repeatCount=\"indefinite\" begin=\"-1.2s\"/>\n    </circle>\n    <circle r=\"5\">\n      <animateMotion path=\"M 110 130 H 430 V 410 H 110 Z\" dur=\"6s\" repeatCount=\"indefinite\" begin=\"-1.8s\"/>\n    </circle>\n    <circle r=\"5\">\n      <animateMotion path=\"M 110 130 H 430 V 410 H 110 Z\" dur=\"6s\" repeatCount=\"indefinite\" begin=\"-2.4s\"/>\n    </circle>\n    <circle r=\"5\">\n      <animateMotion path=\"M 110 130 H 430 V 410 H 110 Z\" dur=\"6s\" repeatCount=\"indefinite\" begin=\"-3.0s\"/>\n    </circle>\n    <circle r=\"5\">\n      <animateMotion path=\"M 110 130 H 430 V 410 H 110 Z\" dur=\"6s\" repeatCount=\"indefinite\" begin=\"-3.6s\"/>\n    </circle>\n    <circle r=\"5\">\n      <animateMotion path=\"M 110 130 H 430 V 410 H 110 Z\" dur=\"6s\" repeatCount=\"indefinite\" begin=\"-4.2s\"/>\n    </circle>\n    <circle r=\"5\">\n      <animateMotion path=\"M 110 130 H 430 V 410 H 110 Z\" dur=\"6s\" repeatCount=\"indefinite\" begin=\"-4.8s\"/>\n    </circle>\n    <circle r=\"5\">\n      <animateMotion path=\"M 110 130 H 430 V 410 H 110 Z\" dur=\"6s\" repeatCount=\"indefinite\" begin=\"-5.4s\"/>\n    </circle>\n  </g>\n\n</svg>",
+      "passed": true,
       "checks": [
         {
           "id": "valid",
@@ -273,47 +273,47 @@
         {
           "id": "inViewBox",
           "name": "Inside viewBox",
-          "passed": false,
-          "detail": "1 element(s) outside the viewBox is x 0..800, y 0..500: <text> \"Voltage = 3 V\" at rest spans x -8..70, y 270..283"
+          "passed": true,
+          "detail": "All shapes and text are inside the viewBox is x 0..800, y 0..500."
         },
         {
           "id": "titleAndLabels",
           "name": "Title + 3 labels",
           "passed": true,
-          "detail": "Title \"Series circuit\", 25 labels."
+          "detail": "Title \"Series Circuit - GCSE Physics Diagram\", 28 labels."
         },
         {
           "id": "animated",
           "name": "Animated",
           "passed": true,
-          "detail": "4 SMIL animation element(s), 0 CSS @keyframes in use."
+          "detail": "14 SMIL animation element(s), 0 CSS @keyframes in use."
         },
         {
           "id": "requiredLabels",
           "name": "Subject content",
-          "passed": false,
-          "detail": "The circuit is not one closed loop: 3 loose wire end(s) at (450, 235), (550, 120), (760, 120). Every wire must connect to another wire or a component."
+          "passed": true,
+          "detail": "All 3 key terms are labelled and the circuit is one closed loop."
         },
         {
           "id": "readableLabels",
           "name": "Readable labels",
-          "passed": false,
-          "detail": "2 problem(s): the line from (530, 460) to (530, 70) runs through \"Voltage = 3 V\" (x 470..548, y 270..283); \"Voltage = 3 V\" (x 470..548, y 270..283) is partly hidden under a filled <rect> at x 530..780, y 70..460 drawn on top of it. Move these labels to empty space."
+          "passed": true,
+          "detail": "28 labels, none overlap each other or cut across symbols, all at least 12 units tall."
         }
       ],
       "retries": 1,
       "apiRetries": 0,
-      "inputTokens": 5629,
-      "outputTokens": 6573,
-      "costUsd": 0.018122,
+      "inputTokens": 6854,
+      "outputTokens": 28074,
+      "costUsd": 0.262948,
       "attempts": [
         {
           "attempt": 1,
           "inputTokens": 845,
-          "outputTokens": 3520,
-          "costUsd": 0.009054,
+          "outputTokens": 14685,
+          "costUsd": 0.133433,
           "apiRetries": 0,
-          "durationMs": 27458,
+          "durationMs": 61732,
           "checks": [
             {
               "id": "valid",
@@ -324,43 +324,43 @@
             {
               "id": "inViewBox",
               "name": "Inside viewBox",
-              "passed": false,
-              "detail": "2 element(s) outside the viewBox is x 0..800, y 0..500: <text> \"Lamp 1\" at rest spans x -9..45, y 263..278; <text> \"Voltage = 3 V\" at rest spans x -33..45, y 285..298"
+              "passed": true,
+              "detail": "All shapes and text are inside the viewBox is x 0..800, y 0..500."
             },
             {
               "id": "titleAndLabels",
               "name": "Title + 3 labels",
               "passed": true,
-              "detail": "Title \"Series circuit\", 25 labels."
+              "detail": "Title \"Series Circuit - GCSE Physics Diagram\", 35 labels."
             },
             {
               "id": "animated",
               "name": "Animated",
               "passed": true,
-              "detail": "4 SMIL animation element(s), 0 CSS @keyframes in use."
+              "detail": "14 SMIL animation element(s), 0 CSS @keyframes in use."
             },
             {
               "id": "requiredLabels",
               "name": "Subject content",
-              "passed": false,
-              "detail": "The circuit is not one closed loop: 6 loose wire end(s) at (90, 235), (90, 325), (450, 235), (450, 325), (550, 120), (760, 120). Every wire must connect to another wire or a component."
+              "passed": true,
+              "detail": "All 3 key terms are labelled and the circuit is one closed loop."
             },
             {
               "id": "readableLabels",
               "name": "Readable labels",
               "passed": false,
-              "detail": "4 problem(s): the line from (530, 460) to (530, 70) runs through \"Lamp 2\" (x 495..549, y 263..278); \"Lamp 2\" (x 495..549, y 263..278) is partly hidden under a filled <rect> at x 530..780, y 70..460 drawn on top of it; the line from (530, 460) to (530, 70) runs through \"Voltage = 3 V\" (x 495..573, y 285..298); \"Voltage = 3 V\" (x 495..573, y 285..298) is partly hidden under a filled <rect> at x 530..780, y 70..460 drawn on top of it. Move these labels to empty space."
+              "detail": "10 problem(s): \"(Power Source)\" is too small (11.0 < 12); \"voltage\" is too small (11.0 < 12); \"voltage\" is too small (11.0 < 12); \"Ammeter 1\" is too small (11.0 < 12); \"Ammeter 2\" is too small (11.0 < 12); \"Same everywhere in loop\" is too small (11.0 < 12). Move these labels to empty space."
             }
           ],
           "error": null
         },
         {
           "attempt": 2,
-          "inputTokens": 4784,
-          "outputTokens": 3053,
-          "costUsd": 0.009068,
+          "inputTokens": 6009,
+          "outputTokens": 13389,
+          "costUsd": 0.129515,
           "apiRetries": 0,
-          "durationMs": 17359,
+          "durationMs": 52501,
           "checks": [
             {
               "id": "valid",
@@ -371,32 +371,32 @@
             {
               "id": "inViewBox",
               "name": "Inside viewBox",
-              "passed": false,
-              "detail": "1 element(s) outside the viewBox is x 0..800, y 0..500: <text> \"Voltage = 3 V\" at rest spans x -8..70, y 270..283"
+              "passed": true,
+              "detail": "All shapes and text are inside the viewBox is x 0..800, y 0..500."
             },
             {
               "id": "titleAndLabels",
               "name": "Title + 3 labels",
               "passed": true,
-              "detail": "Title \"Series circuit\", 25 labels."
+              "detail": "Title \"Series Circuit - GCSE Physics Diagram\", 28 labels."
             },
             {
               "id": "animated",
               "name": "Animated",
               "passed": true,
-              "detail": "4 SMIL animation element(s), 0 CSS @keyframes in use."
+              "detail": "14 SMIL animation element(s), 0 CSS @keyframes in use."
             },
             {
               "id": "requiredLabels",
               "name": "Subject content",
-              "passed": false,
-              "detail": "The circuit is not one closed loop: 3 loose wire end(s) at (450, 235), (550, 120), (760, 120). Every wire must connect to another wire or a component."
+              "passed": true,
+              "detail": "All 3 key terms are labelled and the circuit is one closed loop."
             },
             {
               "id": "readableLabels",
               "name": "Readable labels",
-              "passed": false,
-              "detail": "2 problem(s): the line from (530, 460) to (530, 70) runs through \"Voltage = 3 V\" (x 470..548, y 270..283); \"Voltage = 3 V\" (x 470..548, y 270..283) is partly hidden under a filled <rect> at x 530..780, y 70..460 drawn on top of it. Move these labels to empty space."
+              "passed": true,
+              "detail": "28 labels, none overlap each other or cut across symbols, all at least 12 units tall."
             }
           ],
           "error": null
@@ -404,8 +404,8 @@
       ],
       "sanitized": [],
       "error": null,
-      "generatedAt": "2026-11-24T05:28:04.922Z",
-      "durationMs": 44818
+      "generatedAt": "2026-11-24T05:30:27.983Z",
+      "durationMs": 114235
     },
     {
       "conceptId": "photosynthesis",

@@ -9,7 +9,7 @@ import styles from "./page.module.css";
 
 const STEPS = [
   { icon: <SparkIcon size={18} />, title: "Generate", text: "Gemini draws an animated SVG from the lesson text." },
-  { icon: <ShieldIcon size={18} />, title: "Check", text: "Code runs 6 checks: valid, in frame, labels, animation, key terms, readable." },
+  { icon: <ShieldIcon size={18} />, title: "Check", text: "Code runs 6 checks: valid, in frame, labels, animation, subject content, readable." },
   { icon: <RetryIcon size={18} />, title: "Retry once", text: "If a check fails, the model gets one retry with the exact reasons." },
   { icon: <UserCheckIcon size={18} />, title: "Review", text: "A person approves or rejects each diagram, with a note." },
 ];
@@ -18,7 +18,8 @@ export default function Home() {
   const results = (saved.results ?? []) as DiagramResult[];
   // Only plain data goes to the client component (no RegExp objects).
   const concepts = CONCEPTS.map((c) => ({ id: c.id, name: c.name, subject: c.subject, text: c.text }));
-  const model = results[0]?.model ?? process.env.GEMINI_MODEL ?? "gemini-3.5-flash-lite";
+  const models = [...new Set(results.map((r) => r.model))];
+  const model = models.length ? models.join(" + ") : (process.env.GEMINI_MODEL ?? "gemini-3.5-flash-lite");
 
   return (
     <>

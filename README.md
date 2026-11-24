@@ -4,7 +4,7 @@ A small web app that asks Gemini to draw 5 animated GCSE science diagrams as SVG
 
 - **Live app:** _TODO: Vercel link_
 - **Stack:** Next.js 16 (App Router, TypeScript) on Vercel, Gemini API over plain `fetch`, Upstash Redis for reviews.
-- **Model:** `gemini-3.5-flash-lite` (free tier).
+- **Model:** `gemini-3.5-flash-lite` (free tier) for 4 concepts. The series circuit uses `gemini-3.5-flash`, because Flash-Lite drew a broken circuit 5 times in a row (see "What failed").
 
 ## How it works
 
@@ -32,17 +32,19 @@ concept text ──► Gemini ──► extract <svg> ──► sanitize ──�
 | # | Check | How |
 |---|---|---|
 | 1 | **Valid SVG** | Parsed with `@xmldom/xmldom`. Root must be `<svg>` with a usable `viewBox`. |
-| 2 | **Nothing outside the viewBox** | Computes a bounding box for every `rect`, `circle`, `ellipse`, `line`, `polygon`, `polyline`, `path` (via `svg-path-bbox`) and `text` (estimated from font size and characters), applies all `transform`s, and compares with the viewBox (small tolerance). It also checks shapes **while they animate**: every keyframe of `animateTransform`, `animate` on x/y/cx/cy etc., and the extremes of `animateMotion` paths. |
+| 2 | **Nothing outside the viewBox** | Computes a bounding box for every `rect`, `circle`, `ellipse`, `line`, `polygon`, `polyline`, `path` (via `svg-path-bbox`) and `text`, applies all transforms, and compares with the viewBox (small tolerance). Text width comes from Helvetica/Arial character widths, which match Chrome's measured width to about 1%. It also checks shapes **while they animate**: every keyframe of `animateTransform`, `animate` on x/y/cx/cy, the extremes of `animateMotion` paths, and every step of CSS `@keyframes` transforms (with `transform-origin` / `transform-box`). |
 | 3 | **Title + at least 3 labels** | A non-empty `<title>` and 3+ non-empty `<text>` elements. |
-| 4 | **Has animation** | SMIL (`animate`, `animateTransform`, `animateMotion`, `set`) or a CSS `@keyframes` that is actually used by an `animation` rule. |
-| 5 | **Key terms labelled** (my own) | Each concept lists the terms a GCSE student must see (e.g. hypotenuse and a² + b² = c²; centre, radius, diameter, circumference). Each must appear in a `<text>` label. A diagram can pass checks 1–4 and still be useless for the lesson; this catches that. |
-| 6 | **Readable labels** (my own) | No label smaller than 12 units, and no two labels overlap (more than 3% of the smaller label, to allow for estimate error). Labels that fade in and out are skipped, because step-by-step reveals put text in the same spot on purpose. |
+| 4 | **Has animation** | SMIL (`animate`, `animateTransform`, `animateMotion`, `set`) or a CSS `@keyframes` that an `animation` rule actually uses. It also fails a shape whose only colour comes from a *delayed* fill animation, because the shape shows solid black until the animation starts. |
+| 5 | **Subject content** (my own) | Each concept lists the terms a GCSE student must see (e.g. hypotenuse and a² + b² = c²; centre, radius, diameter, circumference). Each must appear in a `<text>` label. For the series circuit it also checks the science: **the loop must be closed**, so no thick wire may end without touching another wire or a component. A diagram can pass checks 1–4 and still be wrong for the lesson; this catches that. |
+| 6 | **Readable labels** (my own) | A label fails if it: is smaller than 12 units; overlaps another label; is drawn across a small round symbol (lamp, ammeter); has a solid line running through it (tested in the text's own coordinates, so rotated labels work); or is partly hidden under a filled shape drawn after it. Thin dashed grid lines, and labels that fade in and out, are skipped. |
+
+The checks read the SVG's `<style>` block ([lib/css.ts](lib/css.ts)), because the model styles most text with CSS classes (`.label { text-anchor: middle }`), not attributes.
 
 **Safety:** before the checks, `<script>`, `<foreignObject>`, `on*` handlers and external links are removed from the SVG. The page also shows SVGs through `<img>`, which never runs scripts.
 
 The retry prompt contains the original prompt, the exact failure details (for example `<text> "cell" at rest spans x 790..830`) and the previous SVG, so the model can fix it rather than start again.
 
-Tests: `npm test` runs 24 tests. They cover each check and use a fake `fetch` to test the validation retry and the 429/503 backoff, so no real API calls are made.
+Tests: `npm test` runs 33 tests. They cover each check and use a fake `fetch` to test the validation retry and the 429/503 backoff, so no real API calls are made.
 
 ## Where approve/reject is saved, and why
 
@@ -80,14 +82,45 @@ npm test                        # unit tests, no API calls
 
 ## Results
 
-_TODO: filled from `npm run table` after the final run._
+The latest saved result for each concept (`results.json`, made with `npm run table`):
 
-Cost is an **estimate** at Gemini 3.5 Flash-Lite paid-tier prices ($0.30 per 1M input tokens, $2.50 per 1M output tokens, which includes thinking tokens). I took these prices from third-party pricing pages in Nov 2026 and could not confirm them on Google's own page, so check them before relying on the figure. On the free tier the real cost is $0.
+| Concept | Checks | Est. cost (USD) | Retries | API retries | Model | Tokens in / out |
+|---|---|---|---|---|---|---|
+| Pythagoras' theorem | Pass (all 6) | $0.02016 | 1 | 0 | gemini-3.5-flash-lite | 5922 / 7353 |
+| Parts of a circle | Pass (all 6) | $0.00551 | 0 | 0 | gemini-3.5-flash-lite | 707 / 2120 |
+| Series circuit | Pass (all 6) | $0.26295 | 1 | 0 | gemini-3.5-flash | 6854 / 28074 |
+| Photosynthesis | Pass (all 6) | $0.00716 | 0 | 0 | gemini-3.5-flash-lite | 619 / 2791 |
+| States of matter | Pass (all 6) | $0.00843 | 0 | 0 | gemini-3.5-flash-lite | 616 / 3297 |
+| **Total** | | **$0.30421** | | | | |
+
+- These are the best results after several runs, not a single first try. `npm run generate -- <id>` regenerates one concept and keeps the others. Each row is a real, unedited model output that passed the current checks.
+- Across all runs I logged **29 generations** in [logs/runs.jsonl](logs/runs.jsonl). 19 passed every check. The total estimated cost was $0.57. There was 1 real 503 ("model is experiencing high demand"), which the backoff handled.
+- **Retries:** Pythagoras first had "a = 3" overlapping "a² = 9", and the retry fixed it. The circuit's first attempt had 10 labels at 11 units (under the 12 minimum), and the retry fixed those too.
+- **Cost** is an estimate at paid-tier prices: Flash-Lite $0.30 in / $2.50 out, Flash $1.50 in / $9.00 out per 1M tokens, including thinking tokens. I took these from third-party pricing pages in Nov 2026 and could not confirm them on Google's own page. On the free tier the real cost is $0. The circuit is expensive because Flash used about 28k output tokens, most of them thinking.
 
 ## What failed, and how I fixed it
 
-_TODO: add what went wrong with the real model output._
+I rendered every model output in headless Chrome and compared what I saw with what the checks said. Most fixes came from the two disagreeing.
 
+**Problems with the checks (they passed things that looked wrong, or failed things that looked fine):**
+- **False fail: text-anchor set by CSS.** States of matter failed "inside viewBox" after its retry, but the render was fine. The model centred captions with `.caption { text-anchor: middle }`, and my check only read attributes. Fix: a small CSS reader ([lib/css.ts](lib/css.ts)) for class, tag and id rules and `@keyframes`.
+- **False pass: overlap check switched off.** A CSS `fill-opacity` pulse made the check think every classed label could fade out, so it skipped them all, and two real Pythagoras overlaps passed. Fix: only `opacity` / `visibility` / `display` count as hiding.
+- **False fail: text width.** `0.55 × font-size` per character made a 107-character subtitle 824 units wide; Chrome measures it at 667. Fix: real Helvetica/Arial character widths, now within about 1% of Chrome.
+- **False pass: overlap limit too loose.** "b² = 16" touching "b = 4" passed at 6% overlap with a 30% limit. Lowered to 3%.
+- **New checks the renders showed I needed:**
+  - Squares rendered **black** for 1–3 seconds because their only fill came from a delayed CSS animation.
+  - "Lamp 1" was drawn across the lamp symbol.
+  - A wire ran through the word "current".
+  - "circumference" was hidden under an info card drawn on top of it.
+  - Each of these is now caught by check 4 or check 6. I tested each against every earlier output, which showed no false positives on the good diagrams.
+- **A real animation bug the check caught:** a circle diagram's moving point used `A 130,130 0 1,1 129.9,0` as a "full circle". That arc's centre is (130, 130), not (0, 0), so the point travelled on the wrong circle and left the frame. I would not have spotted it by eye.
+
+**Problems with the model's output:**
+- **The series circuit kept coming out open.** Flash-Lite drew wires with gaps (an open circuit, which is wrong science) and wires running through the cell, and every check passed. I added the closed-loop rule to check 5, gave the circuit an explicit layout in its visual brief (loop corners, where each component goes, labels outside the loop), and gave coordinates in the retry feedback. Flash-Lite still failed 5 runs in a row, so I generated this one concept with `gemini-3.5-flash`. It passed after one retry and looks right.
+- **Retries that did not fix anything.** Early retry feedback said *what* was wrong ("a line runs through circumference") but not *where*. Now every message has coordinates, e.g. `the line from (535, 460) to (535, 80) runs through "current" (x 510..557, y 274..288)`. The prompt also has fixed layout zones (drawing in x 20–520, info panel in x 540–780).
+- **A still-open science point for the reviewer:** the circuit's arrows show electron flow (− to +), while GCSE usually draws conventional current (+ to −). No check covers this, which is what the human review step is for.
+
+**Problems with the app:**
 - **A rotating circle failed the viewBox check.** Transforming the 4 corners of a circle's box under rotation makes the box about 41% too big, so a spinning circle near the edge was flagged. Fix: the exact bounding box of a transformed ellipse. There is a test for it.
 - **The diagram popup closed itself.** React runs effects twice in development. My cleanup called `dialog.close()`, which fired `onClose`, so the popup closed straight after opening. I found this from a headless-Chrome screenshot. Fix: only call `showModal()` if the dialog isn't open, and no `close()` in cleanup.
 - **Build error on Next.js 16:** `export const dynamic = "force-dynamic"` is not allowed when `cacheComponents` is on. Removed it; the route is dynamic anyway because it reads from Redis.
@@ -95,7 +128,8 @@ _TODO: add what went wrong with the real model output._
 
 ## What I would do with one more day
 
-- **Render-based checks:** render each SVG in a headless browser at a few animation times, and check real text sizes and overlaps with `getBBox()` instead of estimates.
+- **Render-based checks:** render each SVG in a headless browser at a few animation times, and check real text sizes and overlaps with `getBBox()` instead of estimates. My own manual render step found most of the bugs, so it should be automated.
+- **Model fallback in code:** if Flash-Lite fails after its retry, try once with Flash. I did this by hand for the circuit.
 - **A science check by a second model:** ask a model to grade the diagram against the lesson text (for example "is the hypotenuse label on the longest side?"). Today that is left to the human reviewer.
 - **Rate-limit the public Generate button** (per IP, in Redis), so one visitor cannot use up the free quota.
 - **Save live generations** as new versions in Redis, with the review linked to a version, so a reviewer can compare and approve a new one.
@@ -104,4 +138,4 @@ _TODO: add what went wrong with the real model output._
 ## AI tools I used
 
 - **Claude Code (Claude Opus):** planning, writing most of the code with me (checks, pipeline, UI), writing tests, and taking headless-Chrome screenshots to check the UI. I reviewed and ran everything, and I can explain every file.
-- **Gemini 3.5 Flash-Lite:** the model that draws the diagrams (the subject of the assignment).
+- **Gemini 3.5 Flash-Lite and Flash:** the models that draw the diagrams (the subject of the assignment).

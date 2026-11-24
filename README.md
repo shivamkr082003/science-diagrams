@@ -158,4 +158,3 @@ I rendered every model output in headless Chrome and compared what I saw with wh
 
 - **Claude Code (Claude Opus):** planning, writing most of the code with me (checks, pipeline, UI), writing tests, and taking headless-Chrome screenshots to check the UI. I reviewed and ran everything, and I can explain every file.
 - **Gemini 3.5 Flash-Lite and Flash:** the models that draw the diagrams (the subject of the assignment).
-# science-diagrams

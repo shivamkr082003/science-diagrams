@@ -165,7 +165,7 @@ test("a label drawn across a small symbol fails; a label fully inside one passes
   const lamp = `<circle cx="330" cy="60" r="20" fill="none" stroke="black"/>`;
   const across = GOOD.replace("</svg>", `${lamp}<text x="320" y="65" font-size="14">Lamp 1</text></svg>`);
   assert.equal(byId(across).readableLabels.passed, false);
-  assert.match(byId(across).readableLabels.detail, /across the round symbol/);
+  assert.match(byId(across).readableLabels.detail, /runs into the round symbol/);
   const inside = GOOD.replace("</svg>", `${lamp}<text x="330" y="65" font-size="14" text-anchor="middle">A</text></svg>`);
   assert.equal(byId(inside).readableLabels.passed, true, byId(inside).readableLabels.detail);
 });

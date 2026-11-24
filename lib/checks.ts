@@ -886,11 +886,17 @@ function checkReadableLabels(root: Element, vb: ViewBox, css: Stylesheet): Check
   for (const l of labels) {
     if (l.mayHide) continue;
     for (const s of symbols) {
-      if (contains(s, l.box) || contains(l.box, s)) continue;
-      if (overlapShare(l.box, s) > 0.15) {
-        const cx = Math.round((s.minX + s.maxX) / 2);
-        const cy = Math.round((s.minY + s.maxY) / 2);
-        problems.push(`"${l.text}" (${at(l.box)}) is drawn across the round symbol centred at (${cx}, ${cy})`);
+      // Treat the symbol as the circle it is, not its square box.
+      const [cx, cy] = [(s.minX + s.maxX) / 2, (s.minY + s.maxY) / 2];
+      const r = Math.min(s.maxX - s.minX, s.maxY - s.minY) / 2;
+      const corners: [number, number][] = [[l.box.minX, l.box.minY], [l.box.maxX, l.box.minY], [l.box.minX, l.box.maxY], [l.box.maxX, l.box.maxY]];
+      const labelInside = corners.every(([x, y]) => Math.hypot(x - cx, y - cy) <= r + 1);
+      if (labelInside || contains(l.box, s)) continue;
+      // How far the label box reaches into the circle: nearest point of the box to the centre.
+      const nx = Math.max(l.box.minX, Math.min(cx, l.box.maxX));
+      const ny = Math.max(l.box.minY, Math.min(cy, l.box.maxY));
+      if (Math.hypot(nx - cx, ny - cy) < r - 2) {
+        problems.push(`"${l.text}" (${at(l.box)}) runs into the round symbol centred at (${Math.round(cx)}, ${Math.round(cy)}), radius ${Math.round(r)}`);
       }
     }
     // A line through the middle of the text (checked in the text's own coordinates, so rotated text works).

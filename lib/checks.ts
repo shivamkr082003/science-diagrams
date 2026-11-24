@@ -632,6 +632,17 @@ function looseWireEnds(root: Element, vb: ViewBox, css: Stylesheet): Pt[] {
       found.chains.some((o) => o !== chain && o.points.slice(1).some((q, i) => distToSegment(p, o.points[i], q) <= d)) ||
       found.parts.some((b) => p[0] >= b.minX - d && p[0] <= b.maxX + d && p[1] >= b.minY - d && p[1] <= b.maxY + d);
     if (chain.points.every((p) => !near(p, 30))) continue;
+    // A bar that another wire runs into at its middle (a cell plate, a junction bar) is part of a symbol.
+    const hitMiddle = found.chains.some(
+      (o) =>
+        o !== chain &&
+        [o.points[0], o.points.at(-1)!].some(
+          (e) =>
+            chain.points.slice(1).some((q, i) => distToSegment(e, chain.points[i], q) <= TOUCH) &&
+            ends.every((end) => Math.hypot(e[0] - end[0], e[1] - end[1]) > TOUCH),
+        ),
+    );
+    if (hitMiddle) continue;
     for (const p of ends) {
       const onWire = found.chains.some(
         (other) => other !== chain && other.points.slice(1).some((q, i) => distToSegment(p, other.points[i], q) <= TOUCH),

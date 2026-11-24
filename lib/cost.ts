@@ -8,6 +8,7 @@ type Price = { inputPerM: number; outputPerM: number };
 
 export const PRICES: Record<string, Price> = {
   "gemini-3.5-flash-lite": { inputPerM: 0.3, outputPerM: 2.5 },
+  "gemini-3.5-flash": { inputPerM: 1.5, outputPerM: 9.0 },
 };
 
 // Unknown model? Fall back to the flash-lite price and say so in the log.

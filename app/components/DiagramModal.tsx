@@ -64,7 +64,7 @@ export default function DiagramModal({
         </div>
 
         <aside className={styles.modalSide}>
-          <h3>Checks (final attempt)</h3>
+          <h3>Checks{result.recheckedAt ? " (re-run with the current checks)" : " (final attempt)"}</h3>
           <ul className={styles.detailList}>
             {result.checks.map((c) => (
               <li key={c.id} className={c.passed ? styles.checkOk : styles.checkFail}>
@@ -100,6 +100,12 @@ export default function DiagramModal({
           </dl>
 
           <h3>Attempts</h3>
+          {result.recheckedAt && (
+            <p className={styles.detailText}>
+              What the checks said at generation time. The checks were improved later and re-run on this saved SVG
+              without calling the model (<code>npm run recheck</code>).
+            </p>
+          )}
           <ol className={styles.attempts}>
             {result.attempts.map((a) => {
               const failed = a.checks.filter((c) => !c.passed);

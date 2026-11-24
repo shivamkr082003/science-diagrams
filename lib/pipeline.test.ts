@@ -99,6 +99,21 @@ test("a deadline that has passed gives a clear error instead of hanging", async 
   assert.match(r.error ?? "", /Ran out of time/);
 });
 
+test("a reply cut off at the token limit is reported as cut off, and the retry is told so", async () => {
+  const cut: Reply = {
+    status: 200,
+    body: {
+      candidates: [{ content: { parts: [{ text: GOOD_SVG.slice(0, 200) }] }, finishReason: "MAX_TOKENS" }],
+      usageMetadata: { promptTokenCount: 900, candidatesTokenCount: 100, thoughtsTokenCount: 32668 },
+    },
+  };
+  replies = [cut, ok(GOOD_SVG)];
+  const r = await generateDiagram(circle);
+  assert.match(r.attempts[0].checks.find((c) => c.id === "valid")!.detail, /cut off at the output token limit/);
+  assert.match(requests[1].prompt, /cut off/);
+  assert.equal(r.passed, true);
+});
+
 test("non-retryable error (400) fails fast", async () => {
   replies = [err(400)];
   const r = await generateDiagram(circle);

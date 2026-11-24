@@ -39,6 +39,7 @@ export type DiagramResult = {
   error: string | null; // set if the API failed and we have no diagram
   generatedAt: string;
   durationMs: number;
+  recheckedAt?: string; // set by `npm run recheck` when the checks were re-run on the saved SVG
 };
 
 export const SYSTEM_PROMPT = `You are an expert illustrator of science diagrams for UK GCSE students (age 14-16).
@@ -110,7 +111,7 @@ export async function generateDiagram(concept: Concept, deadline = Infinity): Pr
       const reply = await callGemini(prompt, SYSTEM_PROMPT, deadline);
       const extracted = extractSvg(reply.text);
       let newSvg: string | null = null;
-      let newChecks = noSvgChecks();
+      let newChecks = noSvgChecks(reply.cutOff);
       let newSanitized: string[] = [];
       if (extracted) {
         const clean = sanitizeSvg(extracted);
@@ -182,12 +183,17 @@ export async function generateDiagram(concept: Concept, deadline = Infinity): Pr
   return result;
 }
 
-function noSvgChecks(): CheckResult[] {
+function noSvgChecks(cutOff = false): CheckResult[] {
   return (Object.keys(CHECK_NAMES) as CheckId[]).map((id) => ({
     id,
     name: CHECK_NAMES[id],
     passed: false,
-    detail: id === "valid" ? "The reply did not contain an <svg>…</svg> element." : "Skipped: no SVG.",
+    detail:
+      id !== "valid"
+        ? "Skipped: no SVG."
+        : cutOff
+          ? "The reply was cut off at the output token limit before the SVG ended. Make the SVG shorter and simpler."
+          : "The reply did not contain an <svg>…</svg> element.",
   }));
 }
 

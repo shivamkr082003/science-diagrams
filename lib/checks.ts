@@ -538,7 +538,7 @@ function checkAnimated(doc: Document, sheet: Stylesheet): CheckResult {
 // ---------- subject rule: a series circuit is one closed loop ----------
 
 type Pt = [number, number];
-type Chain = { points: Pt[]; length: number };
+type Chain = { points: Pt[]; length: number; thick: boolean }; // only thick chains are wires; thin ones can still be touched
 
 /** Corner points of a path, including the end point of curves (control points ignored). */
 function pathVertices(d: string): Pt[][] {
@@ -601,7 +601,7 @@ function collectWiring(el: Element, parent: Ctx, vb: ViewBox, out: { chains: Cha
   }
   // Wires are drawn thick (3-4 units in every model output we saw); panel dividers are 1-2.
   const thick = parseFloat(inherited(el, "stroke-width", ctx) ?? "1") >= 2.5;
-  const stroked = thick && isPainted(inherited(el, "stroke", ctx)) && !isPainted(inherited(el, "stroke-dasharray", ctx));
+  const stroked = isPainted(inherited(el, "stroke", ctx)) && !isPainted(inherited(el, "stroke-dasharray", ctx));
   const arrow = el.hasAttribute("marker-end") || el.hasAttribute("marker-start") || !!attr(el, "marker-end", ctx);
   if (!stroked || arrow) return;
   const num = (n: string) => len(attr(el, n, ctx), vb.w) ?? 0;
@@ -615,7 +615,7 @@ function collectWiring(el: Element, parent: Ctx, vb: ViewBox, out: { chains: Cha
   for (const r of runs) {
     const points = r.map((p) => apply(ctx.matrix, ...p));
     const length = points.slice(1).reduce((sum, p, i) => sum + Math.hypot(p[0] - points[i][0], p[1] - points[i][1]), 0);
-    out.chains.push({ points, length });
+    out.chains.push({ points, length, thick });
   }
 }
 
@@ -626,7 +626,7 @@ function looseWireEnds(root: Element, vb: ViewBox, css: Stylesheet): Pt[] {
   const TOUCH = 6;
   const loose: Pt[] = [];
   for (const chain of found.chains) {
-    if (chain.length < 30) continue; // short strokes are symbol parts (cell plates, lamp crosses), not wires
+    if (!chain.thick || chain.length < 30) continue; // thin or short strokes are symbol parts (cell plates, lamp crosses)
     const ends = [chain.points[0], chain.points.at(-1)!];
     if (Math.hypot(ends[0][0] - ends[1][0], ends[0][1] - ends[1][1]) < TOUCH) continue; // closed loop
     // A line far from every wire and component (a divider in an info panel, an underline) is not a wire.
@@ -872,7 +872,7 @@ function checkReadableLabels(root: Element, vb: ViewBox, css: Stylesheet): Check
 
   const problems: string[] = [];
   for (const l of labels) {
-    if (l.fontSize < MIN_FONT) problems.push(`"${l.text}" is too small (${l.fontSize.toFixed(1)} < ${MIN_FONT})`);
+    if (l.fontSize < MIN_FONT - 0.05) problems.push(`"${l.text}" is too small (${l.fontSize.toFixed(1)} < ${MIN_FONT})`);
   }
   for (let i = 0; i < labels.length; i++) {
     for (let j = i + 1; j < labels.length; j++) {

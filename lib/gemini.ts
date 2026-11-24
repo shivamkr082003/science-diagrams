@@ -14,6 +14,7 @@ export type GeminiResult = {
   model: string;
   inputTokens: number;
   outputTokens: number; // includes thinking tokens (billed as output)
+  cutOff: boolean; // true if the reply hit maxOutputTokens (thinking counts towards it)
   apiRetries: number;
 };
 
@@ -56,7 +57,7 @@ export async function callGemini(prompt: string, systemInstruction: string, dead
   const body = {
     systemInstruction: { parts: [{ text: systemInstruction }] },
     contents: [{ role: "user", parts: [{ text: prompt }] }],
-    generationConfig: { temperature: 0.4, maxOutputTokens: 16384 },
+    generationConfig: { temperature: 0.4, maxOutputTokens: 32768 },
   };
 
   let apiRetries = 0;
@@ -96,6 +97,7 @@ export async function callGemini(prompt: string, systemInstruction: string, dead
         model,
         inputTokens: usage.promptTokenCount ?? 0,
         outputTokens: (usage.candidatesTokenCount ?? 0) + (usage.thoughtsTokenCount ?? 0),
+        cutOff: data?.candidates?.[0]?.finishReason === "MAX_TOKENS",
         apiRetries,
       };
     }

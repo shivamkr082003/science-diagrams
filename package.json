@@ -9,7 +9,8 @@
     "lint": "eslint",
     "generate": "tsx scripts/generate-all.ts",
     "test": "tsx --test lib/*.test.ts",
-    "table": "tsx scripts/results-table.ts"
+    "table": "tsx scripts/results-table.ts",
+    "recheck": "tsx scripts/recheck.ts"
   },
   "dependencies": {
     "@xmldom/xmldom": "^0.9.12",

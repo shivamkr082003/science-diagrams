@@ -102,10 +102,10 @@
   color: var(--text-3);
 }
 
-.table th:nth-child(1) { width: 21%; }
-.table th:nth-child(2) { width: 31%; }
-.table th:nth-child(3) { width: 17%; }
-.table th:nth-child(4) { width: 13%; }
+.table th:nth-child(1) { width: 18%; }
+.table th:nth-child(2) { width: 37%; }
+.table th:nth-child(3) { width: 15%; }
+.table th:nth-child(4) { width: 12%; }
 .table th:nth-child(5) { width: 18%; }
 
 .table td {

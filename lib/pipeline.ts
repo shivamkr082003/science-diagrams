@@ -52,7 +52,8 @@ Hard rules (your SVG is checked by code and rejected if it breaks any of them):
    Labels must not overlap each other: leave clear space between them.
    Labels must not sit on top of lines or shapes they don't describe: put them beside the shape
    (e.g. "Lamp 1" next to the lamp symbol, never across it).
-   If you add a key or info panel, keep it in its own area that the drawing never enters.
+   Layout: title at the top (y < 70). Put the diagram and all of its labels in x 20-520.
+   If you add a key or info panel, put it in x 540-780 and keep everything else out of that area.
 3. The first child of <svg> is a <title> naming the concept. Use at least 3 <text> labels.
 4. Animate with SMIL (<animate>, <animateTransform>, <animateMotion>) or CSS @keyframes in a <style> block.
    Give every shape its own fill colour (or fill="none"), even if an animation changes it later:

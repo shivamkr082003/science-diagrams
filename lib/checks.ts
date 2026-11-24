@@ -554,7 +554,7 @@ const MAX_OVERLAP = 0.03; // labels must not overlap; 3% leaves room for estimat
 
 type Label = { text: string; box: Box; local: Box; matrix: Matrix; fontSize: number; mayHide: boolean; order: number };
 type Segment = { a: [number, number]; b: [number, number]; order: number };
-type Found = { labels: Label[]; symbols: Box[]; segments: Segment[]; covers: { box: Box; order: number }[]; order: number };
+type Found = { labels: Label[]; symbols: Box[]; segments: Segment[]; covers: { box: Box; order: number; tag: string }[]; order: number };
 
 function invert(m: Matrix): Matrix | null {
   const det = m[0] * m[3] - m[1] * m[2];
@@ -709,7 +709,7 @@ function collectLabels(el: Element, parent: Ctx, vb: ViewBox, mayHide: boolean, 
     const opacity = parseFloat(attr(el, "opacity", ctx) ?? "1") * parseFloat(attr(el, "fill-opacity", ctx) ?? "1");
     if (["rect", "circle", "ellipse", "polygon", "path"].includes(tag) && isPainted(inherited(el, "fill", ctx) ?? "black") && opacity >= 0.5) {
       const local = shapeBox(el, { ...ctx, overrides: {} }, vb)?.box;
-      if (local) out.covers.push({ box: transformBox(ctx.matrix, local), order: out.order++ });
+      if (local) out.covers.push({ box: transformBox(ctx.matrix, local), order: out.order++, tag });
     }
   }
   for (const child of children(el)) collectLabels(child, ctx, vb, hidden, out);
@@ -722,6 +722,10 @@ function overlapShare(a: Box, b: Box): number {
   const area = (x: Box) => (x.maxX - x.minX) * (x.maxY - x.minY);
   return (w * h) / Math.min(area(a), area(b));
 }
+
+const r0 = Math.round;
+const at = (b: Box) => `x ${r0(b.minX)}..${r0(b.maxX)}, y ${r0(b.minY)}..${r0(b.maxY)}`;
+const pt = (p: [number, number]) => `(${r0(p[0])}, ${r0(p[1])})`;
 
 const contains = (outer: Box, inner: Box, pad = 1) =>
   inner.minX >= outer.minX - pad && inner.minY >= outer.minY - pad && inner.maxX <= outer.maxX + pad && inner.maxY <= outer.maxY + pad;
@@ -741,7 +745,7 @@ function checkReadableLabels(root: Element, vb: ViewBox, css: Stylesheet): Check
       const [a, b] = [labels[i], labels[j]];
       if (a.mayHide || b.mayHide) continue;
       const share = overlapShare(a.box, b.box);
-      if (share > MAX_OVERLAP) problems.push(`"${a.text}" overlaps "${b.text}" (${Math.round(share * 100)}%)`);
+      if (share > MAX_OVERLAP) problems.push(`"${a.text}" (${at(a.box)}) overlaps "${b.text}" (${at(b.box)})`);
     }
   }
   // A label cutting across a small symbol: partly inside, partly outside (fully inside, like "A" in an ammeter, is fine).
@@ -752,7 +756,7 @@ function checkReadableLabels(root: Element, vb: ViewBox, css: Stylesheet): Check
       if (overlapShare(l.box, s) > 0.15) {
         const cx = Math.round((s.minX + s.maxX) / 2);
         const cy = Math.round((s.minY + s.maxY) / 2);
-        problems.push(`"${l.text}" is drawn across the symbol at (${cx}, ${cy})`);
+        problems.push(`"${l.text}" (${at(l.box)}) is drawn across the round symbol centred at (${cx}, ${cy})`);
       }
     }
     // A line through the middle of the text (checked in the text's own coordinates, so rotated text works).
@@ -762,20 +766,19 @@ function checkReadableLabels(root: Element, vb: ViewBox, css: Stylesheet): Check
     const core = { minX: l.local.minX + w * 0.1, maxX: l.local.maxX - w * 0.1, minY: l.local.minY + h * 0.3, maxY: l.local.maxY - h * 0.25 };
     // A line is hidden if a filled shape drawn after it covers the label (e.g. wire behind an ammeter's "A").
     const hiddenBehind = (sg: Segment) => covers.some((c) => c.order > sg.order && c.order < l.order && contains(c.box, l.box, 2));
-    if (inv && segments.some((sg) => !hiddenBehind(sg) && segmentHitsBox(apply(inv, ...sg.a), apply(inv, ...sg.b), core))) {
-      problems.push(`a line runs through "${l.text}"`);
-    }
+    const crossing = inv && segments.find((sg) => !hiddenBehind(sg) && segmentHitsBox(apply(inv, ...sg.a), apply(inv, ...sg.b), core));
+    if (crossing) problems.push(`the line from ${pt(crossing.a)} to ${pt(crossing.b)} runs through "${l.text}" (${at(l.box)})`);
     // A filled shape drawn later (on top) hiding part of the label.
     const labelArea = (l.box.maxX - l.box.minX) * (l.box.maxY - l.box.minY) || 1;
     const hiding = covers.find((c) => c.order > l.order && intersectionArea(l.box, c.box) / labelArea > 0.1);
-    if (hiding) problems.push(`"${l.text}" is partly hidden under a shape drawn on top of it`);
+    if (hiding) problems.push(`"${l.text}" (${at(l.box)}) is partly hidden under a filled <${hiding.tag}> at ${at(hiding.box)} drawn on top of it`);
   }
   return {
     id: "readableLabels",
     name: CHECK_NAMES.readableLabels,
     passed: problems.length === 0,
     detail: problems.length
-      ? `${problems.length} problem(s): ${problems.slice(0, 5).join("; ")}. Move labels apart or make them bigger.`
+      ? `${problems.length} problem(s): ${problems.slice(0, 6).join("; ")}. Move these labels to empty space.`
       : `${labels.length} labels, none overlap each other or cut across symbols, all at least ${MIN_FONT} units tall.`,
   };
 }

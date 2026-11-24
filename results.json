@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-24T05:17:55.130Z",
+  "updatedAt": "2026-11-24T05:21:57.700Z",
   "results": [
     {
       "conceptId": "pythagoras",
@@ -157,8 +157,8 @@
       "concept": "Parts of a circle",
       "subject": "Maths",
       "model": "gemini-3.5-flash-lite",
-      "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 800 500\">\n  <title>Parts of a Circle</title>\n  \n  <style>\n    @keyframes pulseDot {\n      0%, 100% { r: 6; opacity: 1; }\n      50% { r: 9; opacity: 0.6; }\n    }\n    @keyframes orbitPoint {\n      0% { transform: rotate(0deg); }\n      100% { transform: rotate(360deg); }\n    }\n    @keyframes sweepRadius {\n      0% { transform: rotate(0deg); }\n      100% { transform: rotate(360deg); }\n    }\n    .pulsing-centre {\n      animation: pulseDot 2s infinite ease-in-out;\n      transform-origin: 320px 250px;\n    }\n    .rotating-radius {\n      animation: sweepRadius 8s infinite linear;\n      transform-origin: 320px 250px;\n    }\n    .orbiting-dot {\n      animation: orbitPoint 8s infinite linear;\n      transform-origin: 320px 250px;\n    }\n    .panel-box {\n      transition: all 0.3s ease;\n    }\n    .panel-box:hover {\n      fill: #f1f5f9;\n    }\n  </style>\n\n  <!-- Background -->\n  <rect x=\"0\" y=\"0\" width=\"800\" height=\"500\" fill=\"#ffffff\"/>\n  <rect x=\"20\" y=\"20\" width=\"760\" height=\"460\" rx=\"12\" fill=\"none\" stroke=\"#cbd5e1\" stroke-width=\"2\"/>\n\n  <!-- Title & Subtitle -->\n  <text x=\"400\" y=\"55\" font-family=\"sans-serif\" font-size=\"22\" font-weight=\"bold\" fill=\"#1e293b\" text-anchor=\"middle\">Parts of a Circle</text>\n  <text x=\"400\" y=\"78\" font-family=\"sans-serif\" font-size=\"14\" fill=\"#64748b\" text-anchor=\"middle\">GCSE Mathematics: Key definitions and measurements</text>\n\n  <!-- CIRCLE GRAPHIC AREA (Left side, centre at 320, 250, radius 150) -->\n  \n  <!-- Circumference Path (Animated tracer path) -->\n  <circle cx=\"320\" cy=\"250\" r=\"150\" fill=\"none\" stroke=\"#e2e8f0\" stroke-width=\"4\"/>\n  <circle cx=\"320\" cy=\"250\" r=\"150\" fill=\"none\" stroke=\"#2563eb\" stroke-width=\"4\" stroke-dasharray=\"942\" stroke-dashoffset=\"0\">\n    <animate attributeName=\"stroke-dashoffset\" values=\"942;0\" dur=\"8s\" repeatCount=\"indefinite\"/>\n  </circle>\n\n  <!-- Diameter (Horizontal line across) -->\n  <line x1=\"170\" y1=\"250\" x2=\"470\" y2=\"250\" stroke=\"#059669\" stroke-width=\"3\" stroke-dasharray=\"6 4\"/>\n  \n  <!-- Sweeping Radius (Animated rotation from centre to edge) -->\n  <g class=\"rotating-radius\">\n    <line x1=\"320\" y1=\"250\" x2=\"470\" y2=\"250\" stroke=\"#dc2626\" stroke-width=\"4\"/>\n  </g>\n\n  <!-- Centre Point -->\n  <circle cx=\"320\" cy=\"250\" r=\"6\" fill=\"#1e293b\" class=\"pulsing-centre\"/>\n\n  <!-- Orbiting Point on Circumference -->\n  <g class=\"orbiting-dot\">\n    <circle cx=\"470\" cy=\"250\" r=\"7\" fill=\"#2563eb\"/>\n  </g>\n\n  <!-- DIAGRAM LABELS -->\n  <!-- Centre Label -->\n  <text x=\"320\" y=\"232\" font-family=\"sans-serif\" font-size=\"15\" font-weight=\"bold\" fill=\"#1e293b\" text-anchor=\"middle\">centre</text>\n  <line x1=\"320\" y1=\"238\" x2=\"320\" y2=\"244\" stroke=\"#1e293b\" stroke-width=\"1.5\"/>\n\n  <!-- Radius Label (positioned above sweeping radius) -->\n  <text x=\"395\" y=\"235\" font-family=\"sans-serif\" font-size=\"15\" font-weight=\"bold\" fill=\"#dc2626\" text-anchor=\"middle\">radius</text>\n\n  <!-- Diameter Label (positioned below diameter line) -->\n  <text x=\"320\" y=\"278\" font-family=\"sans-serif\" font-size=\"15\" font-weight=\"bold\" fill=\"#059669\" text-anchor=\"middle\">diameter</text>\n\n  <!-- Circumference Label with pointer line to edge -->\n  <text x=\"430\" y=\"115\" font-family=\"sans-serif\" font-size=\"15\" font-weight=\"bold\" fill=\"#2563eb\" text-anchor=\"start\">circumference</text>\n  <path d=\"M 430 122 Q 410 140 380 143\" fill=\"none\" stroke=\"#2563eb\" stroke-width=\"1.5\" marker-end=\"url(#arrow)\"/>\n\n  <!-- RIGHT SIDE: INFORMATION PANELS -->\n  \n  <!-- Panel 1: Centre -->\n  <g>\n    <rect x=\"520\" y=\"100\" width=\"240\" height=\"60\" rx=\"8\" fill=\"#f8fafc\" stroke=\"#e2e8f0\" stroke-width=\"1.5\" class=\"panel-box\"/>\n    <circle cx=\"538\" cy=\"130\" r=\"5\" fill=\"#1e293b\"/>\n    <text x=\"555\" y=\"123\" font-family=\"sans-serif\" font-size=\"15\" font-weight=\"bold\" fill=\"#1e293b\">Centre</text>\n    <text x=\"555\" y=\"143\" font-family=\"sans-serif\" font-size=\"13\" fill=\"#475569\">The fixed middle point.</text>\n  </g>\n\n  <!-- Panel 2: Radius -->\n  <g>\n    <rect x=\"520\" y=\"170\" width=\"240\" height=\"65\" rx=\"8\" fill=\"#fef2f2\" stroke=\"#fee2e2\" stroke-width=\"1.5\" class=\"panel-box\"/>\n    <line x1=\"530\" y1=\"202\" x2=\"546\" y2=\"202\" stroke=\"#dc2626\" stroke-width=\"3\"/>\n    <text x=\"555\" y=\"193\" font-family=\"sans-serif\" font-size=\"15\" font-weight=\"bold\" fill=\"#dc2626\">Radius</text>\n    <text x=\"555\" y=\"213\" font-family=\"sans-serif\" font-size=\"13\" fill=\"#475569\">Distance from centre to edge.</text>\n  </g>\n\n  <!-- Panel 3: Diameter -->\n  <g>\n    <rect x=\"520\" y=\"245\" width=\"240\" height=\"65\" rx=\"8\" fill=\"#ecfdf5\" stroke=\"#d1fae5\" stroke-width=\"1.5\" class=\"panel-box\"/>\n    <line x1=\"530\" y1=\"277\" x2=\"546\" y2=\"277\" stroke=\"#059669\" stroke-width=\"3\" stroke-dasharray=\"4 2\"/>\n    <text x=\"555\" y=\"268\" font-family=\"sans-serif\" font-size=\"15\" font-weight=\"bold\" fill=\"#059669\">Diameter</text>\n    <text x=\"555\" y=\"288\" font-family=\"sans-serif\" font-size=\"13\" fill=\"#475569\">Across edge-to-edge through centre.</text>\n  </g>\n\n  <!-- Panel 4: Circumference -->\n  <g>\n    <rect x=\"520\" y=\"320\" width=\"240\" height=\"65\" rx=\"8\" fill=\"#eff6ff\" stroke=\"#dbeafe\" stroke-width=\"1.5\" class=\"panel-box\"/>\n    <circle cx=\"538\" cy=\"352\" r=\"7\" fill=\"none\" stroke=\"#2563eb\" stroke-width=\"3\"/>\n    <text x=\"555\" y=\"343\" font-family=\"sans-serif\" font-size=\"15\" font-weight=\"bold\" fill=\"#2563eb\">Circumference</text>\n    <text x=\"555\" y=\"363\" font-family=\"sans-serif\" font-size=\"13\" fill=\"#475569\">The total distance around the edge.</text>\n  </g>\n\n  <!-- Formula Highlight Box -->\n  <rect x=\"520\" y=\"395\" width=\"240\" height=\"60\" rx=\"8\" fill=\"#fffbeb\" stroke=\"#fef3c7\" stroke-width=\"1.5\"/>\n  <text x=\"640\" y=\"420\" font-family=\"sans-serif\" font-size=\"15\" font-weight=\"bold\" fill=\"#b45309\" text-anchor=\"middle\">Key Relationship</text>\n  <text x=\"640\" y=\"440\" font-family=\"sans-serif\" font-size=\"14\" font-weight=\"bold\" fill=\"#1e293b\" text-anchor=\"middle\">diameter = 2 × radius</text>\n\n  <!-- Arrow marker definition -->\n  <defs>\n    <marker id=\"arrow\" viewBox=\"0 0 10 10\" refX=\"5\" refY=\"5\" markerWidth=\"6\" markerHeight=\"6\" orient=\"auto-start-reverse\">\n      <path d=\"M 0 2 L 10 5 L 0 8 z\" fill=\"#2563eb\"/>\n    </marker>\n  </defs>\n</svg>",
-      "passed": true,
+      "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 800 500\">\n  <title>Parts of a circle</title>\n  \n  <style>\n    .bg { fill: #f8fafc; }\n    .title { font-size: 20px; font-weight: bold; font-family: sans-serif; fill: #1e293b; }\n    .label { font-size: 16px; font-family: sans-serif; fill: #334155; }\n    .formula { font-size: 16px; font-weight: bold; font-family: sans-serif; fill: #0284c7; }\n    .desc { font-size: 14px; font-family: sans-serif; fill: #475569; }\n    \n    @keyframes sweep {\n      0% { transform: rotate(0deg); }\n      100% { transform: rotate(360deg); }\n    }\n    .sweep-line {\n      transform-origin: 260px 260px;\n      animation: sweep 8s linear infinite;\n    }\n    \n    @keyframes orbit {\n      0% { transform: rotate(0deg); }\n      100% { transform: rotate(360deg); }\n    }\n    .orbit-group {\n      transform-origin: 260px 260px;\n      animation: orbit 8s linear infinite;\n    }\n\n    @keyframes pulse {\n      0%, 100% { r: 6px; fill: #0f172a; }\n      50% { r: 9px; fill: #2563eb; }\n    }\n    .centre-dot {\n      animation: pulse 2s ease-in-out infinite;\n    }\n  </style>\n\n  <!-- Background -->\n  <rect width=\"800\" height=\"500\" class=\"bg\" rx=\"12\"/>\n\n  <!-- Title -->\n  <text x=\"400\" y=\"40\" text-anchor=\"middle\" class=\"title\">Mathematical Properties: Parts of a Circle</text>\n\n  <!-- LEFT SIDE: The Circle Diagram -->\n  <g id=\"circle-diagram\">\n    <!-- Diameter (Horizontal Line) -->\n    <line x1=\"100\" y1=\"260\" x2=\"420\" y2=\"260\" stroke=\"#059669\" stroke-width=\"4\" stroke-dasharray=\"6,4\"/>\n    \n    <!-- Outer boundary / Circumference -->\n    <circle cx=\"260\" cy=\"260\" r=\"160\" fill=\"none\" stroke=\"#64748b\" stroke-width=\"4\"/>\n    \n    <!-- Animated Circumference Tracer (Point) -->\n    <g class=\"orbit-group\">\n      <circle cx=\"420\" cy=\"260\" r=\"8\" fill=\"#e11d48\"/>\n    </g>\n    \n    <!-- Radius (Rotating Line) -->\n    <g class=\"sweep-line\">\n      <line x1=\"260\" y1=\"260\" x2=\"420\" y2=\"260\" stroke=\"#2563eb\" stroke-width=\"4\"/>\n    </g>\n\n    <!-- Centre Point -->\n    <circle cx=\"260\" cy=\"260\" class=\"centre-dot\"/>\n\n    <!-- Labels for the Circle Parts (positioned clearly away from overlapping lines/shapes) -->\n    \n    <!-- Centre Label -->\n    <line x1=\"260\" y1=\"260\" x2=\"210\" y2=\"210\" stroke=\"#94a3b8\" stroke-width=\"1.5\"/>\n    <text x=\"200\" y=\"200\" text-anchor=\"end\" class=\"label\" font-weight=\"bold\">centre</text>\n    \n    <!-- Radius Label -->\n    <text x=\"340\" y=\"240\" text-anchor=\"middle\" class=\"label\" fill=\"#2563eb\" font-weight=\"bold\">radius</text>\n    \n    <!-- Diameter Label -->\n    <text x=\"260\" y=\"295\" text-anchor=\"middle\" class=\"label\" fill=\"#059669\" font-weight=\"bold\">diameter</text>\n\n    <!-- Circumference Label (Moved safely outside top-right of circle with leader line) -->\n    <line x1=\"373\" y1=\"147\" x2=\"440\" y2=\"90\" stroke=\"#94a3b8\" stroke-width=\"1.5\"/>\n    <text x=\"445\" y=\"85\" text-anchor=\"start\" class=\"label\" fill=\"#e11d48\" font-weight=\"bold\">circumference</text>\n  </g>\n\n  <!-- RIGHT SIDE: Information & Definitions Panel (Strictly bounded in X: 500 to 770) -->\n  <g id=\"info-panel\" transform=\"translate(500, 80)\">\n    <!-- Panel Background -->\n    <rect x=\"0\" y=\"0\" width=\"270\" height=\"360\" fill=\"#ffffff\" stroke=\"#cbd5e1\" stroke-width=\"2\" rx=\"8\"/>\n    \n    <text x=\"20\" y=\"35\" class=\"title\" font-size=\"18\">Key Definitions</text>\n    \n    <!-- Definition 1: Centre -->\n    <circle cx=\"30\" cy=\"75\" r=\"4\" fill=\"#0f172a\"/>\n    <text x=\"45\" y=\"80\" class=\"desc\"><tspan font-weight=\"bold\">Centre:</tspan> The fixed point</text>\n    <text x=\"45\" y=\"100\" class=\"desc\">right in the middle.</text>\n\n    <!-- Definition 2: Radius -->\n    <line x1=\"20\" y1=\"135\" x2=\"40\" y2=\"135\" stroke=\"#2563eb\" stroke-width=\"3\"/>\n    <text x=\"50\" y=\"140\" class=\"desc\"><tspan font-weight=\"bold\">Radius:</tspan> Distance from</text>\n    <text x=\"50\" y=\"160\" class=\"desc\">centre to the edge.</text>\n\n    <!-- Definition 3: Diameter -->\n    <line x1=\"20\" y1=\"195\" x2=\"40\" y2=\"195\" stroke=\"#059669\" stroke-width=\"3\"/>\n    <text x=\"50\" y=\"200\" class=\"desc\"><tspan font-weight=\"bold\">Diameter:</tspan> Distance across</text>\n    <text x=\"50\" y=\"220\" class=\"desc\">through the centre.</text>\n\n    <!-- Definition 4: Circumference -->\n    <circle cx=\"30\" cy=\"265\" r=\"5\" fill=\"none\" stroke=\"#e11d48\" stroke-width=\"2\"/>\n    <text x=\"45\" y=\"270\" class=\"desc\"><tspan font-weight=\"bold\">Circumference:</tspan> The</text>\n    <text x=\"45\" y=\"290\" class=\"desc\">distance all round.</text>\n\n    <!-- Formula Box -->\n    <rect x=\"15\" y=\"315\" width=\"240\" height=\"35\" fill=\"#f1f5f9\" rx=\"4\"/>\n    <text x=\"135\" y=\"337\" text-anchor=\"middle\" class=\"formula\">diameter = 2 × radius</text>\n  </g>\n\n</svg>",
+      "passed": false,
       "checks": [
         {
           "id": "valid",
@@ -176,13 +176,13 @@
           "id": "titleAndLabels",
           "name": "Title + 3 labels",
           "passed": true,
-          "detail": "Title \"Parts of a Circle\", 16 labels."
+          "detail": "Title \"Parts of a circle\", 15 labels."
         },
         {
           "id": "animated",
           "name": "Animated",
           "passed": true,
-          "detail": "1 SMIL animation element(s), 3 CSS @keyframes in use."
+          "detail": "0 SMIL animation element(s), 3 CSS @keyframes in use."
         },
         {
           "id": "requiredLabels",
@@ -193,23 +193,23 @@
         {
           "id": "readableLabels",
           "name": "Readable labels",
-          "passed": true,
-          "detail": "16 labels, none overlap each other or cut across symbols, all at least 12 units tall."
+          "passed": false,
+          "detail": "2 problem(s): a line runs through \"circumference\"; \"circumference\" is partly hidden under a shape drawn on top of it. Move labels apart or make them bigger."
         }
       ],
-      "retries": 0,
+      "retries": 1,
       "apiRetries": 0,
-      "inputTokens": 665,
-      "outputTokens": 2556,
-      "costUsd": 0.006589,
+      "inputTokens": 3182,
+      "outputTokens": 3602,
+      "costUsd": 0.009959,
       "attempts": [
         {
           "attempt": 1,
           "inputTokens": 665,
-          "outputTokens": 2556,
-          "costUsd": 0.006589,
+          "outputTokens": 1780,
+          "costUsd": 0.004649,
           "apiRetries": 0,
-          "durationMs": 6875,
+          "durationMs": 5174,
           "checks": [
             {
               "id": "valid",
@@ -227,13 +227,13 @@
               "id": "titleAndLabels",
               "name": "Title + 3 labels",
               "passed": true,
-              "detail": "Title \"Parts of a Circle\", 16 labels."
+              "detail": "Title \"Parts of a circle\", 15 labels."
             },
             {
               "id": "animated",
               "name": "Animated",
               "passed": true,
-              "detail": "1 SMIL animation element(s), 3 CSS @keyframes in use."
+              "detail": "0 SMIL animation element(s), 3 CSS @keyframes in use."
             },
             {
               "id": "requiredLabels",
@@ -244,76 +244,19 @@
             {
               "id": "readableLabels",
               "name": "Readable labels",
-              "passed": true,
-              "detail": "16 labels, none overlap each other or cut across symbols, all at least 12 units tall."
+              "passed": false,
+              "detail": "2 problem(s): a line runs through \"circumference\"; \"circumference\" is partly hidden under a shape drawn on top of it. Move labels apart or make them bigger."
             }
           ],
           "error": null
-        }
-      ],
-      "sanitized": [],
-      "error": null,
-      "generatedAt": "2026-11-24T05:17:43.146Z",
-      "durationMs": 6875
-    },
-    {
-      "conceptId": "series-circuit",
-      "concept": "Series circuit",
-      "subject": "Physics",
-      "model": "gemini-3.5-flash-lite",
-      "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 800 500\">\n  <title>Series Circuit GCSE Physics Diagram</title>\n  <style>\n    @keyframes pulse {\n      0% { transform: scale(1); opacity: 0.9; }\n      50% { transform: scale(1.05); opacity: 1; filter: drop-shadow(0 0 6px #f39c12); }\n      100% { transform: scale(1.05); opacity: 1; filter: drop-shadow(0 0 6px #f39c12); }\n    }\n    @keyframes blink {\n      0%, 100% { opacity: 0.8; }\n      50% { opacity: 1; }\n    }\n    .lamp-glow {\n      animation: pulse 1.5s infinite alternate ease-in-out;\n      transform-origin: center;\n    }\n    .flow-dot {\n      fill: #e74c3c;\n      animation: moveCharges 4s linear infinite;\n    }\n  </style>\n\n  <!-- Background -->\n  <rect x=\"0\" y=\"0\" width=\"800\" height=\"500\" fill=\"#ffffff\" rx=\"10\" ry=\"10\"/>\n\n  <!-- Header & Info Panel Area -->\n  <rect x=\"40\" y=\"20\" width=\"720\" height=\"75\" fill=\"#f8f9fa\" stroke=\"#e9ecef\" stroke-width=\"2\" rx=\"8\" ry=\"8\"/>\n  <text x=\"400\" y=\"48\" font-family=\"sans-serif\" font-size=\"20\" font-weight=\"bold\" fill=\"#2c3e50\" text-anchor=\"middle\">Series Circuit: Current &amp; Voltage</text>\n  <text x=\"400\" y=\"75\" font-family=\"sans-serif\" font-size=\"14\" fill=\"#555\" text-anchor=\"middle\">One single loop. Current is the same everywhere. Voltage is shared between components.</text>\n\n  <!-- Circuit Diagram Area (Rectangle Loop: left=150, right=650, top=140, bottom=420) -->\n  <rect x=\"150\" y=\"140\" width=\"500\" height=\"280\" fill=\"none\" stroke=\"#34495e\" stroke-width=\"4\" rx=\"6\" ry=\"6\"/>\n\n  <!-- CORNER JUMPERS / WIRE PATH DEFINITION (for electrons to follow conceptually) -->\n  <!-- We animate dots along the perimeter: \n       Top edge: (150,140) to (650,140) length 500\n       Right edge: (650,140) to (650,420) length 280\n       Bottom edge: (650,420) to (150,420) length 500\n       Left edge: (150,420) to (150,140) length 280\n       Total perimeter = 1560px -->\n\n  <!-- COMPONENT 1: Cell (Bottom Wire, centre x=400, y=420) -->\n  <rect x=\"350\" y=\"405\" width=\"100\" height=\"30\" fill=\"#ffffff\" stroke=\"none\"/>\n  <!-- Cell Symbol -->\n  <line x1=\"375\" y1=\"420\" x2=\"390\" y2=\"420\" stroke=\"#34495e\" stroke-width=\"4\"/>\n  <line x1=\"390\" y1=\"400\" x2=\"390\" y2=\"440\" stroke=\"#e74c3c\" stroke-width=\"5\"/> <!-- Long plate (+) -->\n  <line x1=\"405\" y1=\"408\" x2=\"405\" y2=\"432\" stroke=\"#34495e\" stroke-width=\"5\"/> <!-- Short plate (-) -->\n  <line x1=\"405\" y1=\"420\" x2=\"425\" y2=\"420\" stroke=\"#34495e\" stroke-width=\"4\"/>\n  <!-- Cell Label -->\n  <text x=\"400\" y=\"465\" font-family=\"sans-serif\" font-size=\"16\" font-weight=\"bold\" fill=\"#2c3e50\" text-anchor=\"middle\">Cell (6 V)</text>\n\n  <!-- COMPONENT 2: Lamp 1 (Top wire, x=280, y=140) -->\n  <rect x=\"250\" y=\"110\" width=\"60\" height=\"60\" fill=\"#ffffff\" stroke=\"none\"/>\n  <g class=\"lamp-glow\">\n    <circle cx=\"280\" cy=\"140\" r=\"22\" fill=\"#fef9e7\" stroke=\"#f39c12\" stroke-width=\"3\"/>\n    <line x1=\"264\" y1=\"124\" x2=\"296\" y2=\"156\" stroke=\"#f39c12\" stroke-width=\"2.5\"/>\n    <line x1=\"296\" y1=\"124\" x2=\"264\" y2=\"156\" stroke=\"#f39c12\" stroke-width=\"2.5\"/>\n  </g>\n  <text x=\"280\" y=\"95\" font-family=\"sans-serif\" font-size=\"15\" font-weight=\"bold\" fill=\"#d35400\" text-anchor=\"middle\">Lamp 1 (3 V)</text>\n\n  <!-- COMPONENT 3: Lamp 2 (Top wire, x=520, y=140) -->\n  <rect x=\"490\" y=\"110\" width=\"60\" height=\"60\" fill=\"#ffffff\" stroke=\"none\"/>\n  <g class=\"lamp-glow\">\n    <circle cx=\"520\" cy=\"140\" r=\"22\" fill=\"#fef9e7\" stroke=\"#f39c12\" stroke-width=\"3\"/>\n    <line x1=\"504\" y1=\"124\" x2=\"536\" y2=\"156\" stroke=\"#f39c12\" stroke-width=\"2.5\"/>\n    <line x1=\"536\" y1=\"124\" x2=\"504\" y2=\"156\" stroke=\"#f39c12\" stroke-width=\"2.5\"/>\n  </g>\n  <text x=\"520\" y=\"95\" font-family=\"sans-serif\" font-size=\"15\" font-weight=\"bold\" fill=\"#d35400\" text-anchor=\"middle\">Lamp 2 (3 V)</text>\n\n  <!-- COMPONENT 4: Ammeter 1 (Left wire, x=150, y=280) -->\n  <rect x=\"120\" y=\"250\" width=\"60\" height=\"60\" fill=\"#ffffff\" stroke=\"none\"/>\n  <circle cx=\"150\" cy=\"280\" r=\"22\" fill=\"#ebf5fb\" stroke=\"#2980b9\" stroke-width=\"3\"/>\n  <text x=\"150\" y=\"286\" font-family=\"sans-serif\" font-size=\"20\" font-weight=\"bold\" fill=\"#2980b9\" text-anchor=\"middle\">A</text>\n  <text x=\"80\" y=\"285\" font-family=\"sans-serif\" font-size=\"15\" font-weight=\"bold\" fill=\"#2980b9\" text-anchor=\"middle\">0.2 A</text>\n  <text x=\"150\" y=\"325\" font-family=\"sans-serif\" font-size=\"14\" fill=\"#555\" text-anchor=\"middle\">current</text>\n\n  <!-- COMPONENT 5: Ammeter 2 (Right wire, x=650, y=280) -->\n  <rect x=\"620\" y=\"250\" width=\"60\" height=\"60\" fill=\"#ffffff\" stroke=\"none\"/>\n  <circle cx=\"650\" cy=\"280\" r=\"22\" fill=\"#ebf5fb\" stroke=\"#2980b9\" stroke-width=\"3\"/>\n  <text x=\"650\" y=\"286\" font-family=\"sans-serif\" font-size=\"20\" font-weight=\"bold\" fill=\"#2980b9\" text-anchor=\"middle\">A</text>\n  <text x=\"720\" y=\"285\" font-family=\"sans-serif\" font-size=\"15\" font-weight=\"bold\" fill=\"#2980b9\" text-anchor=\"middle\">0.2 A</text>\n  <text x=\"650\" y=\"325\" font-family=\"sans-serif\" font-size=\"14\" fill=\"#555\" text-anchor=\"middle\">current</text>\n\n  <!-- VISIBLE MANDATORY TERMS ANCHORS -->\n  <!-- \"cell\", \"current\", \"voltage\" -->\n  <!-- We ensure these exact lower/mixed case strings appear visibly. -->\n  <text x=\"390\" y=\"485\" font-family=\"sans-serif\" font-size=\"12\" fill=\"#7f8c8d\" text-anchor=\"middle\">cell voltage = 6 V (shared)</text>\n  <text x=\"280\" y=\"180\" font-family=\"sans-serif\" font-size=\"12\" fill=\"#7f8c8d\" text-anchor=\"middle\">voltage</text>\n  <text x=\"520\" y=\"180\" font-family=\"sans-serif\" font-size=\"12\" fill=\"#7f8c8d\" text-anchor=\"middle\">voltage</text>\n\n  <!-- ANIMATED CHARGES (Flow of current around the rectangular loop perimeter: 1560px total) -->\n  <!-- Path coordinates start top-left (150,140), go right to (650,140), down to (650,420), left to (150,420), up to (150,140) -->\n  <path id=\"circuitPath\" d=\"M 150 140 H 650 V 420 H 150 Z\" fill=\"none\" stroke=\"none\"/>\n\n  <!-- We place multiple dots along the path using animateMotion with different begin offsets -->\n  <circle r=\"6\" class=\"flow-dot\">\n    <animateMotion dur=\"4s\" repeatCount=\"indefinite\">\n      <mpath href=\"#circuitPath\"/>\n    </animateMotion>\n  </circle>\n\n  <circle r=\"6\" class=\"flow-dot\">\n    <animateMotion dur=\"4s\" begin=\"-1s\" repeatCount=\"indefinite\">\n      <mpath href=\"#circuitPath\"/>\n    </animateMotion>\n  </circle>\n\n  <circle r=\"6\" class=\"flow-dot\">\n    <animateMotion dur=\"4s\" begin=\"-2s\" repeatCount=\"indefinite\">\n      <mpath href=\"#circuitPath\"/>\n    </animateMotion>\n  </circle>\n\n  <circle r=\"6\" class=\"flow-dot\">\n    <animateMotion dur=\"4s\" begin=\"-3s\" repeatCount=\"indefinite\">\n      <mpath href=\"#circuitPath\"/>\n    </animateMotion>\n  </circle>\n\n</svg>",
-      "passed": true,
-      "checks": [
-        {
-          "id": "valid",
-          "name": "Valid SVG",
-          "passed": true,
-          "detail": "Parses as XML, root is <svg>, viewBox is set."
         },
         {
-          "id": "inViewBox",
-          "name": "Inside viewBox",
-          "passed": true,
-          "detail": "All shapes and text are inside the viewBox is x 0..800, y 0..500."
-        },
-        {
-          "id": "titleAndLabels",
-          "name": "Title + 3 labels",
-          "passed": true,
-          "detail": "Title \"Series Circuit GCSE Physics Diagram\", 14 labels."
-        },
-        {
-          "id": "animated",
-          "name": "Animated",
-          "passed": true,
-          "detail": "4 SMIL animation element(s), 1 CSS @keyframes in use."
-        },
-        {
-          "id": "requiredLabels",
-          "name": "Key terms labelled",
-          "passed": true,
-          "detail": "All 3 key terms are labelled."
-        },
-        {
-          "id": "readableLabels",
-          "name": "Readable labels",
-          "passed": true,
-          "detail": "14 labels, none overlap each other or cut across symbols, all at least 12 units tall."
-        }
-      ],
-      "retries": 0,
-      "apiRetries": 0,
-      "inputTokens": 701,
-      "outputTokens": 2757,
-      "costUsd": 0.007103,
-      "attempts": [
-        {
-          "attempt": 1,
-          "inputTokens": 701,
-          "outputTokens": 2757,
-          "costUsd": 0.007103,
+          "attempt": 2,
+          "inputTokens": 2517,
+          "outputTokens": 1822,
+          "costUsd": 0.00531,
           "apiRetries": 0,
-          "durationMs": 6980,
+          "durationMs": 4027,
           "checks": [
             {
               "id": "valid",
@@ -331,13 +274,117 @@
               "id": "titleAndLabels",
               "name": "Title + 3 labels",
               "passed": true,
-              "detail": "Title \"Series Circuit GCSE Physics Diagram\", 14 labels."
+              "detail": "Title \"Parts of a circle\", 15 labels."
             },
             {
               "id": "animated",
               "name": "Animated",
               "passed": true,
-              "detail": "4 SMIL animation element(s), 1 CSS @keyframes in use."
+              "detail": "0 SMIL animation element(s), 3 CSS @keyframes in use."
+            },
+            {
+              "id": "requiredLabels",
+              "name": "Key terms labelled",
+              "passed": true,
+              "detail": "All 4 key terms are labelled."
+            },
+            {
+              "id": "readableLabels",
+              "name": "Readable labels",
+              "passed": false,
+              "detail": "2 problem(s): a line runs through \"circumference\"; \"circumference\" is partly hidden under a shape drawn on top of it. Move labels apart or make them bigger."
+            }
+          ],
+          "error": null
+        }
+      ],
+      "sanitized": [],
+      "error": null,
+      "generatedAt": "2026-11-24T05:21:36.511Z",
+      "durationMs": 9203
+    },
+    {
+      "conceptId": "series-circuit",
+      "concept": "Series circuit",
+      "subject": "Physics",
+      "model": "gemini-3.5-flash-lite",
+      "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 800 500\">\n  <title>Series circuit</title>\n  \n  <style>\n    .wire { stroke: #2c3e50; stroke-width: 4; fill: none; stroke-linejoin: round; }\n    .component { stroke: #2c3e50; stroke-width: 3; fill: #ffffff; }\n    .label { font-family: sans-serif; font-size: 15px; fill: #2c3e50; font-weight: bold; }\n    .sublabel { font-family: sans-serif; font-size: 14px; fill: #e74c3c; font-weight: bold; }\n    .info-title { font-family: sans-serif; font-size: 18px; fill: #2c3e50; font-weight: bold; }\n    .info-text { font-family: sans-serif; font-size: 14px; fill: #34495e; }\n    .electron { fill: #f1c40f; stroke: #d35400; stroke-width: 1.5; }\n    .panel { fill: #f8f9fa; stroke: #bdc3c7; stroke-width: 2; rx: 8px; }\n  </style>\n\n  <!-- Background -->\n  <rect x=\"0\" y=\"0\" width=\"800\" height=\"500\" fill=\"#ffffff\"/>\n\n  <!-- Info Panel (Right Side, completely separated x:500-780) -->\n  <rect x=\"500\" y=\"30\" width=\"280\" height=\"440\" class=\"panel\"/>\n  <text x=\"640\" y=\"65\" text-anchor=\"middle\" class=\"info-title\">Series Circuit Rules</text>\n  \n  <text x=\"520\" y=\"110\" class=\"info-text\">• Only one loop for current</text>\n  <text x=\"520\" y=\"135\" class=\"info-text\">  to flow through.</text>\n  \n  <text x=\"520\" y=\"185\" class=\"info-text\">• <tspan fill=\"#d35400\" font-weight=\"bold\">Current</tspan> is the same</text>\n  <text x=\"520\" y=\"210\" class=\"info-text\">  everywhere (0.2 A).</text>\n\n  <text x=\"520\" y=\"260\" class=\"info-text\">• <tspan fill=\"#8e44ad\" font-weight=\"bold\">Voltage</tspan> is shared</text>\n  <text x=\"520\" y=\"285\" class=\"info-text\">  between components</text>\n  <text x=\"520\" y=\"310\" class=\"info-text\">  (6 V = 3 V + 3 V).</text>\n\n  <text x=\"520\" y=\"380\" class=\"info-text\">Animated charges show</text>\n  <text x=\"520\" y=\"405\" class=\"info-text\">steady electron flow.</text>\n\n  <!-- Circuit Loop Rectangle (x:80 to 440, y:90 to 410) -->\n  <rect x=\"80\" y=\"90\" width=\"360\" height=\"320\" class=\"wire\"/>\n\n  <!-- Components along the circuit -->\n  \n  <!-- Cell (Bottom wire, centre at x:260, y:410) -->\n  <g transform=\"translate(260, 410)\">\n    <rect x=\"-40\" y=\"-12\" width=\"80\" height=\"24\" fill=\"#ffffff\" stroke=\"none\"/>\n    <line x1=\"-35\" y1=\"0\" x2=\"-15\" y2=\"0\" class=\"component\" stroke-width=\"4\"/>\n    <line x1=\"-15\" y1=\"-12\" x2=\"-15\" y2=\"12\" class=\"component\" stroke-width=\"4\"/>\n    <line x1=\"15\" y1=\"-20\" x2=\"15\" y2=\"20\" class=\"component\" stroke-width=\"4\"/>\n    <line x1=\"35\" y1=\"0\" x2=\"15\" y2=\"0\" class=\"component\" stroke-width=\"4\"/>\n    <text x=\"-25\" y=\"-22\" text-anchor=\"middle\" class=\"label\" fill=\"#e67e22\">+</text>\n    <text x=\"25\" y=\"-22\" text-anchor=\"middle\" class=\"label\" fill=\"#e67e22\">-</text>\n    <text x=\"0\" y=\"38\" text-anchor=\"middle\" class=\"label\">Cell</text>\n    <text x=\"0\" y=\"-28\" text-anchor=\"middle\" class=\"sublabel\">6 V</text>\n  </g>\n\n  <!-- Lamp 1 (Top wire, centre at x:200, y:90) -->\n  <g transform=\"translate(200, 90)\">\n    <rect x=\"-25\" y=\"-25\" width=\"50\" height=\"50\" fill=\"#ffffff\" stroke=\"none\"/>\n    <circle cx=\"0\" cy=\"0\" r=\"22\" class=\"component\"/>\n    <line x1=\"-15\" y1=\"-15\" x2=\"15\" y2=\"15\" class=\"component\"/>\n    <line x1=\"-15\" y1=\"15\" x2=\"15\" y2=\"-15\" class=\"component\"/>\n    <text x=\"0\" y=\"-35\" text-anchor=\"middle\" class=\"label\">Lamp 1</text>\n    <text x=\"0\" y=\"-50\" text-anchor=\"middle\" class=\"sublabel\">3 V</text>\n  </g>\n\n  <!-- Lamp 2 (Top wire, centre at x:340, y:90) -->\n  <g transform=\"translate(340, 90)\">\n    <rect x=\"-25\" y=\"-25\" width=\"50\" height=\"50\" fill=\"#ffffff\" stroke=\"none\"/>\n    <circle cx=\"0\" cy=\"0\" r=\"22\" class=\"component\"/>\n    <line x1=\"-15\" y1=\"-15\" x2=\"15\" y2=\"15\" class=\"component\"/>\n    <line x1=\"-15\" y1=\"15\" x2=\"15\" y2=\"-15\" class=\"component\"/>\n    <text x=\"0\" y=\"-35\" text-anchor=\"middle\" class=\"label\">Lamp 2</text>\n    <text x=\"0\" y=\"-50\" text-anchor=\"middle\" class=\"sublabel\">3 V</text>\n  </g>\n\n  <!-- Ammeter 1 (Left wire, centre at x:80, y:230) -->\n  <g transform=\"translate(80, 230)\">\n    <rect x=\"-25\" y=\"-25\" width=\"50\" height=\"50\" fill=\"#ffffff\" stroke=\"none\"/>\n    <circle cx=\"0\" cy=\"0\" r=\"22\" class=\"component\"/>\n    <text x=\"0\" y=\"7\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"22\" font-weight=\"bold\" fill=\"#2c3e50\">A</text>\n    <text x=\"-40\" y=\"5\" text-anchor=\"end\" class=\"label\">Ammeter</text>\n    <text x=\"-40\" y=\"23\" text-anchor=\"end\" class=\"sublabel\">0.2 A</text>\n  </g>\n\n  <!-- Ammeter 2 (Right wire, centre at x:440, y:230) -->\n  <g transform=\"translate(440, 230)\">\n    <rect x=\"-25\" y=\"-25\" width=\"50\" height=\"50\" fill=\"#ffffff\" stroke=\"none\"/>\n    <circle cx=\"0\" cy=\"0\" r=\"22\" class=\"component\"/>\n    <text x=\"0\" y=\"7\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"22\" font-weight=\"bold\" fill=\"#2c3e50\">A</text>\n    <text x=\"40\" y=\"5\" text-anchor=\"start\" class=\"label\">Ammeter</text>\n    <text x=\"40\" y=\"23\" text-anchor=\"start\" class=\"sublabel\">0.2 A</text>\n  </g>\n\n  <!-- Visible Labels (clearly away from lines) -->\n  <text x=\"260\" y=\"465\" text-anchor=\"middle\" class=\"label\" fill=\"#2980b9\">Voltage supplied by cell is shared</text>\n  <text x=\"260\" y=\"45\" text-anchor=\"middle\" class=\"label\" fill=\"#c0392b\">Series Circuit: Current &amp; Voltage</text>\n  \n  <!-- Current Flow Animation using <animateMotion> -->\n  <!-- Circuit perimeter: x:80 to 440 (width 360), y:90 to 410 (height 320) -> total = 1360px -->\n  <g>\n    <circle r=\"5\" class=\"electron\">\n      <animateMotion dur=\"6s\" repeatCount=\"indefinite\" path=\"M 80 90 L 440 90 L 440 410 L 80 410 Z\"/>\n    </circle>\n    <circle r=\"5\" class=\"electron\">\n      <animateMotion dur=\"6s\" begin=\"-0.46s\" repeatCount=\"indefinite\" path=\"M 80 90 L 440 90 L 440 410 L 80 410 Z\"/>\n    </circle>\n    <circle r=\"5\" class=\"electron\">\n      <animateMotion dur=\"6s\" begin=\"-0.92s\" repeatCount=\"indefinite\" path=\"M 80 90 L 440 90 L 440 410 L 80 410 Z\"/>\n    </circle>\n    <circle r=\"5\" class=\"electron\">\n      <animateMotion dur=\"6s\" begin=\"-1.38s\" repeatCount=\"indefinite\" path=\"M 80 90 L 440 90 L 440 410 L 80 410 Z\"/>\n    </circle>\n    <circle r=\"5\" class=\"electron\">\n      <animateMotion dur=\"6s\" begin=\"-1.85s\" repeatCount=\"indefinite\" path=\"M 80 90 L 440 90 L 440 410 L 80 410 Z\"/>\n    </circle>\n    <circle r=\"5\" class=\"electron\">\n      <animateMotion dur=\"6s\" begin=\"-2.31s\" repeatCount=\"indefinite\" path=\"M 80 90 L 440 90 L 440 410 L 80 410 Z\"/>\n    </circle>\n    <circle r=\"5\" class=\"electron\">\n      <animateMotion dur=\"6s\" begin=\"-2.77s\" repeatCount=\"indefinite\" path=\"M 80 90 L 440 90 L 440 410 L 80 410 Z\"/>\n    </circle>\n    <circle r=\"5\" class=\"electron\">\n      <animateMotion dur=\"6s\" begin=\"-3.23s\" repeatCount=\"indefinite\" path=\"M 80 90 L 440 90 L 440 410 L 80 410 Z\"/>\n    </circle>\n    <circle r=\"5\" class=\"electron\">\n      <animateMotion dur=\"6s\" begin=\"-3.69s\" repeatCount=\"indefinite\" path=\"M 80 90 L 440 90 L 440 410 L 80 410 Z\"/>\n    </circle>\n    <circle r=\"5\" class=\"electron\">\n      <animateMotion dur=\"6s\" begin=\"-4.15s\" repeatCount=\"indefinite\" path=\"M 80 90 L 440 90 L 440 410 L 80 410 Z\"/>\n    </circle>\n    <circle r=\"5\" class=\"electron\">\n      <animateMotion dur=\"6s\" begin=\"-4.62s\" repeatCount=\"indefinite\" path=\"M 80 90 L 440 90 L 440 410 L 80 410 Z\"/>\n    </circle>\n    <circle r=\"5\" class=\"electron\">\n      <animateMotion dur=\"6s\" begin=\"-5.08s\" repeatCount=\"indefinite\" path=\"M 80 90 L 440 90 L 440 410 L 80 410 Z\"/>\n    </circle>\n    <circle r=\"5\" class=\"electron\">\n      <animateMotion dur=\"6s\" begin=\"-5.54s\" repeatCount=\"indefinite\" path=\"M 80 90 L 440 90 L 440 410 L 80 410 Z\"/>\n    </circle>\n  </g>\n\n</svg>",
+      "passed": false,
+      "checks": [
+        {
+          "id": "valid",
+          "name": "Valid SVG",
+          "passed": true,
+          "detail": "Parses as XML, root is <svg>, viewBox is set."
+        },
+        {
+          "id": "inViewBox",
+          "name": "Inside viewBox",
+          "passed": false,
+          "detail": "1 element(s) outside the viewBox is x 0..800, y 0..500: <text> \"Ammeter\" at rest spans x -26..40, y 223..238"
+        },
+        {
+          "id": "titleAndLabels",
+          "name": "Title + 3 labels",
+          "passed": true,
+          "detail": "Title \"Series circuit\", 26 labels."
+        },
+        {
+          "id": "animated",
+          "name": "Animated",
+          "passed": true,
+          "detail": "13 SMIL animation element(s), 0 CSS @keyframes in use."
+        },
+        {
+          "id": "requiredLabels",
+          "name": "Key terms labelled",
+          "passed": true,
+          "detail": "All 3 key terms are labelled."
+        },
+        {
+          "id": "readableLabels",
+          "name": "Readable labels",
+          "passed": false,
+          "detail": "6 problem(s): \"Lamp 1\" overlaps \"Series Circuit: Current & Volt\" (33%); \"3 V\" overlaps \"Series Circuit: Current & Volt\" (70%); \"Lamp 2\" overlaps \"Series Circuit: Current & Volt\" (33%); \"3 V\" overlaps \"Series Circuit: Current & Volt\" (70%); a line runs through \"Ammeter\". Move labels apart or make them bigger."
+        }
+      ],
+      "retries": 1,
+      "apiRetries": 0,
+      "inputTokens": 5016,
+      "outputTokens": 6739,
+      "costUsd": 0.018352,
+      "attempts": [
+        {
+          "attempt": 1,
+          "inputTokens": 701,
+          "outputTokens": 3490,
+          "costUsd": 0.008935,
+          "apiRetries": 0,
+          "durationMs": 8396,
+          "checks": [
+            {
+              "id": "valid",
+              "name": "Valid SVG",
+              "passed": true,
+              "detail": "Parses as XML, root is <svg>, viewBox is set."
+            },
+            {
+              "id": "inViewBox",
+              "name": "Inside viewBox",
+              "passed": false,
+              "detail": "1 element(s) outside the viewBox is x 0..800, y 0..500: <text> \"Ammeter\" at rest spans x -25..45, y 242..258"
+            },
+            {
+              "id": "titleAndLabels",
+              "name": "Title + 3 labels",
+              "passed": true,
+              "detail": "Title \"Series circuit\", 26 labels."
+            },
+            {
+              "id": "animated",
+              "name": "Animated",
+              "passed": true,
+              "detail": "14 SMIL animation element(s), 0 CSS @keyframes in use."
             },
             {
               "id": "requiredLabels",
@@ -348,8 +395,55 @@
             {
               "id": "readableLabels",
               "name": "Readable labels",
+              "passed": false,
+              "detail": "5 problem(s): \"Cell\" overlaps \"Voltage supplied by cell is sh\" (6%); a line runs through \"Lamp 1\"; a line runs through \"Lamp 2\"; a line runs through \"Ammeter\"; a line runs through \"0.2 A\". Move labels apart or make them bigger."
+            }
+          ],
+          "error": null
+        },
+        {
+          "attempt": 2,
+          "inputTokens": 4315,
+          "outputTokens": 3249,
+          "costUsd": 0.009417,
+          "apiRetries": 0,
+          "durationMs": 7787,
+          "checks": [
+            {
+              "id": "valid",
+              "name": "Valid SVG",
               "passed": true,
-              "detail": "14 labels, none overlap each other or cut across symbols, all at least 12 units tall."
+              "detail": "Parses as XML, root is <svg>, viewBox is set."
+            },
+            {
+              "id": "inViewBox",
+              "name": "Inside viewBox",
+              "passed": false,
+              "detail": "1 element(s) outside the viewBox is x 0..800, y 0..500: <text> \"Ammeter\" at rest spans x -26..40, y 223..238"
+            },
+            {
+              "id": "titleAndLabels",
+              "name": "Title + 3 labels",
+              "passed": true,
+              "detail": "Title \"Series circuit\", 26 labels."
+            },
+            {
+              "id": "animated",
+              "name": "Animated",
+              "passed": true,
+              "detail": "13 SMIL animation element(s), 0 CSS @keyframes in use."
+            },
+            {
+              "id": "requiredLabels",
+              "name": "Key terms labelled",
+              "passed": true,
+              "detail": "All 3 key terms are labelled."
+            },
+            {
+              "id": "readableLabels",
+              "name": "Readable labels",
+              "passed": false,
+              "detail": "6 problem(s): \"Lamp 1\" overlaps \"Series Circuit: Current & Volt\" (33%); \"3 V\" overlaps \"Series Circuit: Current & Volt\" (70%); \"Lamp 2\" overlaps \"Series Circuit: Current & Volt\" (33%); \"3 V\" overlaps \"Series Circuit: Current & Volt\" (70%); a line runs through \"Ammeter\". Move labels apart or make them bigger."
             }
           ],
           "error": null
@@ -357,8 +451,8 @@
       ],
       "sanitized": [],
       "error": null,
-      "generatedAt": "2026-11-24T05:17:55.128Z",
-      "durationMs": 6980
+      "generatedAt": "2026-11-24T05:21:57.700Z",
+      "durationMs": 16183
     },
     {
       "conceptId": "photosynthesis",

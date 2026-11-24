@@ -1,1 +1,572 @@
-{ "updatedAt": null, "results": [] }
+{
+  "updatedAt": "2026-11-24T05:07:45.355Z",
+  "results": [
+    {
+      "conceptId": "pythagoras",
+      "concept": "Pythagoras' theorem",
+      "subject": "Maths",
+      "model": "gemini-3.5-flash-lite",
+      "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 800 500\">\n  <title>Pythagoras' Theorem</title>\n  \n  <style>\n    .bold-text { font-family: sans-serif; font-weight: bold; font-size: 18px; fill: #1e293b; }\n    .label-text { font-family: sans-serif; font-size: 16px; fill: #334155; }\n    .eq-text { font-family: sans-serif; font-weight: bold; font-size: 24px; fill: #0f172a; }\n    \n    @keyframes pulseA {\n      0%, 100% { fill-opacity: 0.35; stroke-width: 2; }\n      20%, 40% { fill-opacity: 0.75; stroke-width: 4; }\n    }\n    @keyframes pulseB {\n      40%, 60% { fill-opacity: 0.75; stroke-width: 4; }\n      0%, 20%, 80%, 100% { fill-opacity: 0.35; stroke-width: 2; }\n    }\n    @keyframes pulseC {\n      60%, 80% { fill-opacity: 0.75; stroke-width: 4; }\n      0%, 40%, 100% { fill-opacity: 0.35; stroke-width: 2; }\n    }\n    @keyframes highlightEq {\n      60%, 90% { transform: scale(1.05); fill: #1d4ed8; }\n      0%, 40%, 100% { transform: scale(1); fill: #0f172a; }\n    }\n    \n    .sq-a { animation: pulseA 6s infinite; }\n    .sq-b { animation: pulseB 6s infinite; }\n    .sq-c { animation: pulseC 6s infinite; }\n    .eq-box { transform-origin: 580px 420px; animation: highlightEq 6s infinite; }\n  </style>\n\n  <!-- Background -->\n  <rect width=\"800\" height=\"500\" fill=\"#ffffff\"/>\n  \n  <!-- Title / Header -->\n  <text x=\"400\" y=\"40\" text-anchor=\"middle\" class=\"bold-text\" font-size=\"22\">Pythagoras' Theorem: a² + b² = c²</text>\n  \n  <!-- Triangle Coordinates: \n       A = (250, 320) [Right angle corner]\n       B = (250, 140) [Vertical top, length 3 units -> scaled by 40px = 120px]\n       C = (410, 320) [Horizontal right, length 4 units -> scaled by 40px = 160px]\n       Hypotenuse = 5 units -> 200px\n       Let's use scale: 1 unit = 42px\n       A: (260, 330)\n       B (top): (260, 330 - 3*42) = (260, 204) -> Height = 126px\n       C (right): (260 + 4*42, 330) = (428, 330) -> Base = 168px\n  -->\n\n  <!-- Squares constructed on sides -->\n  \n  <!-- Square on side 'a' (vertical, length 3 -> 126px leftwards) -->\n  <rect x=\"134\" y=\"204\" width=\"126\" height=\"126\" fill=\"#60a5fa\" stroke=\"#2563eb\" stroke-width=\"2\" class=\"sq-a\"/>\n  <!-- Grid lines for a^2 (area 9) -->\n  <line x1=\"176\" y1=\"204\" x2=\"176\" y2=\"330\" stroke=\"#93c5fd\" stroke-dasharray=\"4\"/>\n  <line x1=\"218\" y1=\"204\" x2=\"218\" y2=\"330\" stroke=\"#93c5fd\" stroke-dasharray=\"4\"/>\n  <line x1=\"134\" y1=\"246\" x2=\"260\" y2=\"246\" stroke=\"#93c5fd\" stroke-dasharray=\"4\"/>\n  <line x1=\"134\" y1=\"288\" x2=\"260\" y2=\"288\" stroke=\"#93c5fd\" stroke-dasharray=\"4\"/>\n\n  <!-- Square on side 'b' (horizontal, length 4 -> 168px downwards) -->\n  <rect x=\"260\" y=\"330\" width=\"168\" height=\"168\" fill=\"#34d399\" stroke=\"#059669\" stroke-width=\"2\" class=\"sq-b\"/>\n  <!-- Grid lines for b^2 (area 16) -->\n  <line x1=\"302\" y1=\"330\" x2=\"302\" y2=\"498\" stroke=\"#6ee7b7\" stroke-dasharray=\"4\"/>\n  <line x1=\"344\" y1=\"330\" x2=\"344\" y2=\"498\" stroke=\"#6ee7b7\" stroke-dasharray=\"4\"/>\n  <line x1=\"386\" y1=\"330\" x2=\"386\" y2=\"498\" stroke=\"#6ee7b7\" stroke-dasharray=\"4\"/>\n  <line x1=\"260\" y1=\"372\" x2=\"428\" y2=\"372\" stroke=\"#6ee7b7\" stroke-dasharray=\"4\"/>\n  <line x1=\"260\" y1=\"414\" x2=\"428\" y2=\"414\" stroke=\"#6ee7b7\" stroke-dasharray=\"4\"/>\n  <line x1=\"260\" y1=\"456\" x2=\"428\" y2=\"456\" stroke=\"#6ee7b7\" stroke-dasharray=\"4\"/>\n\n  <!-- Square on hypotenuse 'c' (length 5 -> 210px outwards-up-left)\n       Vector of hypotenuse from (428, 330) to (260, 204) is dx = -168, dy = -126.\n       Perpendicular outward vector (rotated 90 deg counter-clockwise / left of vector):\n       dx_perp = -dy = 126, dy_perp = dx = -168.\n       Magnitude = 210. Normalised perp = (126/210, -168/210) = (0.6, -0.8).\n       Corner 1: (428, 330) + (126, -168) = (554, 162)\n       Corner 2: (260, 204) + (126, -168) = (386, 36)\n  -->\n  <polygon points=\"260,204 428,330 554,162 386,36\" fill=\"#f47f54\" stroke=\"#d97706\" stroke-width=\"2\" class=\"sq-c\" fill-opacity=\"0.35\"/>\n\n  <!-- Triangle proper (drawn on top of squares for clarity) -->\n  <polygon points=\"260,204 260,330 428,330\" fill=\"#ffffff\" stroke=\"#0f172a\" stroke-width=\"3\"/>\n\n  <!-- Right angle symbol -->\n  <rect x=\"260\" y=\"310\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"#0f172a\" stroke-width=\"2\"/>\n\n  <!-- Labels inside/near squares -->\n  <text x=\"197\" y=\"271\" text-anchor=\"middle\" class=\"bold-text\">a²</text>\n  <text x=\"175\" y=\"295\" text-anchor=\"middle\" class=\"label-text\" fill=\"#64748b\">(9)</text>\n\n  <text x=\"344\" y=\"418\" text-anchor=\"middle\" class=\"bold-text\">b²</text>\n  <text x=\"344\" y=\"442\" text-anchor=\"middle\" class=\"label-text\" fill=\"#64748b\">(16)</text>\n\n  <text x=\"430\" y=\"185\" text-anchor=\"middle\" class=\"bold-text\">c²</text>\n  <text x=\"430\" y=\"208\" text-anchor=\"middle\" class=\"label-text\" fill=\"#64748b\">(25)</text>\n\n  <!-- Side length labels -->\n  <text x=\"235\" y=\"270\" text-anchor=\"end\" class=\"bold-text\" fill=\"#2563eb\">a = 3</text>\n  <text x=\"344\" y=\"322\" text-anchor=\"middle\" class=\"bold-text\" fill=\"#059669\">b = 4</text>\n  \n  <!-- Hypotenuse label -->\n  <text x=\"360\" y=\"250\" text-anchor=\"middle\" class=\"bold-text\" fill=\"#d97706\" transform=\"rotate(-37, 360, 250)\">c = 5 (hypotenuse)</text>\n\n  <!-- Explanation Panel / Box on the right -->\n  <rect x=\"470\" y=\"80\" width=\"300\" height=\"380\" rx=\"10\" fill=\"#f8fafc\" stroke=\"#cbd5e1\" stroke-width=\"2\"/>\n  \n  <text x=\"620\" y=\"120\" text-anchor=\"middle\" class=\"bold-text\">Key Facts</text>\n  \n  <text x=\"490\" y=\"160\" class=\"label-text\">• Right-angled triangle has</text>\n  <text x=\"510\" y=\"185\" class=\"label-text\">an angle of 90°.</text>\n  \n  <text x=\"490\" y=\"225\" class=\"label-text\">• The <tspan fill=\"#d97706\" font-weight=\"bold\">hypotenuse</tspan> is the</text>\n  <text x=\"510\" y=\"250\" class=\"label-text\">longest side, opposite</text>\n  <text x=\"510\" y=\"275\" class=\"label-text\">the right angle.</text>\n\n  <text x=\"490\" y=\"315\" class=\"label-text\">• Area of square <tspan fill=\"#2563eb\" font-weight=\"bold\">a²</tspan> = 9</text>\n  <text x=\"490\" y=\"345\" class=\"label-text\">• Area of square <tspan fill=\"#059669\" font-weight=\"bold\">b²</tspan> = 16</text>\n  <text x=\"490\" y=\"375\" class=\"label-text\">• Area of square <tspan fill=\"#d97706\" font-weight=\"bold\">c²</tspan> = 25</text>\n\n  <!-- Highlight Equation box -->\n  <g class=\"eq-box\">\n    <rect x=\"500\" y=\"400\" width=\"240\" height=\"45\" rx=\"8\" fill=\"#e2e8f0\" stroke=\"#94a3b8\" stroke-width=\"1.5\"/>\n    <text x=\"620\" y=\"429\" text-anchor=\"middle\" class=\"eq-text\">a² + b² = c²</text>\n  </g>\n  <text x=\"620\" y=\"470\" text-anchor=\"middle\" class=\"label-text\" font-size=\"14\" fill=\"#64748b\">9 + 16 = 25</text>\n\n</svg>",
+      "passed": true,
+      "checks": [
+        {
+          "id": "valid",
+          "name": "Valid SVG",
+          "passed": true,
+          "detail": "Parses as XML, root is <svg>, viewBox is set."
+        },
+        {
+          "id": "inViewBox",
+          "name": "Inside viewBox",
+          "passed": true,
+          "detail": "All shapes and text are inside the viewBox is x 0..800, y 0..500."
+        },
+        {
+          "id": "titleAndLabels",
+          "name": "Title + 3 labels",
+          "passed": true,
+          "detail": "Title \"Pythagoras' Theorem\", 21 labels."
+        },
+        {
+          "id": "animated",
+          "name": "Animated",
+          "passed": true,
+          "detail": "0 SMIL animation element(s), 4 CSS @keyframes in use."
+        },
+        {
+          "id": "requiredLabels",
+          "name": "Key terms labelled",
+          "passed": true,
+          "detail": "All 2 key terms are labelled."
+        },
+        {
+          "id": "readableLabels",
+          "name": "Readable labels",
+          "passed": true,
+          "detail": "21 labels, none overlap, all at least 12 units tall."
+        }
+      ],
+      "retries": 0,
+      "apiRetries": 0,
+      "inputTokens": 630,
+      "outputTokens": 2998,
+      "costUsd": 0.007684,
+      "attempts": [
+        {
+          "attempt": 1,
+          "inputTokens": 630,
+          "outputTokens": 2998,
+          "costUsd": 0.007684,
+          "apiRetries": 0,
+          "durationMs": 7638,
+          "checks": [
+            {
+              "id": "valid",
+              "name": "Valid SVG",
+              "passed": true,
+              "detail": "Parses as XML, root is <svg>, viewBox is set."
+            },
+            {
+              "id": "inViewBox",
+              "name": "Inside viewBox",
+              "passed": true,
+              "detail": "All shapes and text are inside the viewBox is x 0..800, y 0..500."
+            },
+            {
+              "id": "titleAndLabels",
+              "name": "Title + 3 labels",
+              "passed": true,
+              "detail": "Title \"Pythagoras' Theorem\", 21 labels."
+            },
+            {
+              "id": "animated",
+              "name": "Animated",
+              "passed": true,
+              "detail": "0 SMIL animation element(s), 4 CSS @keyframes in use."
+            },
+            {
+              "id": "requiredLabels",
+              "name": "Key terms labelled",
+              "passed": true,
+              "detail": "All 2 key terms are labelled."
+            },
+            {
+              "id": "readableLabels",
+              "name": "Readable labels",
+              "passed": true,
+              "detail": "21 labels, none overlap, all at least 12 units tall."
+            }
+          ],
+          "error": null
+        }
+      ],
+      "sanitized": [],
+      "error": null,
+      "generatedAt": "2026-11-24T05:06:47.898Z",
+      "durationMs": 7639
+    },
+    {
+      "conceptId": "circle",
+      "concept": "Parts of a circle",
+      "subject": "Maths",
+      "model": "gemini-3.5-flash-lite",
+      "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 800 500\">\n  <title>Parts of a Circle</title>\n  <style>\n    .bg { fill: #f8fafc; }\n    .title-text { font-family: sans-serif; font-size: 22px; font-weight: bold; fill: #1e293b; text-anchor: middle; }\n    .body-text { font-family: sans-serif; font-size: 15px; fill: #334155; }\n    .bold-text { font-weight: bold; }\n    .label-box { fill: #ffffff; stroke: #cbd5e1; stroke-width: 1.5; rx: 6; ry: 6; }\n    \n    /* Animations */\n    @keyframes sweep {\n      0% { transform: rotate(0deg); }\n      100% { transform: rotate(360deg); }\n    }\n    @keyframes pulse {\n      0%, 100% { r: 6px; fill: #dc2626; }\n      50% { r: 9px; fill: #ef4444; }\n    }\n    .rotating-radius {\n      transform-origin: 340px 250px;\n      animation: sweep 8s linear infinite;\n    }\n    .centre-dot {\n      animation: pulse 2s ease-in-out infinite;\n    }\n  </style>\n\n  <!-- Background -->\n  <rect width=\"800\" height=\"500\" class=\"bg\"/>\n\n  <!-- Title -->\n  <text x=\"400\" y=\"38\" class=\"title-text\">Parts of a Circle</text>\n\n  <!-- Definitions / Info Panel on Right -->\n  <g transform=\"translate(530, 70)\">\n    <rect x=\"0\" y=\"0\" width=\"250\" height=\"400\" class=\"label-box\"/>\n    \n    <text x=\"15\" y=\"30\" class=\"body-text bold-text\" fill=\"#0f172a\">Key Terms:</text>\n    \n    <!-- Centre info -->\n    <circle cx=\"25\" cy=\"65\" r=\"5\" fill=\"#dc2626\"/>\n    <text x=\"40\" y=\"70\" class=\"body-text bold-text\" fill=\"#dc2626\">centre</text>\n    <text x=\"15\" y=\"92\" class=\"body-text\" font-size=\"13px\">Fixed point in the</text>\n    <text x=\"15\" y=\"110\" class=\"body-text\" font-size=\"13px\">middle of the circle.</text>\n\n    <!-- Radius info -->\n    <line x1=\"15\" y1=\"140\" x2=\"35\" y2=\"140\" stroke=\"#0284c7\" stroke-width=\"3\"/>\n    <text x=\"45\" y=\"145\" class=\"body-text bold-text\" fill=\"#0284c7\">radius</text>\n    <text x=\"15\" y=\"167\" class=\"body-text\" font-size=\"13px\">Centre to the edge.</text>\n\n    <!-- Diameter info -->\n    <line x1=\"15\" y1=\"205\" x2=\"35\" y2=\"205\" stroke=\"#16a34a\" stroke-width=\"3\"/>\n    <text x=\"45\" y=\"210\" class=\"body-text bold-text\" fill=\"#16a34a\">diameter</text>\n    <text x=\"15\" y=\"232\" class=\"body-text\" font-size=\"13px\">Across through centre.</text>\n    <text x=\"15\" y=\"255\" class=\"body-text bold-text\" font-size=\"13.5px\" fill=\"#16a34a\">diameter = 2 × radius</text>\n\n    <!-- Circumference info -->\n    <path d=\"M 15 295 Q 25 285 35 295\" stroke=\"#9333ea\" stroke-width=\"3\" fill=\"none\"/>\n    <text x=\"45\" y=\"300\" class=\"body-text bold-text\" fill=\"#9333ea\">circumference</text>\n    <text x=\"15\" y=\"322\" class=\"body-text\" font-size=\"13px\">Distance all the way</text>\n    <text x=\"15\" y=\"340\" class=\"body-text\" font-size=\"13px\">around the edge.</text>\n  </g>\n\n  <!-- CIRCLE GRAPHIC AREA -->\n  <!-- Outer Circumference Path (dashed highlight for animation) -->\n  <circle cx=\"340\" cy=\"250\" r=\"160\" fill=\"#f1f5f9\" stroke=\"#cbd5e1\" stroke-width=\"4\"/>\n  <circle cx=\"340\" cy=\"250\" r=\"160\" fill=\"none\" stroke=\"#9333ea\" stroke-width=\"4\" stroke-dasharray=\"1004\" stroke-dashoffset=\"1004\">\n    <animate attributeName=\"stroke-dashoffset\" values=\"1004;0\" dur=\"8s\" repeatCount=\"indefinite\"/>\n  </circle>\n\n  <!-- Diameter Line (Green) -->\n  <line x1=\"180\" y1=\"250\" x2=\"500\" y2=\"250\" stroke=\"#16a34a\" stroke-width=\"3.5\" stroke-dasharray=\"6,4\"/>\n  \n  <!-- Rotating Radius (Cyan) -->\n  <g class=\"rotating-radius\">\n    <line x1=\"340\" y1=\"250\" x2=\"500\" y2=\"250\" stroke=\"#0284c7\" stroke-width=\"4\"/>\n    <!-- Little dot traveling at the end of the radius -->\n    <circle cx=\"500\" cy=\"250\" r=\"5\" fill=\"#0284c7\"/>\n  </g>\n\n  <!-- Centre Point -->\n  <circle cx=\"340\" cy=\"250\" r=\"6\" class=\"centre-dot\"/>\n\n  <!-- LABELS ON THE DIAGRAM -->\n  \n  <!-- Centre Label -->\n  <text x=\"320\" y=\"235\" class=\"body-text bold-text\" fill=\"#dc2626\" text-anchor=\"end\">centre</text>\n  <line x1=\"325\" y1=\"240\" x2=\"335\" y2=\"246\" stroke=\"#dc2626\" stroke-width=\"1.5\"/>\n\n  <!-- Radius Label (positioned dynamically near the rotating arm) -->\n  <g transform=\"translate(400, 215)\">\n    <rect x=\"-35\" y=\"-14\" width=\"70\" height=\"24\" class=\"label-box\"/>\n    <text x=\"0\" y=\"2\" class=\"body-text bold-text\" font-size=\"14px\" fill=\"#0284c7\" text-anchor=\"middle\">radius</text>\n  </g>\n\n  <!-- Diameter Label -->\n  <g transform=\"translate(340, 285)\">\n    <rect x=\"-45\" y=\"-12\" width=\"90\" height=\"24\" class=\"label-box\"/>\n    <text x=\"0\" y=\"5\" class=\"body-text bold-text\" font-size=\"14px\" fill=\"#16a34a\" text-anchor=\"middle\">diameter</text>\n  </g>\n\n  <!-- Circumference Label with pointer line -->\n  <path d=\"M 453 137 L 490 110\" stroke=\"#9333ea\" stroke-width=\"1.5\"/>\n  <g transform=\"translate(495, 95)\">\n    <rect x=\"-55\" y=\"-14\" width=\"110\" height=\"26\" class=\"label-box\"/>\n    <text x=\"0\" y=\"3\" class=\"body-text bold-text\" font-size=\"13px\" fill=\"#9333ea\" text-anchor=\"middle\">circumference</text>\n  </g>\n\n</svg>",
+      "passed": true,
+      "checks": [
+        {
+          "id": "valid",
+          "name": "Valid SVG",
+          "passed": true,
+          "detail": "Parses as XML, root is <svg>, viewBox is set."
+        },
+        {
+          "id": "inViewBox",
+          "name": "Inside viewBox",
+          "passed": true,
+          "detail": "All shapes and text are inside the viewBox is x 0..800, y 0..500."
+        },
+        {
+          "id": "titleAndLabels",
+          "name": "Title + 3 labels",
+          "passed": true,
+          "detail": "Title \"Parts of a Circle\", 17 labels."
+        },
+        {
+          "id": "animated",
+          "name": "Animated",
+          "passed": true,
+          "detail": "1 SMIL animation element(s), 2 CSS @keyframes in use."
+        },
+        {
+          "id": "requiredLabels",
+          "name": "Key terms labelled",
+          "passed": true,
+          "detail": "All 4 key terms are labelled."
+        },
+        {
+          "id": "readableLabels",
+          "name": "Readable labels",
+          "passed": true,
+          "detail": "17 labels, none overlap, all at least 12 units tall."
+        }
+      ],
+      "retries": 0,
+      "apiRetries": 0,
+      "inputTokens": 558,
+      "outputTokens": 1995,
+      "costUsd": 0.005155,
+      "attempts": [
+        {
+          "attempt": 1,
+          "inputTokens": 558,
+          "outputTokens": 1995,
+          "costUsd": 0.005155,
+          "apiRetries": 0,
+          "durationMs": 5611,
+          "checks": [
+            {
+              "id": "valid",
+              "name": "Valid SVG",
+              "passed": true,
+              "detail": "Parses as XML, root is <svg>, viewBox is set."
+            },
+            {
+              "id": "inViewBox",
+              "name": "Inside viewBox",
+              "passed": true,
+              "detail": "All shapes and text are inside the viewBox is x 0..800, y 0..500."
+            },
+            {
+              "id": "titleAndLabels",
+              "name": "Title + 3 labels",
+              "passed": true,
+              "detail": "Title \"Parts of a Circle\", 17 labels."
+            },
+            {
+              "id": "animated",
+              "name": "Animated",
+              "passed": true,
+              "detail": "1 SMIL animation element(s), 2 CSS @keyframes in use."
+            },
+            {
+              "id": "requiredLabels",
+              "name": "Key terms labelled",
+              "passed": true,
+              "detail": "All 4 key terms are labelled."
+            },
+            {
+              "id": "readableLabels",
+              "name": "Readable labels",
+              "passed": true,
+              "detail": "17 labels, none overlap, all at least 12 units tall."
+            }
+          ],
+          "error": null
+        }
+      ],
+      "sanitized": [],
+      "error": null,
+      "generatedAt": "2026-11-24T05:06:58.513Z",
+      "durationMs": 5612
+    },
+    {
+      "conceptId": "series-circuit",
+      "concept": "Series circuit",
+      "subject": "Physics",
+      "model": "gemini-3.5-flash-lite",
+      "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 800 500\">\n  <title>Series Circuit GCSE Physics Diagram</title>\n  <style>\n    .bg { fill: #f8fafc; }\n    .wire { fill: none; stroke: #334155; stroke-width: 4; stroke-linejoin: round; }\n    .label { font-family: sans-serif; font-size: 16px; fill: #1e293b; text-anchor: middle; font-weight: bold; }\n    .sublabel { font-family: sans-serif; font-size: 13px; fill: #475569; text-anchor: middle; }\n    .box { fill: #ffffff; stroke: #cbd5e1; stroke-width: 2; rx: 8px; }\n    .electron { fill: #2563eb; }\n    .reading { font-family: sans-serif; font-size: 14px; fill: #2563eb; font-weight: bold; text-anchor: middle; }\n    .volt-reading { font-family: sans-serif; font-size: 14px; fill: #dc2626; font-weight: bold; text-anchor: middle; }\n  </style>\n\n  <!-- Background -->\n  <rect width=\"800\" height=\"500\" class=\"bg\"/>\n\n  <!-- Title Area -->\n  <text x=\"400\" y=\"35\" font-family=\"sans-serif\" font-size=\"20\" fill=\"#0f172a\" text-anchor=\"middle\" font-weight=\"bold\">Series Circuit: Current &amp; Voltage</text>\n  <text x=\"400\" y=\"55\" font-family=\"sans-serif\" font-size=\"14\" fill=\"#334155\" text-anchor=\"middle\">One single loop • Current is the same everywhere • Voltage is shared</text>\n\n  <!-- Explanation Boxes -->\n  <rect x=\"530\" y=\"80\" width=\"245\" height=\"185\" class=\"box\"/>\n  <text x=\"652\" y=\"108\" class=\"label\" font-size=\"15\">Key Rules</text>\n  <text x=\"545\" y=\"135\" font-family=\"sans-serif\" font-size=\"13\" fill=\"#334155\">• <tspan font-weight=\"bold\">Current:</tspan> Same at all points</text>\n  <text x=\"555\" y=\"155\" font-family=\"sans-serif\" font-size=\"12\" fill=\"#64748b\">I₁ = I₂ = I₃ (e.g. 0.2 A)</text>\n  <text x=\"545\" y=\"190\" font-family=\"sans-serif\" font-size=\"13\" fill=\"#334155\">• <tspan font-weight=\"bold\">Voltage:</tspan> Shared across components</text>\n  <text x=\"555\" y=\"210\" font-family=\"sans-serif\" font-size=\"12\" fill=\"#64748b\">V_cell = V₁ + V₂</text>\n  <text x=\"555\" y=\"230\" font-family=\"sans-serif\" font-size=\"12\" fill=\"#64748b\">6V = 3V + 3V</text>\n\n  <!-- CIRCUIT WIRE PATH: Rectangular Loop from x=100 to x=480, y=100 to y=420 -->\n  <rect x=\"100\" y=\"100\" width=\"380\" height=\"320\" rx=\"10\" class=\"wire\"/>\n\n  <!-- COMPONENTS -->\n\n  <!-- Cell (Top wire, around x=290, y=100) -->\n  <g transform=\"translate(260, 85)\">\n    <rect x=\"0\" y=\"0\" width=\"60\" height=\"30\" fill=\"#ffffff\" stroke=\"none\"/>\n    <!-- Cell lines (Long, Short, Long, Short) -->\n    <line x1=\"10\" y1=\"5\" x2=\"10\" y2=\"25\" stroke=\"#334155\" stroke-width=\"4\"/>\n    <line x1=\"20\" y1=\"10\" x2=\"20\" y2=\"20\" stroke=\"#334155\" stroke-width=\"3\"/>\n    <line x1=\"30\" y1=\"5\" x2=\"30\" y2=\"25\" stroke=\"#334155\" stroke-width=\"4\"/>\n    <line x1=\"40\" y1=\"10\" x2=\"40\" y2=\"20\" stroke=\"#334155\" stroke-width=\"3\"/>\n    <text x=\"25\" y=\"-3\" class=\"label\" font-size=\"13\">Cell</text>\n    <text x=\"25\" y=\"40\" class=\"volt-reading\">6 V</text>\n  </g>\n\n  <!-- Ammeter 1 (Top Left, x=180, y=100) -->\n  <g transform=\"translate(180, 100)\">\n    <circle cx=\"0\" cy=\"0\" r=\"18\" fill=\"#ffffff\" stroke=\"#334155\" stroke-width=\"3\"/>\n    <text x=\"0\" y=\"5\" class=\"label\" font-size=\"16\">A</text>\n    <text x=\"0\" y=\"-24\" class=\"reading\">0.2 A</text>\n    <text x=\"0\" y=\"32\" class=\"sublabel\">current</text>\n  </g>\n\n  <!-- Lamp 1 (Right vertical wire, x=480, y=200) -->\n  <g transform=\"translate(480, 200)\">\n    <circle cx=\"0\" cy=\"0\" r=\"22\" fill=\"#ffffff\" stroke=\"#334155\" stroke-width=\"3\"/>\n    <!-- Cross inside lamp -->\n    <line x1=\"-15\" y1=\"-15\" x2=\"15\" y2=\"15\" stroke=\"#334155\" stroke-width=\"2\"/>\n    <line x1=\"-15\" y1=\"15\" x2=\"15\" y2=\"-15\" stroke=\"#334155\" stroke-width=\"2\"/>\n    <text x=\"40\" y=\"5\" class=\"label\" font-size=\"14\">Lamp 1</text>\n    <text x=\"40\" y=\"22\" class=\"volt-reading\">3 V</text>\n    <!-- Voltmeter parallel bridge 1 -->\n    <path d=\"M 0,-22 L 0,-50 L 70,-50 L 70,0 L 48,0\" fill=\"none\" stroke=\"#dc2626\" stroke-width=\"1.5\" stroke-dasharray=\"4,4\"/>\n    <circle cx=\"70\" cy=\"-25\" r=\"15\" fill=\"#ffffff\" stroke=\"#dc2626\" stroke-width=\"2\"/>\n    <text x=\"70\" y=\"-20\" font-family=\"sans-serif\" font-size=\"14\" fill=\"#dc2626\" text-anchor=\"middle\" font-weight=\"bold\">V</text>\n    <text x=\"95\" y=\"-21\" font-family=\"sans-serif\" font-size=\"12\" fill=\"#dc2626\">3V</text>\n  </g>\n\n  <!-- Lamp 2 (Right vertical wire, x=480, y=340) -->\n  <g transform=\"translate(480, 340)\">\n    <circle cx=\"0\" cy=\"0\" r=\"22\" fill=\"#ffffff\" stroke=\"#334155\" stroke-width=\"3\"/>\n    <!-- Cross inside lamp -->\n    <line x1=\"-15\" y1=\"-15\" x2=\"15\" y2=\"15\" stroke=\"#334155\" stroke-width=\"2\"/>\n    <line x1=\"-15\" y1=\"15\" x2=\"15\" y2=\"-15\" stroke=\"#334155\" stroke-width=\"2\"/>\n    <text x=\"40\" y=\"5\" class=\"label\" font-size=\"14\">Lamp 2</text>\n    <text x=\"40\" y=\"22\" class=\"volt-reading\">3 V</text>\n    <!-- Voltmeter parallel bridge 2 -->\n    <path d=\"M 0,-22 L 0,-50 L 70,-50 L 70,0 L 48,0\" fill=\"none\" stroke=\"#dc2626\" stroke-width=\"1.5\" stroke-dasharray=\"4,4\"/>\n    <circle cx=\"70\" cy=\"-25\" r=\"15\" fill=\"#ffffff\" stroke=\"#dc2626\" stroke-width=\"2\"/>\n    <text x=\"70\" y=\"-20\" font-family=\"sans-serif\" font-size=\"14\" fill=\"#dc2626\" text-anchor=\"middle\" font-weight=\"bold\">V</text>\n    <text x=\"95\" y=\"-21\" font-family=\"sans-serif\" font-size=\"12\" fill=\"#dc2626\">3V</text>\n  </g>\n\n  <!-- Ammeter 2 (Bottom wire, x=280, y=420) -->\n  <g transform=\"translate(280, 420)\">\n    <circle cx=\"0\" cy=\"0\" r=\"18\" fill=\"#ffffff\" stroke=\"#334155\" stroke-width=\"3\"/>\n    <text x=\"0\" y=\"5\" class=\"label\" font-size=\"16\">A</text>\n    <text x=\"0\" y=\"32\" class=\"reading\">0.2 A</text>\n    <text x=\"0\" y=\"47\" class=\"sublabel\">current</text>\n  </g>\n\n  <!-- ANIMATED ELECTRONS (Flowing clockwise around the loop perimeter: total length = 2*(380+320) = 1400px) -->\n  <!-- Perimeter path definition: M 100 100 h 380 v 320 h -380 z -->\n  \n  <g>\n    <!-- Electron 1 -->\n    <circle cx=\"0\" cy=\"0\" r=\"5\" class=\"electron\">\n      <animateMotion dur=\"6s\" repeatCount=\"indefinite\" path=\"M 100 100 h 380 v 320 h -380 z\"/>\n    </circle>\n    <!-- Electron 2 -->\n    <circle cx=\"0\" cy=\"0\" r=\"5\" class=\"electron\">\n      <animateMotion dur=\"6s\" begin=\"-1.5s\" repeatCount=\"indefinite\" path=\"M 100 100 h 380 v 320 h -380 z\"/>\n    </circle>\n    <!-- Electron 3 -->\n    <circle cx=\"0\" cy=\"0\" r=\"5\" class=\"electron\">\n      <animateMotion dur=\"6s\" begin=\"-3.0s\" repeatCount=\"indefinite\" path=\"M 100 100 h 380 v 320 h -380 z\"/>\n    </circle>\n    <!-- Electron 4 -->\n    <circle cx=\"0\" cy=\"0\" r=\"5\" class=\"electron\">\n      <animateMotion dur=\"6s\" begin=\"-4.5s\" repeatCount=\"indefinite\" path=\"M 100 100 h 380 v 320 h -380 z\"/>\n    </circle>\n  </g>\n\n  <!-- Legend for animation -->\n  <circle cx=\"550\" cy=\"450\" r=\"5\" class=\"electron\"/>\n  <text x=\"565\" y=\"454\" font-family=\"sans-serif\" font-size=\"13\" fill=\"#334155\">Flow of charge (current)</text>\n\n  <line x1=\"535\" y1=\"415\" x2=\"560\" y2=\"415\" stroke=\"#dc2626\" stroke-width=\"1.5\" stroke-dasharray=\"4,4\"/>\n  <text x=\"565\" y=\"419\" font-family=\"sans-serif\" font-size=\"13\" fill=\"#334155\">Voltmeter (measures voltage)</text>\n\n</svg>",
+      "passed": true,
+      "checks": [
+        {
+          "id": "valid",
+          "name": "Valid SVG",
+          "passed": true,
+          "detail": "Parses as XML, root is <svg>, viewBox is set."
+        },
+        {
+          "id": "inViewBox",
+          "name": "Inside viewBox",
+          "passed": true,
+          "detail": "All shapes and text are inside the viewBox is x 0..800, y 0..500."
+        },
+        {
+          "id": "titleAndLabels",
+          "name": "Title + 3 labels",
+          "passed": true,
+          "detail": "Title \"Series Circuit GCSE Physics Diagram\", 26 labels."
+        },
+        {
+          "id": "animated",
+          "name": "Animated",
+          "passed": true,
+          "detail": "4 SMIL animation element(s), 0 CSS @keyframes in use."
+        },
+        {
+          "id": "requiredLabels",
+          "name": "Key terms labelled",
+          "passed": true,
+          "detail": "All 3 key terms are labelled."
+        },
+        {
+          "id": "readableLabels",
+          "name": "Readable labels",
+          "passed": true,
+          "detail": "26 labels, none overlap, all at least 12 units tall."
+        }
+      ],
+      "retries": 0,
+      "apiRetries": 0,
+      "inputTokens": 594,
+      "outputTokens": 3025,
+      "costUsd": 0.007741,
+      "attempts": [
+        {
+          "attempt": 1,
+          "inputTokens": 594,
+          "outputTokens": 3025,
+          "costUsd": 0.007741,
+          "apiRetries": 0,
+          "durationMs": 7698,
+          "checks": [
+            {
+              "id": "valid",
+              "name": "Valid SVG",
+              "passed": true,
+              "detail": "Parses as XML, root is <svg>, viewBox is set."
+            },
+            {
+              "id": "inViewBox",
+              "name": "Inside viewBox",
+              "passed": true,
+              "detail": "All shapes and text are inside the viewBox is x 0..800, y 0..500."
+            },
+            {
+              "id": "titleAndLabels",
+              "name": "Title + 3 labels",
+              "passed": true,
+              "detail": "Title \"Series Circuit GCSE Physics Diagram\", 26 labels."
+            },
+            {
+              "id": "animated",
+              "name": "Animated",
+              "passed": true,
+              "detail": "4 SMIL animation element(s), 0 CSS @keyframes in use."
+            },
+            {
+              "id": "requiredLabels",
+              "name": "Key terms labelled",
+              "passed": true,
+              "detail": "All 3 key terms are labelled."
+            },
+            {
+              "id": "readableLabels",
+              "name": "Readable labels",
+              "passed": true,
+              "detail": "26 labels, none overlap, all at least 12 units tall."
+            }
+          ],
+          "error": null
+        }
+      ],
+      "sanitized": [],
+      "error": null,
+      "generatedAt": "2026-11-24T05:07:11.214Z",
+      "durationMs": 7698
+    },
+    {
+      "conceptId": "photosynthesis",
+      "concept": "Photosynthesis",
+      "subject": "Biology",
+      "model": "gemini-3.5-flash-lite",
+      "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 800 500\">\n  <title>Photosynthesis in Plants</title>\n  \n  <style>\n    @keyframes pulse {\n      0% { r: 35px; opacity: 0.8; }\n      50% { r: 45px; opacity: 0.3; }\n      100% { r: 35px; opacity: 0.8; }\n    }\n    @keyframes flow-co2 {\n      0% { transform: translate(0, 0); opacity: 0; }\n      20% { opacity: 1; }\n      80% { opacity: 1; }\n      100% { transform: translate(130px, 120px); opacity: 0; }\n    }\n    @keyframes flow-light {\n      0% { transform: translate(0, 0); opacity: 0; }\n      20% { opacity: 1; }\n      80% { opacity: 1; }\n      100% { transform: translate(140px, 90px); opacity: 0; }\n    }\n    @keyframes flow-water {\n      0% { transform: translate(0, 0); opacity: 0; }\n      20% { opacity: 1; }\n      80% { opacity: 1; }\n      100% { transform: translate(0, -110px); opacity: 0; }\n    }\n    @keyframes flow-oxygen {\n      0% { transform: translate(0, 0); opacity: 0; }\n      20% { opacity: 1; }\n      80% { opacity: 1; }\n      100% { transform: translate(140px, -80px); opacity: 0; }\n    }\n    @keyframes flow-glucose {\n      0% { transform: translate(0, 0); opacity: 0; }\n      20% { opacity: 1; }\n      80% { opacity: 1; }\n      100% { transform: translate(110px, 90px); opacity: 0; }\n    }\n    .sun-glow {\n      animation: pulse 3s infinite ease-in-out;\n    }\n  </style>\n\n  <!-- Background -->\n  <rect x=\"0\" y=\"0\" width=\"800\" height=\"500\" fill=\"#f8fafc\"/>\n  \n  <!-- Soil / Ground -->\n  <path d=\"M 330 400 Q 400 390 470 400 L 490 480 L 310 480 Z\" fill=\"#855a40\"/>\n  <rect x=\"300\" y=\"475\" width=\"200\" height=\"15\" fill=\"#5c3a21\" rx=\"4\"/>\n  \n  <!-- Sun -->\n  <g transform=\"translate(110, 90)\">\n    <circle cx=\"0\" cy=\"0\" r=\"45\" fill=\"#fef08a\" class=\"sun-glow\"/>\n    <circle cx=\"0\" cy=\"0\" r=\"30\" fill=\"#eab308\"/>\n    <text x=\"0\" y=\"5\" font-family=\"sans-serif\" font-size=\"12\" font-weight=\"bold\" fill=\"#713f12\" text-anchor=\"middle\">Sun</text>\n  </g>\n\n  <!-- Plant Stem and Roots -->\n  <path d=\"M 400 400 L 400 270\" stroke=\"#16a34a\" stroke-width=\"12\" stroke-linecap=\"round\" fill=\"none\"/>\n  <path d=\"M 395 410 Q 360 430 340 450\" stroke=\"#ca8a04\" stroke-width=\"4\" fill=\"none\"/>\n  <path d=\"M 405 410 Q 440 430 460 450\" stroke=\"#ca8a04\" stroke-width=\"4\" fill=\"none\"/>\n  <path d=\"M 400 420 Q 400 440 390 460\" stroke=\"#ca8a04\" stroke-width=\"4\" fill=\"none\"/>\n\n  <!-- Leaf -->\n  <g transform=\"translate(400, 240)\">\n    <path d=\"M 0 30 C -80 20 -110 -40 -60 -70 C -10 -100 40 -40 0 30 Z\" fill=\"#22c55e\" stroke=\"#15803d\" stroke-width=\"3\"/>\n    <path d=\"M 0 20 C -40 10 -60 -20 -40 -45\" stroke=\"#15803d\" stroke-width=\"2\" fill=\"none\" opacity=\"0.6\"/>\n    <text x=\"-40\" y=\"-15\" font-family=\"sans-serif\" font-size=\"14\" font-weight=\"bold\" fill=\"#064e3b\" text-anchor=\"middle\">chlorophyll</text>\n  </g>\n\n  <!-- ARROWS & FLOWS -->\n\n  <!-- 1. Carbon Dioxide (from top left) -->\n  <path d=\"M 220 130 Q 300 160 335 205\" stroke=\"#64748b\" stroke-width=\"3\" stroke-dasharray=\"6,4\" fill=\"none\"/>\n  <polygon points=\"335,205 323,198 327,211\" fill=\"#64748b\"/>\n  <g>\n    <circle r=\"6\" fill=\"#475569\">\n      <animateMotion path=\"M 220 130 Q 300 160 335 205\" dur=\"3s\" repeatCount=\"indefinite\"/>\n    </circle>\n  </g>\n  <text x=\"210\" y=\"125\" font-family=\"sans-serif\" font-size=\"15\" font-weight=\"bold\" fill=\"#334155\" text-anchor=\"end\">carbon dioxide</text>\n  <text x=\"210\" y=\"145\" font-family=\"sans-serif\" font-size=\"12\" fill=\"#64748b\" text-anchor=\"end\">(from air)</text>\n\n  <!-- 2. Light Energy (from Sun to leaf) -->\n  <path d=\"M 145 115 Q 230 150 315 195\" stroke=\"#eab308\" stroke-width=\"4\" fill=\"none\"/>\n  <polygon points=\"315,195 303,191 311,184\" fill=\"#eab308\"/>\n  <g>\n    <circle r=\"6\" fill=\"#ca8a04\">\n      <animateMotion path=\"M 145 115 Q 230 150 315 195\" dur=\"2s\" repeatCount=\"indefinite\"/>\n    </circle>\n  </g>\n  <text x=\"210\" y=\"175\" font-family=\"sans-serif\" font-size=\"15\" font-weight=\"bold\" fill=\"#ca8a04\" text-anchor=\"middle\">light</text>\n\n  <!-- 3. Water (from roots up) -->\n  <path d=\"M 320 460 Q 310 330 370 260\" stroke=\"#0ea5e9\" stroke-width=\"3\" stroke-dasharray=\"6,4\" fill=\"none\"/>\n  <polygon points=\"370,260 361,268 372,271\" fill=\"#0ea5e9\"/>\n  <g>\n    <circle r=\"6\" fill=\"#0284c7\">\n      <animateMotion path=\"M 320 460 Q 310 330 370 260\" dur=\"3s\" repeatCount=\"indefinite\"/>\n    </circle>\n  </g>\n  <text x=\"245\" y=\"380\" font-family=\"sans-serif\" font-size=\"15\" font-weight=\"bold\" fill=\"#0369a1\" text-anchor=\"middle\">water</text>\n  <text x=\"245\" y=\"400\" font-family=\"sans-serif\" font-size=\"12\" fill=\"#0284c7\" text-anchor=\"middle\">(from soil)</text>\n\n  <!-- 4. Oxygen (leaving leaf to top right) -->\n  <path d=\"M 430 215 Q 500 160 580 120\" stroke=\"#10b981\" stroke-width=\"3\" stroke-dasharray=\"6,4\" fill=\"none\"/>\n  <polygon points=\"580,120 568,121 573,131\" fill=\"#10b981\"/>\n  <g>\n    <circle r=\"6\" fill=\"#059669\">\n      <animateMotion path=\"M 430 215 Q 500 160 580 120\" dur=\"2.5s\" repeatCount=\"indefinite\"/>\n    </circle>\n  </g>\n  <text x=\"590\" y=\"115\" font-family=\"sans-serif\" font-size=\"15\" font-weight=\"bold\" fill=\"#047857\" text-anchor=\"start\">oxygen</text>\n  <text x=\"590\" y=\"135\" font-family=\"sans-serif\" font-size=\"12\" fill=\"#10b981\" text-anchor=\"start\">(released)</text>\n\n  <!-- 5. Glucose (leaving leaf to lower right) -->\n  <path d=\"M 435 240 Q 500 270 570 310\" stroke=\"#f97316\" stroke-width=\"3\" stroke-dasharray=\"6,4\" fill=\"none\"/>\n  <polygon points=\"570,310 560,302 560,314\" fill=\"#f97316\"/>\n  <g>\n    <circle r=\"6\" fill=\"#ea580c\">\n      <animateMotion path=\"M 435 240 Q 500 270 570 310\" dur=\"3.5s\" repeatCount=\"indefinite\"/>\n    </circle>\n  </g>\n  <text x=\"580\" y=\"315\" font-family=\"sans-serif\" font-size=\"15\" font-weight=\"bold\" fill=\"#c2410c\" text-anchor=\"start\">glucose</text>\n  <text x=\"580\" y=\"335\" font-family=\"sans-serif\" font-size=\"12\" fill=\"#f97316\" text-anchor=\"start\">(stored / food)</text>\n\n  <!-- WORD EQUATION PANEL -->\n  <rect x=\"150\" y=\"420\" width=\"500\" height=\"55\" rx=\"8\" fill=\"#ffffff\" stroke=\"#cbd5e1\" stroke-width=\"2\"/>\n  <text x=\"400\" y=\"442\" font-family=\"sans-serif\" font-size=\"13\" font-weight=\"bold\" fill=\"#64748b\" text-anchor=\"middle\">WORD EQUATION</text>\n  <text x=\"400\" y=\"463\" font-family=\"sans-serif\" font-size=\"14\" font-weight=\"bold\" fill=\"#0f172a\" text-anchor=\"middle\">\n    <tspan fill=\"#334155\">carbon dioxide</tspan> + <tspan fill=\"#0369a1\">water</tspan> \n    <tspan fill=\"#ca8a04\"> (light) </tspan>→ \n    <tspan fill=\"#c2410c\">glucose</tspan> + <tspan fill=\"#047857\">oxygen</tspan>\n  </text>\n\n  <!-- Title banner -->\n  <text x=\"400\" y=\"35\" font-family=\"sans-serif\" font-size=\"22\" font-weight=\"bold\" fill=\"#0f172a\" text-anchor=\"middle\">Photosynthesis in Plants</text>\n</svg>",
+      "passed": true,
+      "checks": [
+        {
+          "id": "valid",
+          "name": "Valid SVG",
+          "passed": true,
+          "detail": "Parses as XML, root is <svg>, viewBox is set."
+        },
+        {
+          "id": "inViewBox",
+          "name": "Inside viewBox",
+          "passed": true,
+          "detail": "All shapes and text are inside the viewBox is x 0..800, y 0..500."
+        },
+        {
+          "id": "titleAndLabels",
+          "name": "Title + 3 labels",
+          "passed": true,
+          "detail": "Title \"Photosynthesis in Plants\", 14 labels."
+        },
+        {
+          "id": "animated",
+          "name": "Animated",
+          "passed": true,
+          "detail": "5 SMIL animation element(s), 1 CSS @keyframes in use."
+        },
+        {
+          "id": "requiredLabels",
+          "name": "Key terms labelled",
+          "passed": true,
+          "detail": "All 6 key terms are labelled."
+        },
+        {
+          "id": "readableLabels",
+          "name": "Readable labels",
+          "passed": true,
+          "detail": "14 labels, none overlap, all at least 12 units tall."
+        }
+      ],
+      "retries": 0,
+      "apiRetries": 0,
+      "inputTokens": 571,
+      "outputTokens": 3083,
+      "costUsd": 0.007879,
+      "attempts": [
+        {
+          "attempt": 1,
+          "inputTokens": 571,
+          "outputTokens": 3083,
+          "costUsd": 0.007879,
+          "apiRetries": 0,
+          "durationMs": 7764,
+          "checks": [
+            {
+              "id": "valid",
+              "name": "Valid SVG",
+              "passed": true,
+              "detail": "Parses as XML, root is <svg>, viewBox is set."
+            },
+            {
+              "id": "inViewBox",
+              "name": "Inside viewBox",
+              "passed": true,
+              "detail": "All shapes and text are inside the viewBox is x 0..800, y 0..500."
+            },
+            {
+              "id": "titleAndLabels",
+              "name": "Title + 3 labels",
+              "passed": true,
+              "detail": "Title \"Photosynthesis in Plants\", 14 labels."
+            },
+            {
+              "id": "animated",
+              "name": "Animated",
+              "passed": true,
+              "detail": "5 SMIL animation element(s), 1 CSS @keyframes in use."
+            },
+            {
+              "id": "requiredLabels",
+              "name": "Key terms labelled",
+              "passed": true,
+              "detail": "All 6 key terms are labelled."
+            },
+            {
+              "id": "readableLabels",
+              "name": "Readable labels",
+              "passed": true,
+              "detail": "14 labels, none overlap, all at least 12 units tall."
+            }
+          ],
+          "error": null
+        }
+      ],
+      "sanitized": [],
+      "error": null,
+      "generatedAt": "2026-11-24T05:07:23.981Z",
+      "durationMs": 7764
+    },
+    {
+      "conceptId": "states-of-matter",
+      "concept": "States of matter",
+      "subject": "Chemistry",
+      "model": "gemini-3.5-flash-lite",
+      "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 800 500\">\n  <title>States of Matter</title>\n\n  <style>\n    .bg { fill: #f8fafc; stroke: #cbd5e1; stroke-width: 2; rx: 12px; }\n    .box-title { font-family: sans-serif; font-size: 20px; font-weight: bold; fill: #1e293b; text-anchor: middle; }\n    .caption { font-family: sans-serif; font-size: 13px; fill: #475569; text-anchor: middle; }\n    .particle-solid { fill: #3b82f6; stroke: #1d4ed8; stroke-width: 2; }\n    .particle-liquid { fill: #10b981; stroke: #047857; stroke-width: 2; }\n    .particle-gas { fill: #f59e0b; stroke: #b45309; stroke-width: 2; }\n  </style>\n\n  <!-- Background -->\n  <rect width=\"800\" height=\"500\" fill=\"#ffffff\"/>\n\n  <!-- Title -->\n  <text x=\"400\" y=\"35\" font-family=\"sans-serif\" font-size=\"24\" font-weight=\"bold\" fill=\"#0f172a\" text-anchor=\"middle\">States of Matter</text>\n\n  <!-- ==================== SOLID ==================== -->\n  <g transform=\"translate(40, 55)\">\n    <rect class=\"bg\" width=\"220\" height=\"360\"/>\n    <text x=\"110\" y=\"35\" class=\"box-title\">Solid</text>\n\n    <!-- Solid particles (vibrating in place) -->\n    <g>\n      <!-- Row 1 -->\n      <circle cx=\"50\" cy=\"80\" r=\"10\" class=\"particle-solid\"><animateTransform attributeName=\"transform\" type=\"translate\" values=\"0,0; -1.5,1; 1,-1.5; -1,-1; 0,0\" dur=\"0.3s\" repeatCount=\"indefinite\"/></circle>\n      <circle cx=\"90\" cy=\"80\" r=\"10\" class=\"particle-solid\"><animateTransform attributeName=\"transform\" type=\"translate\" values=\"0,0; 1,-1; -1.5,1; 1,1.5; 0,0\" dur=\"0.25s\" repeatCount=\"indefinite\"/></circle>\n      <circle cx=\"130\" cy=\"80\" r=\"10\" class=\"particle-solid\"><animateTransform attributeName=\"transform\" type=\"translate\" values=\"0,0; -1,-1.5; 1.5,1; -1,1; 0,0\" dur=\"0.35s\" repeatCount=\"indefinite\"/></circle>\n      <circle cx=\"170\" cy=\"80\" r=\"10\" class=\"particle-solid\"><animateTransform attributeName=\"transform\" type=\"translate\" values=\"0,0; 1,1; -1,-1; 1.5,-1; 0,0\" dur=\"0.28s\" repeatCount=\"indefinite\"/></circle>\n      \n      <!-- Row 2 -->\n      <circle cx=\"50\" cy=\"115\" r=\"10\" class=\"particle-solid\"><animateTransform attributeName=\"transform\" type=\"translate\" values=\"0,0; 1.5,-1; -1,1; -1,-1; 0,0\" dur=\"0.32s\" repeatCount=\"indefinite\"/></circle>\n      <circle cx=\"90\" cy=\"115\" r=\"10\" class=\"particle-solid\"><animateTransform attributeName=\"transform\" type=\"translate\" values=\"0,0; -1,1; 1,1; -1.5,-1; 0,0\" dur=\"0.27s\" repeatCount=\"indefinite\"/></circle>\n      <circle cx=\"130\" cy=\"115\" r=\"10\" class=\"particle-solid\"><animateTransform attributeName=\"transform\" type=\"translate\" values=\"0,0; 1,-1; 1,-1; -1,1.5; 0,0\" dur=\"0.3s\" repeatCount=\"indefinite\"/></circle>\n      <circle cx=\"170\" cy=\"115\" r=\"10\" class=\"particle-solid\"><animateTransform attributeName=\"transform\" type=\"translate\" values=\"0,0; -1.5,-1; 1,1; 1,-1; 0,0\" dur=\"0.29s\" repeatCount=\"indefinite\"/></circle>\n\n      <!-- Row 3 -->\n      <circle cx=\"50\" cy=\"150\" r=\"10\" class=\"particle-solid\"><animateTransform attributeName=\"transform\" type=\"translate\" values=\"0,0; -1,1; 1.5,1; -1,-1; 0,0\" dur=\"0.26s\" repeatCount=\"indefinite\"/></circle>\n      <circle cx=\"90\" cy=\"150\" r=\"10\" class=\"particle-solid\"><animateTransform attributeName=\"transform\" type=\"translate\" values=\"0,0; 1,-1; -1,1.5; 1,-1; 0,0\" dur=\"0.33s\" repeatCount=\"indefinite\"/></circle>\n      <circle cx=\"130\" cy=\"150\" r=\"10\" class=\"particle-solid\"><animateTransform attributeName=\"transform\" type=\"translate\" values=\"0,0; -1.5,1; -1,-1; 1,1; 0,0\" dur=\"0.31s\" repeatCount=\"indefinite\"/></circle>\n      <circle cx=\"170\" cy=\"150\" r=\"10\" class=\"particle-solid\"><animateTransform attributeName=\"transform\" type=\"translate\" values=\"0,0; 1,1.5; 1,-1; -1,-1; 0,0\" dur=\"0.28s\" repeatCount=\"indefinite\"/></circle>\n\n      <!-- Row 4 -->\n      <circle cx=\"50\" cy=\"185\" r=\"10\" class=\"particle-solid\"><animateTransform attributeName=\"transform\" type=\"translate\" values=\"0,0; 1,-1.5; -1,1; 1,1; 0,0\" dur=\"0.3s\" repeatCount=\"indefinite\"/></circle>\n      <circle cx=\"90\" cy=\"185\" r=\"10\" class=\"particle-solid\"><animateTransform attributeName=\"transform\" type=\"translate\" values=\"0,0; -1,-1; 1.5,1; -1,1; 0,0\" dur=\"0.27s\" repeatCount=\"indefinite\"/></circle>\n      <circle cx=\"130\" cy=\"185\" r=\"10\" class=\"particle-solid\"><animateTransform attributeName=\"transform\" type=\"translate\" values=\"0,0; 1,1; -1,-1.5; 1,-1; 0,0\" dur=\"0.34s\" repeatCount=\"indefinite\"/></circle>\n      <circle cx=\"170\" cy=\"185\" r=\"10\" class=\"particle-solid\"><animateTransform attributeName=\"transform\" type=\"translate\" values=\"0,0; -1.5,1; 1,-1; -1,-1; 0,0\" dur=\"0.29s\" repeatCount=\"indefinite\"/></circle>\n    </g>\n\n    <!-- Captions -->\n    <text x=\"110\" y=\"245\" class=\"caption\" font-weight=\"bold\" fill=\"#0f172a\">Solid</text>\n    <text x=\"110\" y=\"275\" class=\"caption\">Particles close together</text>\n    <text x=\"110\" y=\"298\" class=\"caption\">Regular grid structure</text>\n    <text x=\"110\" y=\"321\" class=\"caption\">Vibrate in fixed positions</text>\n  </g>\n\n  <!-- ==================== LIQUID ==================== -->\n  <g transform=\"translate(290, 55)\">\n    <rect class=\"bg\" width=\"220\" height=\"360\"/>\n    <text x=\"110\" y=\"35\" class=\"box-title\">Liquid</text>\n\n    <!-- Liquid particles (sliding past each other inside box) -->\n    <g>\n      <circle r=\"10\" class=\"particle-liquid\">\n        <animateMotion path=\"M 60,80 Q 90,70 120,90 T 70,110 Z\" dur=\"5s\" repeatCount=\"indefinite\"/>\n      </circle>\n      <circle r=\"10\" class=\"particle-liquid\">\n        <animateMotion path=\"M 140,80 Q 170,100 130,130 T 140,80 Z\" dur=\"4.2s\" repeatCount=\"indefinite\"/>\n      </circle>\n      <circle r=\"10\" class=\"particle-liquid\">\n        <animateMotion path=\"M 90,120 Q 60,140 80,170 T 90,120 Z\" dur=\"4.8s\" repeatCount=\"indefinite\"/>\n      </circle>\n      <circle r=\"10\" class=\"particle-liquid\">\n        <animateMotion path=\"M 150,150 Q 120,180 150,195 T 150,150 Z\" dur=\"3.9s\" repeatCount=\"indefinite\"/>\n      </circle>\n      <circle r=\"10\" class=\"particle-liquid\">\n        <animateMotion path=\"M 60,180 Q 90,195 110,170 T 60,180 Z\" dur=\"5.5s\" repeatCount=\"indefinite\"/>\n      </circle>\n      <circle r=\"10\" class=\"particle-liquid\">\n        <animateMotion path=\"M 110,90 Q 130,110 100,130 T 110,90 Z\" dur=\"4s\" repeatCount=\"indefinite\"/>\n      </circle>\n      <circle r=\"10\" class=\"particle-liquid\">\n        <animateMotion path=\"M 70,150 Q 100,140 125,155 T 70,150 Z\" dur=\"4.6s\" repeatCount=\"indefinite\"/>\n      </circle>\n      <circle r=\"10\" class=\"particle-liquid\">\n        <animateMotion path=\"M 125,190 Q 95,185 70,195 T 125,190 Z\" dur=\"5.1s\" repeatCount=\"indefinite\"/>\n      </circle>\n    </g>\n\n    <!-- Captions -->\n    <text x=\"110\" y=\"245\" class=\"caption\" font-weight=\"bold\" fill=\"#0f172a\">Liquid</text>\n    <text x=\"110\" y=\"275\" class=\"caption\">Particles close together</text>\n    <text x=\"110\" y=\"298\" class=\"caption\">Random, irregular arrangement</text>\n    <text x=\"110\" y=\"321\" class=\"caption\">Move past each other</text>\n  </g>\n\n  <!-- ==================== GAS ==================== -->\n  <g transform=\"translate(540, 55)\">\n    <rect class=\"bg\" width=\"220\" height=\"360\"/>\n    <text x=\"110\" y=\"35\" class=\"box-title\">Gas</text>\n\n    <!-- Gas particles (moving fast, far apart) -->\n    <g>\n      <circle r=\"9\" class=\"particle-gas\">\n        <animateMotion path=\"M 60,90 L 160,120 L 70,180 Z\" dur=\"2.2s\" repeatCount=\"indefinite\"/>\n      </circle>\n      <circle r=\"9\" class=\"particle-gas\">\n        <animateMotion path=\"M 150,80 L 70,140 L 140,190 Z\" dur=\"1.8s\" repeatCount=\"indefinite\"/>\n      </circle>\n      <circle r=\"9\" class=\"particle-gas\">\n        <animateMotion path=\"M 90,190 L 160,80 L 60,100 Z\" dur=\"2.5s\" repeatCount=\"indefinite\"/>\n      </circle>\n      <circle r=\"9\" class=\"particle-gas\">\n        <animateMotion path=\"M 70,160 L 150,175 L 80,75 Z\" dur=\"2.0s\" repeatCount=\"indefinite\"/>\n      </circle>\n      <circle r=\"9\" class=\"particle-gas\">\n        <animateMotion path=\"M 160,140 L 70,90 L 110,190 Z\" dur=\"1.9s\" repeatCount=\"indefinite\"/>\n      </circle>\n    </g>\n\n    <!-- Captions -->\n    <text x=\"110\" y=\"245\" class=\"caption\" font-weight=\"bold\" fill=\"#0f172a\">Gas</text>\n    <text x=\"110\" y=\"275\" class=\"caption\">Particles far apart</text>\n    <text x=\"110\" y=\"298\" class=\"caption\">Random arrangement</text>\n    <text x=\"110\" y=\"321\" class=\"caption\">Move fast in all directions</text>\n  </g>\n\n  <!-- Footer explanation note -->\n  <text x=\"400\" y=\"455\" font-family=\"sans-serif\" font-size=\"14\" fill=\"#64748b\" text-anchor=\"middle\">\n    Heating transfers thermal energy into kinetic energy, changing the state of matter.\n  </text>\n</svg>",
+      "passed": false,
+      "checks": [
+        {
+          "id": "valid",
+          "name": "Valid SVG",
+          "passed": true,
+          "detail": "Parses as XML, root is <svg>, viewBox is set."
+        },
+        {
+          "id": "inViewBox",
+          "name": "Inside viewBox",
+          "passed": false,
+          "detail": "3 element(s) outside the viewBox is x 0..800, y 0..500: <text> \"Particles far apart\" at rest spans x 650..817, y 317..333; <text> \"Random arrangement\" at rest spans x 650..808, y 340..356; <text> \"Move fast in all directions\" at rest spans x 650..888, y 363..379"
+        },
+        {
+          "id": "titleAndLabels",
+          "name": "Title + 3 labels",
+          "passed": true,
+          "detail": "Title \"States of Matter\", 17 labels."
+        },
+        {
+          "id": "animated",
+          "name": "Animated",
+          "passed": true,
+          "detail": "29 SMIL animation element(s), 0 CSS @keyframes in use."
+        },
+        {
+          "id": "requiredLabels",
+          "name": "Key terms labelled",
+          "passed": true,
+          "detail": "All 3 key terms are labelled."
+        },
+        {
+          "id": "readableLabels",
+          "name": "Readable labels",
+          "passed": true,
+          "detail": "17 labels, none overlap, all at least 12 units tall."
+        }
+      ],
+      "retries": 1,
+      "apiRetries": 0,
+      "inputTokens": 4799,
+      "outputTokens": 6959,
+      "costUsd": 0.018837,
+      "attempts": [
+        {
+          "attempt": 1,
+          "inputTokens": 568,
+          "outputTokens": 3558,
+          "costUsd": 0.009065,
+          "apiRetries": 0,
+          "durationMs": 8775,
+          "checks": [
+            {
+              "id": "valid",
+              "name": "Valid SVG",
+              "passed": true,
+              "detail": "Parses as XML, root is <svg>, viewBox is set."
+            },
+            {
+              "id": "inViewBox",
+              "name": "Inside viewBox",
+              "passed": false,
+              "detail": "2 element(s) outside the viewBox is x 0..800, y 0..500: <text> \"Random arrangement\" at rest spans x 650..808, y 339..355; <text> \"Move fast in all directions\" at rest spans x 650..888, y 362..378"
+            },
+            {
+              "id": "titleAndLabels",
+              "name": "Title + 3 labels",
+              "passed": true,
+              "detail": "Title \"States of Matter\", 14 labels."
+            },
+            {
+              "id": "animated",
+              "name": "Animated",
+              "passed": true,
+              "detail": "29 SMIL animation element(s), 0 CSS @keyframes in use."
+            },
+            {
+              "id": "requiredLabels",
+              "name": "Key terms labelled",
+              "passed": true,
+              "detail": "All 3 key terms are labelled."
+            },
+            {
+              "id": "readableLabels",
+              "name": "Readable labels",
+              "passed": true,
+              "detail": "14 labels, none overlap, all at least 12 units tall."
+            }
+          ],
+          "error": null
+        },
+        {
+          "attempt": 2,
+          "inputTokens": 4231,
+          "outputTokens": 3401,
+          "costUsd": 0.009772,
+          "apiRetries": 0,
+          "durationMs": 7595,
+          "checks": [
+            {
+              "id": "valid",
+              "name": "Valid SVG",
+              "passed": true,
+              "detail": "Parses as XML, root is <svg>, viewBox is set."
+            },
+            {
+              "id": "inViewBox",
+              "name": "Inside viewBox",
+              "passed": false,
+              "detail": "3 element(s) outside the viewBox is x 0..800, y 0..500: <text> \"Particles far apart\" at rest spans x 650..817, y 317..333; <text> \"Random arrangement\" at rest spans x 650..808, y 340..356; <text> \"Move fast in all directions\" at rest spans x 650..888, y 363..379"
+            },
+            {
+              "id": "titleAndLabels",
+              "name": "Title + 3 labels",
+              "passed": true,
+              "detail": "Title \"States of Matter\", 17 labels."
+            },
+            {
+              "id": "animated",
+              "name": "Animated",
+              "passed": true,
+              "detail": "29 SMIL animation element(s), 0 CSS @keyframes in use."
+            },
+            {
+              "id": "requiredLabels",
+              "name": "Key terms labelled",
+              "passed": true,
+              "detail": "All 3 key terms are labelled."
+            },
+            {
+              "id": "readableLabels",
+              "name": "Readable labels",
+              "passed": true,
+              "detail": "17 labels, none overlap, all at least 12 units tall."
+            }
+          ],
+          "error": null
+        }
+      ],
+      "sanitized": [],
+      "error": null,
+      "generatedAt": "2026-11-24T05:07:45.354Z",
+      "durationMs": 16371
+    }
+  ]
+}

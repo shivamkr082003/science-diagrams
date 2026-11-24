@@ -552,8 +552,107 @@ function checkRequiredLabels(doc: Document, concept: Concept): CheckResult {
 const MIN_FONT = 12; // in viewBox units; our prompt asks for an 800-wide viewBox and 14-22 text
 const MAX_OVERLAP = 0.03; // labels must not overlap; 3% leaves room for estimate error
 
-type Label = { text: string; box: Box; fontSize: number; mayHide: boolean };
-type Found = { labels: Label[]; symbols: Box[] };
+type Label = { text: string; box: Box; local: Box; matrix: Matrix; fontSize: number; mayHide: boolean; order: number };
+type Segment = { a: [number, number]; b: [number, number]; order: number };
+type Found = { labels: Label[]; symbols: Box[]; segments: Segment[]; covers: { box: Box; order: number }[]; order: number };
+
+function invert(m: Matrix): Matrix | null {
+  const det = m[0] * m[3] - m[1] * m[2];
+  if (Math.abs(det) < 1e-9) return null;
+  const [a, b, c, d, e, f] = m;
+  return [d / det, -b / det, -c / det, a / det, (c * f - d * e) / det, (b * e - a * f) / det];
+}
+
+/** Does segment p-q pass through box? (Liang-Barsky clipping) */
+function segmentHitsBox(p: [number, number], q: [number, number], box: Box): boolean {
+  let t0 = 0;
+  let t1 = 1;
+  const dx = q[0] - p[0];
+  const dy = q[1] - p[1];
+  const edges: [number, number][] = [
+    [-dx, p[0] - box.minX],
+    [dx, box.maxX - p[0]],
+    [-dy, p[1] - box.minY],
+    [dy, box.maxY - p[1]],
+  ];
+  for (const [pp, qq] of edges) {
+    if (pp === 0) {
+      if (qq < 0) return false;
+    } else {
+      const t = qq / pp;
+      if (pp < 0) t0 = Math.max(t0, t);
+      else t1 = Math.min(t1, t);
+      if (t0 > t1) return false;
+    }
+  }
+  return true;
+}
+
+/** Straight segments of a line/polyline/polygon, or of a path made only of M/L/H/V/Z. */
+function straightSegments(el: Element, ctx: Ctx, vb: ViewBox): [number, number][][] {
+  const tag = el.localName;
+  const num = (n: string) => len(attr(el, n, ctx), n.startsWith("x") ? vb.w : vb.h) ?? 0;
+  if (tag === "line") return [[[num("x1"), num("y1")], [num("x2"), num("y2")]]];
+  if (tag === "rect") {
+    // e.g. a circuit's wire loop drawn as one stroked rectangle
+    const [x, y, w, h] = [num("x"), num("y"), len(attr(el, "width", ctx), vb.w) ?? 0, len(attr(el, "height", ctx), vb.h) ?? 0];
+    const c: [number, number][] = [[x, y], [x + w, y], [x + w, y + h], [x, y + h], [x, y]];
+    return c.slice(1).map((pt, i) => [c[i], pt]);
+  }
+  if (tag === "polyline" || tag === "polygon") {
+    const n = (attr(el, "points", ctx) ?? "").trim().split(/[\s,]+/).map(Number).filter(Number.isFinite);
+    const pts: [number, number][] = [];
+    for (let i = 0; i + 1 < n.length; i += 2) pts.push([n[i], n[i + 1]]);
+    if (tag === "polygon" && pts.length > 2) pts.push(pts[0]);
+    return pts.slice(1).map((pt, i) => [pts[i], pt]);
+  }
+  if (tag === "path") {
+    const d = attr(el, "d", ctx) ?? "";
+    if (/[CcSsQqTtAa]/.test(d)) return []; // curves: skip
+    const out: [number, number][][] = [];
+    let cur: [number, number] = [0, 0];
+    let start: [number, number] = [0, 0];
+    for (const [, cmd, args] of d.matchAll(/([MmLlHhVvZz])([^MmLlHhVvZz]*)/g)) {
+      const a = args.trim().split(/[\s,]+/).filter(Boolean).map(Number);
+      const rel = cmd === cmd.toLowerCase();
+      const C = cmd.toUpperCase();
+      if (C === "Z") {
+        out.push([cur, start]);
+        cur = start;
+        continue;
+      }
+      const step = C === "H" || C === "V" ? 1 : 2;
+      for (let i = 0; i + step - 1 < a.length; i += step) {
+        let next: [number, number];
+        if (C === "H") next = [rel ? cur[0] + a[i] : a[i], cur[1]];
+        else if (C === "V") next = [cur[0], rel ? cur[1] + a[i] : a[i]];
+        else next = rel ? [cur[0] + a[i], cur[1] + a[i + 1]] : [a[i], a[i + 1]];
+        if (C === "M" && i === 0) start = next;
+        else out.push([cur, next]);
+        cur = next;
+      }
+    }
+    return out;
+  }
+  return [];
+}
+
+/** fill and stroke inherit from parent elements, so look up the tree. */
+function inherited(el: Element, name: string, ctx: Ctx): string | null {
+  for (let n: Element | null = el; n && n.nodeType === 1; n = n.parentNode as Element | null) {
+    const v = attr(n, name, { ...ctx, overrides: {} });
+    if (v) return v;
+  }
+  return null;
+}
+
+function intersectionArea(a: Box, b: Box): number {
+  const w = Math.min(a.maxX, b.maxX) - Math.max(a.minX, b.minX);
+  const h = Math.min(a.maxY, b.maxY) - Math.max(a.minY, b.minY);
+  return w > 0 && h > 0 ? w * h : 0;
+}
+
+const isPainted = (v: string | null) => !!v && v !== "none" && v !== "transparent" && !/rgba\([^)]*,\s*0(\.0*)?\s*\)/.test(v);
 
 // Small round symbols (lamps, ammeters, particles) that a label should sit beside or fully inside, never across.
 const SYMBOL_R = { min: 8, max: 40 };
@@ -585,7 +684,7 @@ function collectLabels(el: Element, parent: Ctx, vb: ViewBox, mayHide: boolean, 
     const scale = Math.sqrt(Math.abs(ctx.matrix[0] * ctx.matrix[3] - ctx.matrix[1] * ctx.matrix[2]));
     for (const t of textBoxes(el, parent, vb)) {
       const box = transformBox(ctx.matrix, t.box);
-      out.labels.push({ text: t.label, box, fontSize: (t.box.maxY - t.box.minY) * scale, mayHide: hidden });
+      out.labels.push({ text: t.label, box, local: t.box, matrix: ctx.matrix, fontSize: (t.box.maxY - t.box.minY) * scale, mayHide: hidden, order: out.order++ });
     }
     return;
   }
@@ -594,6 +693,24 @@ function collectLabels(el: Element, parent: Ctx, vb: ViewBox, mayHide: boolean, 
     const box = local && transformBox(ctx.matrix, local);
     const r = box ? Math.min(box.maxX - box.minX, box.maxY - box.minY) / 2 : 0;
     if (box && r >= SYMBOL_R.min && r <= SYMBOL_R.max) out.symbols.push(box);
+  }
+  if (!hidden) {
+    // Lines that could run through a label.
+    // Thin dashed lines are grids and guides: text over them stays readable, so they don't count.
+    const strokeWidth = parseFloat(inherited(el, "stroke-width", ctx) ?? "1");
+    const faint = strokeWidth <= 1.5 && isPainted(inherited(el, "stroke-dasharray", ctx));
+    if (isPainted(inherited(el, "stroke", ctx)) && !faint) {
+      const order = out.order++;
+      for (const [p, q] of straightSegments(el, { ...ctx, overrides: {} }, vb)) {
+        out.segments.push({ a: apply(ctx.matrix, ...p), b: apply(ctx.matrix, ...q), order });
+      }
+    }
+    // Filled shapes drawn after a label cover it.
+    const opacity = parseFloat(attr(el, "opacity", ctx) ?? "1") * parseFloat(attr(el, "fill-opacity", ctx) ?? "1");
+    if (["rect", "circle", "ellipse", "polygon", "path"].includes(tag) && isPainted(inherited(el, "fill", ctx) ?? "black") && opacity >= 0.5) {
+      const local = shapeBox(el, { ...ctx, overrides: {} }, vb)?.box;
+      if (local) out.covers.push({ box: transformBox(ctx.matrix, local), order: out.order++ });
+    }
   }
   for (const child of children(el)) collectLabels(child, ctx, vb, hidden, out);
 }
@@ -610,10 +727,10 @@ const contains = (outer: Box, inner: Box, pad = 1) =>
   inner.minX >= outer.minX - pad && inner.minY >= outer.minY - pad && inner.maxX <= outer.maxX + pad && inner.maxY <= outer.maxY + pad;
 
 function checkReadableLabels(root: Element, vb: ViewBox, css: Stylesheet): CheckResult {
-  const found: Found = { labels: [], symbols: [] };
+  const found: Found = { labels: [], symbols: [], segments: [], covers: [], order: 0 };
   const ctx = rootCtx(css);
   for (const child of children(root)) collectLabels(child, ctx, vb, false, found);
-  const { labels, symbols } = found;
+  const { labels, symbols, segments, covers } = found;
 
   const problems: string[] = [];
   for (const l of labels) {
@@ -638,6 +755,20 @@ function checkReadableLabels(root: Element, vb: ViewBox, css: Stylesheet): Check
         problems.push(`"${l.text}" is drawn across the symbol at (${cx}, ${cy})`);
       }
     }
+    // A line through the middle of the text (checked in the text's own coordinates, so rotated text works).
+    const inv = invert(l.matrix);
+    const w = l.local.maxX - l.local.minX;
+    const h = l.local.maxY - l.local.minY;
+    const core = { minX: l.local.minX + w * 0.1, maxX: l.local.maxX - w * 0.1, minY: l.local.minY + h * 0.3, maxY: l.local.maxY - h * 0.25 };
+    // A line is hidden if a filled shape drawn after it covers the label (e.g. wire behind an ammeter's "A").
+    const hiddenBehind = (sg: Segment) => covers.some((c) => c.order > sg.order && c.order < l.order && contains(c.box, l.box, 2));
+    if (inv && segments.some((sg) => !hiddenBehind(sg) && segmentHitsBox(apply(inv, ...sg.a), apply(inv, ...sg.b), core))) {
+      problems.push(`a line runs through "${l.text}"`);
+    }
+    // A filled shape drawn later (on top) hiding part of the label.
+    const labelArea = (l.box.maxX - l.box.minX) * (l.box.maxY - l.box.minY) || 1;
+    const hiding = covers.find((c) => c.order > l.order && intersectionArea(l.box, c.box) / labelArea > 0.1);
+    if (hiding) problems.push(`"${l.text}" is partly hidden under a shape drawn on top of it`);
   }
   return {
     id: "readableLabels",

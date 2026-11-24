@@ -162,12 +162,24 @@ test("a shape coloured only by a delayed fill animation fails (it shows black fi
 });
 
 test("a label drawn across a small symbol fails; a label fully inside one passes", () => {
-  const lamp = `<circle cx="300" cy="150" r="20" fill="none" stroke="black"/>`;
-  const across = GOOD.replace("</svg>", `${lamp}<text x="290" y="155" font-size="14">Lamp 1</text></svg>`);
+  const lamp = `<circle cx="330" cy="60" r="20" fill="none" stroke="black"/>`;
+  const across = GOOD.replace("</svg>", `${lamp}<text x="320" y="65" font-size="14">Lamp 1</text></svg>`);
   assert.equal(byId(across).readableLabels.passed, false);
   assert.match(byId(across).readableLabels.detail, /across the symbol/);
-  const inside = GOOD.replace("</svg>", `${lamp}<text x="300" y="155" font-size="14" text-anchor="middle">A</text></svg>`);
+  const inside = GOOD.replace("</svg>", `${lamp}<text x="330" y="65" font-size="14" text-anchor="middle">A</text></svg>`);
   assert.equal(byId(inside).readableLabels.passed, true, byId(inside).readableLabels.detail);
+});
+
+test("a solid line through a label fails; a thin dashed grid line does not", () => {
+  const wire = GOOD.replace("</svg>", `<line x1="250" y1="200" x2="380" y2="200" stroke="#333" stroke-width="3"/><text x="300" y="205" font-size="14">wire label</text></svg>`);
+  assert.match(byId(wire).readableLabels.detail, /a line runs through "wire label"/);
+  const grid = wire.replace('stroke="#333" stroke-width="3"', 'stroke="#9cf" stroke-width="1" stroke-dasharray="4 4"');
+  assert.equal(byId(grid).readableLabels.passed, true, byId(grid).readableLabels.detail);
+});
+
+test("a filled shape drawn on top of a label fails", () => {
+  const svg = GOOD.replace("</svg>", `<text x="300" y="250" font-size="14">hidden label</text><rect x="330" y="230" width="60" height="40" fill="#eef"/></svg>`);
+  assert.match(byId(svg).readableLabels.detail, /partly hidden under a shape/);
 });
 
 test("pythagoras equation matches different ways of writing it", () => {

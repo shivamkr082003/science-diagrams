@@ -44,7 +44,7 @@ The checks read the SVG's `<style>` block ([lib/css.ts](lib/css.ts)), because th
 
 The retry prompt contains the original prompt, the exact failure details (for example `<text> "cell" at rest spans x 790..830`) and the previous SVG, so the model can fix it rather than start again.
 
-Tests: `npm test` runs 33 tests. They cover each check and use a fake `fetch` to test the validation retry and the 429/503 backoff, so no real API calls are made.
+Tests: `npm test` runs 36 tests. They cover each check and use a fake `fetch` to test the validation retry and the 429/503 backoff, so no real API calls are made.
 
 ## Where approve/reject is saved, and why
 
@@ -71,6 +71,7 @@ npm test                        # unit tests, no API calls
 
 - `npm run generate -- circle` regenerates one concept and keeps the others.
 - `npm run table` prints the results table below.
+- `npm run recheck` re-runs the current checks on the saved SVGs (no API calls).
 
 ### Environment variables
 
@@ -86,17 +87,25 @@ The latest saved result for each concept (`results.json`, made with `npm run tab
 
 | Concept | Checks | Est. cost (USD) | Retries | API retries | Model | Tokens in / out |
 |---|---|---|---|---|---|---|
-| Pythagoras' theorem | Pass (all 6) | $0.02016 | 1 | 0 | gemini-3.5-flash-lite | 5922 / 7353 |
+| Pythagoras' theorem | Pass (all 6) | $0.01289 | 1 | 0 | gemini-3.5-flash-lite | 4220 / 4648 |
 | Parts of a circle | Pass (all 6) | $0.00551 | 0 | 0 | gemini-3.5-flash-lite | 707 / 2120 |
-| Series circuit | Pass (all 6) | $0.26295 | 1 | 0 | gemini-3.5-flash | 6854 / 28074 |
+| Series circuit | Pass (all 6) | $0.27837 | 1 | 0 | gemini-3.5-flash | 1969 / 30602 |
 | Photosynthesis | Pass (all 6) | $0.00716 | 0 | 0 | gemini-3.5-flash-lite | 619 / 2791 |
 | States of matter | Pass (all 6) | $0.00843 | 0 | 0 | gemini-3.5-flash-lite | 616 / 3297 |
-| **Total** | | **$0.30421** | | | | |
+| **Total** | | **$0.31236** | | | | |
 
-- These are the best results after several runs, not a single first try. `npm run generate -- <id>` regenerates one concept and keeps the others. Each row is a real, unedited model output that passed the current checks.
-- Across all runs I logged **29 generations** in [logs/runs.jsonl](logs/runs.jsonl). 19 passed every check. The total estimated cost was $0.57. There was 1 real 503 ("model is experiencing high demand"), which the backoff handled.
-- **Retries:** Pythagoras first had "a = 3" overlapping "a² = 9", and the retry fixed it. The circuit's first attempt had 10 labels at 11 units (under the 12 minimum), and the retry fixed those too.
-- **Cost** is an estimate at paid-tier prices: Flash-Lite $0.30 in / $2.50 out, Flash $1.50 in / $9.00 out per 1M tokens, including thinking tokens. I took these from third-party pricing pages in Nov 2026 and could not confirm them on Google's own page. On the free tier the real cost is $0. The circuit is expensive because Flash used about 28k output tokens, most of them thinking.
+- **These are the best results after several runs, not a single first try.**
+  - `npm run generate -- <id>` regenerates one concept and keeps the others.
+  - Each row is a real, unedited model output.
+  - After I fixed bugs in the checks, I re-ran the final checks on all 5 saved SVGs with `npm run recheck` (no API calls). So every row is judged by the same version of the checks, and the popup on the page says when this happened.
+- **Logs:** across all runs I logged **33 generations** in [logs/runs.jsonl](logs/runs.jsonl). 21 passed every check. The total estimated cost was $1.17. There was 1 real 503 ("model is experiencing high demand"), which the backoff handled.
+- **Retries:**
+  - Pythagoras first had "a² (9)" overlapping "a = 3", and the retry fixed it.
+  - The circuit's first reply was cut off at the output token limit (see "What failed"), and the retry produced the diagram.
+- **Cost** is an estimate at paid-tier prices: Flash-Lite $0.30 in / $2.50 out, Flash $1.50 in / $9.00 out per 1M tokens, including thinking tokens.
+  - I took these from third-party pricing pages in Nov 2026 and could not confirm them on Google's own page.
+  - On the free tier the real cost is $0.
+  - The circuit is expensive because Flash used about 30k output tokens, most of them thinking.
 
 ## What failed, and how I fixed it
 
@@ -113,18 +122,28 @@ I rendered every model output in headless Chrome and compared what I saw with wh
   - A wire ran through the word "current".
   - "circumference" was hidden under an info card drawn on top of it.
   - Each of these is now caught by check 4 or check 6. I tested each against every earlier output, which showed no false positives on the good diagrams.
+- **A second review pass found 3 more check bugs:**
+  - "voltage = 3 V" ran 10 units into a lamp symbol but passed, because I compared it with the circle's square box (11.8% under a 15% limit). Now it is tested against the real circle.
+  - A wire touching a thin (2-unit) cell plate was reported as a loose end, because thin strokes were ignored completely. Now thin strokes count as contacts, and only thick strokes are checked as wires.
+  - A 12-unit font measured 11.999 and failed "at least 12". Rounding fixed.
 - **A real animation bug the check caught:** a circle diagram's moving point used `A 130,130 0 1,1 129.9,0` as a "full circle". That arc's centre is (130, 130), not (0, 0), so the point travelled on the wrong circle and left the frame. I would not have spotted it by eye.
 
 **Problems with the model's output:**
 - **The series circuit kept coming out open.** Flash-Lite drew wires with gaps (an open circuit, which is wrong science) and wires running through the cell, and every check passed. I added the closed-loop rule to check 5, gave the circuit an explicit layout in its visual brief (loop corners, where each component goes, labels outside the loop), and gave coordinates in the retry feedback. Flash-Lite still failed 5 runs in a row, so I generated this one concept with `gemini-3.5-flash`. It passed after one retry and looks right.
 - **Retries that did not fix anything.** Early retry feedback said *what* was wrong ("a line runs through circumference") but not *where*. Now every message has coordinates, e.g. `the line from (535, 460) to (535, 80) runs through "current" (x 510..557, y 274..288)`. The prompt also has fixed layout zones (drawing in x 20–520, info panel in x 540–780).
-- **A still-open science point for the reviewer:** the circuit's arrows show electron flow (− to +), while GCSE usually draws conventional current (+ to −). No check covers this, which is what the human review step is for.
+- **Looked fine to the checks, wrong to a person:**
+  - The circuit's arrows showed electron flow (− to +), but GCSE draws conventional current (+ to −).
+  - The Pythagoras equation box was empty for 75% of the animation loop.
+  - Both were fixed in the prompt: the circuit brief now asks for conventional current and marked terminals, and the system prompt says key information must stay visible ("no empty boxes"). There is no code check for either. That is what the human review step is for.
+- **Flash cut off its own answer.** `maxOutputTokens` was 16384, and Flash's thinking tokens count towards it. Its first circuit reply stopped at 16380 tokens with no closing `</svg>`, and the check only said "no SVG". The limit is now 32768, a cut-off reply is reported as "cut off at the output token limit", and the retry prompt says so.
 
 **Problems with the app:**
 - **A rotating circle failed the viewBox check.** Transforming the 4 corners of a circle's box under rotation makes the box about 41% too big, so a spinning circle near the edge was flagged. Fix: the exact bounding box of a transformed ellipse. There is a test for it.
 - **The diagram popup closed itself.** React runs effects twice in development. My cleanup called `dialog.close()`, which fired `onClose`, so the popup closed straight after opening. I found this from a headless-Chrome screenshot. Fix: only call `showModal()` if the dialog isn't open, and no `close()` in cleanup.
 - **Build error on Next.js 16:** `export const dynamic = "force-dynamic"` is not allowed when `cacheComponents` is on. Removed it; the route is dynamic anyway because it reads from Redis.
 - **Lint error:** `setState` inside `useEffect` to copy the saved note into the textarea. Replaced it with a `draft ?? savedNote` pattern, with no effect.
+- **A worse retry threw away a good diagram.** If the retry reply had no SVG, the first attempt's diagram (which failed only one check) was lost. Now the retry is kept only if it passes at least as many checks.
+- **The live Generate button could be cut off by the host.** Two model calls plus 429/503 waits could pass Vercel's 120 s limit, and the browser would get a broken response. The pipeline now has a deadline 10 s before the limit, so it always answers with JSON: a result, or a clear error.
 
 ## What I would do with one more day
 

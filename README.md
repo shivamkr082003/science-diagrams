@@ -2,7 +2,7 @@
 
 A small web app that asks Gemini to draw 5 animated GCSE science diagrams as SVG, checks each one with code, retries once with the reasons if a check fails, and lets a reviewer approve or reject each diagram.
 
-- **Live app:** _TODO: Vercel link_
+- **Live app:** https://science-diagrams.vercel.app
 - **Stack:** Next.js 16 (App Router, TypeScript) on Vercel, Gemini API over plain `fetch`, Upstash Redis for reviews.
 - **Model:** `gemini-3.5-flash-lite` (free tier) for 4 concepts. The series circuit uses `gemini-3.5-flash`, because Flash-Lite drew a broken circuit 5 times in a row (see "What failed").
 
@@ -158,3 +158,4 @@ I rendered every model output in headless Chrome and compared what I saw with wh
 
 - **Claude Code (Claude Opus):** planning, writing most of the code with me (checks, pipeline, UI), writing tests, and taking headless-Chrome screenshots to check the UI. I reviewed and ran everything, and I can explain every file.
 - **Gemini 3.5 Flash-Lite and Flash:** the models that draw the diagrams (the subject of the assignment).
+# science-diagrams

@@ -50,10 +50,13 @@ Hard rules (your SVG is checked by code and rejected if it breaks any of them):
    Text: font-size 14 to 22, font-family sans-serif. Estimate text width as about 0.55 x font-size per character
    and make sure long labels fit. Prefer text-anchor="middle" for centred labels.
    Labels must not overlap each other: leave clear space between them.
-   Labels must not sit on top of lines or shapes they don't describe: put them beside the shape.
+   Labels must not sit on top of lines or shapes they don't describe: put them beside the shape
+   (e.g. "Lamp 1" next to the lamp symbol, never across it).
    If you add a key or info panel, keep it in its own area that the drawing never enters.
 3. The first child of <svg> is a <title> naming the concept. Use at least 3 <text> labels.
 4. Animate with SMIL (<animate>, <animateTransform>, <animateMotion>) or CSS @keyframes in a <style> block.
+   Give every shape its own fill colour (or fill="none"), even if an animation changes it later:
+   a shape with no fill is drawn black until its animation starts.
    Animations loop forever (repeatCount="indefinite" or animation-iteration-count: infinite) and teach
    something (e.g. show movement, flow or a step-by-step build-up), not just decoration.
 5. Use only plain shapes, paths and text. No <script>, <foreignObject>, <image>, external links or fonts.
